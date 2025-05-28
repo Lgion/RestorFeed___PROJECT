@@ -1,0 +1,42 @@
+export const products = [
+  {
+    id: 1,
+    name: "Sushi Saumon",
+    description: "2 pièces de sushi saumon frais",
+    price: 2.5,
+    image: "/sushi/saumon.png",
+    customizable: true,
+  },
+  {
+    id: 2,
+    name: "Sushi Thon",
+    description: "2 pièces de sushi thon rouge",
+    price: 2.8,
+    image: "/sushi/thon.png",
+    customizable: true,
+  },
+  {
+    id: 3,
+    name: "California Roll Avocat",
+    description: "6 pièces california roll avocat, sésame",
+    price: 5.0,
+    image: "/sushi/california-avocat.png",
+    customizable: false,
+  },
+  {
+    id: 4,
+    name: "Maki Concombre",
+    description: "6 makis concombre frais",
+    price: 3.5,
+    image: "/sushi/maki-concombre.png",
+    customizable: false,
+  },
+  {
+    id: 5,
+    name: "Sashimi Saumon",
+    description: "6 tranches de saumon cru",
+    price: 7.5,
+    image: "/sushi/sashimi-saumon.png",
+    customizable: false,
+  },
+];

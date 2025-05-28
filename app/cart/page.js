@@ -1,0 +1,59 @@
+"use client";
+
+import { useState } from "react";
+
+export default function CartPage() {
+  // Le panier sera récupéré du localStorage pour persister entre les pages
+  const [cart, setCart] = useState(() => {
+    if (typeof window !== "undefined") {
+      return JSON.parse(localStorage.getItem("cart") || "[]");
+    }
+    return [];
+  });
+
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  const [orderSent, setOrderSent] = useState(false);
+
+  const handleValidate = () => {
+    // Simule l'envoi de la commande
+    localStorage.setItem("orders", JSON.stringify([
+      ...(JSON.parse(localStorage.getItem("orders") || "[]")),
+      { items: cart, date: new Date().toISOString(), status: "pending" }
+    ]));
+    localStorage.removeItem("cart");
+    setCart([]);
+    setOrderSent(true);
+  };
+
+  if (orderSent) {
+    return (
+      <div style={{maxWidth: 600, margin: '0 auto', padding: 24}}>
+        <h2>Merci pour votre commande !</h2>
+        <p>Votre commande a bien été enregistrée et sera traitée par un employé.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{maxWidth: 600, margin: '0 auto', padding: 24}}>
+      <h1>Votre panier</h1>
+      {cart.length === 0 ? (
+        <div>Votre panier est vide.</div>
+      ) : (
+        <>
+          <ul>
+            {cart.map((item, idx) => (
+              <li key={idx}>{item.name} - {item.price.toFixed(2)} €</li>
+            ))}
+          </ul>
+          <div style={{marginTop: 12, fontWeight: 'bold'}}>
+            Total : {total.toFixed(2)} €
+          </div>
+          <button onClick={handleValidate} style={{marginTop: 24, background: '#27ae60', color: '#fff', border: 'none', borderRadius: 4, padding: '12px 24px', fontWeight: 'bold', fontSize: '1.1em', cursor: 'pointer'}}>
+            Valider la commande
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
