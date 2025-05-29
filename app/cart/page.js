@@ -18,7 +18,13 @@ export default function CartPage() {
     // Simule l'envoi de la commande
     localStorage.setItem("orders", JSON.stringify([
       ...(JSON.parse(localStorage.getItem("orders") || "[]")),
-      { items: cart, date: new Date().toISOString(), status: "pending" }
+      {
+        items: cart,
+        date: new Date().toISOString(),
+        status: "En cours",
+        client: (localStorage.getItem("userPseudo")),
+        table: localStorage.getItem("tableNumber") 
+      }
     ]));
     localStorage.removeItem("cart");
     setCart([]);

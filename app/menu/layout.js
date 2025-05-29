@@ -54,7 +54,19 @@ function Modal({ open, onClose, children }) {
   );
 }
 
+import { useEffect } from 'react';
+
 export default function MenuLayout({ children }) {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let tableNumber = localStorage.getItem('tableNumber');
+      if (!tableNumber) {
+        tableNumber = String(Math.floor(10 + Math.random() * 90)); // 2 chiffres
+        localStorage.setItem('tableNumber', tableNumber);
+      }
+    }
+  }, []);
+
   const [cart, setCart] = useState(() => {
     if (typeof window !== "undefined") {
       return JSON.parse(localStorage.getItem("cart") || "[]");
