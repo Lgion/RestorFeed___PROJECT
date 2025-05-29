@@ -2,10 +2,7 @@
 
 import { products } from "../../data/products";
 import ProductCard from "../../components/ProductCard";
-import RoleSwitcher from "../../components/RoleSwitcher";
-import RoleGuard from "../../components/RoleGuard";
 import Notification from "../../components/Notification";
-import ActionHeader from "../../components/ActionHeader";
 import { useState } from "react";
 
 
@@ -74,6 +71,7 @@ export default function MenuLayout({ children }) {
     return [];
   });
   const [notif, setNotif] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState('Tous');
 
   const handleAdd = (product) => {
     setCart((prev) => {
@@ -105,39 +103,30 @@ export default function MenuLayout({ children }) {
     <>
       <div style={{maxWidth: 600, margin: '0 auto', padding: 24}}>
         <Notification message={notif} onClose={() => setNotif("")} />
-        <RoleSwitcher />
-        <ActionHeader />
         <h1 style={{color: '#c0392b'}}>Menu Digital - Sushi</h1>
-        {/* Bloc employé */}
-        <RoleGuard minRole="employee">
-          <button style={{marginBottom: 8, background: '#3498db', color: '#fff', border: 'none', borderRadius: 4, padding: '10px 18px', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => router.push('/menu/orders')}>
-            Voir les commandes en cours
-          </button>
-        </RoleGuard>
-        {/* Bloc manager */}
-        <RoleGuard minRole="manager">
-          <div style={{marginBottom: 8}}>
-            <button style={{background: '#f39c12', color: '#fff', border: 'none', borderRadius: 4, padding: '10px 18px', fontWeight: 'bold', cursor: 'pointer', marginRight: 8}} onClick={() => router.push('/menu/dashboard')}>
-              Dashboard Manager
+        {/* Boutons de filtre de catégorie */}
+        <div style={{margin: '16px 0', display: 'flex', gap: 8, flexWrap: 'wrap'}}>
+          {['Tous', ...Array.from(new Set(products.map(p => p.category)))].map(cat => (
+            <button
+              key={cat}
+              onClick={() => setCategoryFilter(cat)}
+              style={{
+                background: categoryFilter === cat ? '#e74c3c' : '#fff',
+                color: categoryFilter === cat ? '#fff' : '#c0392b',
+                border: '1px solid #e74c3c',
+                borderRadius: 4,
+                padding: '8px 16px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+            >
+              {cat.charAt(0).toUpperCase() + cat.slice(1)}
             </button>
-            <button style={{background: '#16a085', color: '#fff', border: 'none', borderRadius: 4, padding: '10px 18px', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => router.push('/menu/employees')}>
-              Gestion Employés
-            </button>
-          </div>
-        </RoleGuard>
-        {/* Bloc admin */}
-        <RoleGuard minRole="admin">
-          <div style={{marginBottom: 8}}>
-            <button style={{background: '#8e44ad', color: '#fff', border: 'none', borderRadius: 4, padding: '10px 18px', fontWeight: 'bold', cursor: 'pointer', marginRight: 8}} onClick={() => router.push('/menu/admin')}>
-              Administration complète
-            </button>
-            <button style={{background: '#c0392b', color: '#fff', border: 'none', borderRadius: 4, padding: '10px 18px', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => router.push('/menu/providers')}>
-              Gestion Fournisseurs
-            </button>
-          </div>
-        </RoleGuard>
+          ))}
+        </div>
         <div>
-          {products.map((prod) => (
+          {(categoryFilter === 'Tous' ? products : products.filter(p => p.category === categoryFilter)).map((prod) => (
             <ProductCard key={prod.id} product={prod} onAdd={handleAdd} />
           ))}
         </div>

@@ -1,7 +1,10 @@
+"use client"
+
 import { useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { ClipboardList, LayoutDashboard, Users, ShieldCheck, Truck } from "lucide-react";
 import RoleGuard from "./RoleGuard";
+import RoleSwitcher from "./RoleSwitcher";
 import Link from "next/link";
 
 const actions = [
@@ -14,7 +17,7 @@ const actions = [
   {
     minRole: "manager",
     icon: LayoutDashboard,
-    href: "/menu/dashboard",
+    href: "/dashboard",
     label: "Dashboard Manager",
   },
   {
@@ -32,15 +35,18 @@ const actions = [
   {
     minRole: "admin",
     icon: Truck,
-    href: "/menu/suppliers",
+    href: "/suppliers",
     label: "Gestion Fournisseurs",
   },
 ];
 
+import CartHover from "./CartHover";
+
 export default function ActionHeader() {
   const [hovered, setHovered] = useState(null);
   return (
-    <header style={{display: 'flex', gap: 24, alignItems: 'center', padding: '16px 0', justifyContent: 'center'}}>
+    <header style={{display: 'flex', gap: 24, alignItems: 'center', padding: '16px 0', justifyContent: 'center', position: 'relative'}}>
+      <div style={{display: 'flex', gap: 24, alignItems: 'center', flex: 1, justifyContent: 'center'}}>
       {actions.map(({ minRole, icon: Icon, href, label }, idx) => (
         <RoleGuard key={label} minRole={minRole}>
           <Link href={href} legacyBehavior>
@@ -87,6 +93,11 @@ export default function ActionHeader() {
           </Link>
         </RoleGuard>
       ))}
+      <RoleSwitcher />
+      </div>
+      <div style={{position: 'absolute', right: 24, top: 10}}>
+        <CartHover />
+      </div>
     </header>
   );
 }
