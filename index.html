@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion Restaurant Sushi</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1, h2, h3 { color: #c0392b; }
+        nav { background-color: #c0392b; padding: 10px; text-align: center; margin-bottom: 20px; }
+        nav a, nav button { color: white; margin: 0 15px; text-decoration: none; cursor: pointer; background: none; border: none; font-size: 1em; }
+        nav a:hover, nav button:hover { text-decoration: underline; }
+
+        .hidden { display: none !important; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .product-card { border: 1px solid #ddd; border-radius: 5px; padding: 15px; text-align: center; background-color: #fff; }
+        .product-card img { max-width: 100px; max-height: 100px; margin-bottom: 10px; border-radius: 50%; }
+        .product-card h4 { margin: 10px 0 5px 0; }
+        .product-card p { font-size: 0.9em; color: #666; }
+        .product-card .price { font-weight: bold; color: #27ae60; margin-bottom: 10px; }
+        button, input[type="submit"] { background-color: #e74c3c; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 1em; }
+        button:hover, input[type="submit"]:hover { background-color: #c0392b; }
+        .btn-secondary { background-color: #3498db; }
+        .btn-secondary:hover { background-color: #2980b9; }
+        .btn-warning { background-color: #f39c12; }
+        .btn-warning:hover { background-color: #e67e22; }
+        .btn-info { background-color: #1abc9c; }
+        .btn-info:hover { background-color: #16a085; }
+        
+        #cart, #orders-list, #admin-panel { margin-top: 20px; padding: 15px; border: 1px solid #eee; border-radius: 5px; }
+        #cart-items li, #orders-list li { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dotted #ccc; }
+        #cart-items li:last-child, #orders-list li:last-child { border-bottom: none; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+
+        .login-form, .admin-section { margin-bottom: 30px; padding: 20px; background-color: #f9f9f9; border-radius: 5px; }
+        .login-form input, .admin-section input, .admin-section select, .admin-section textarea {
+            width: calc(100% - 22px); margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 4px;
+        }
+        .admin-tabs button { margin-right: 5px; margin-bottom: 10px; }
+
+        /* Role-specific styling */
+        .public-only, .employee-only, .manager-only, .admin-only { /* initially hide all role specific */ }
+        body.role-public .public-only { display: block; }
+        body.role-employee .employee-only { display: block; }
+        body.role-manager .manager-only { display: block; }
+        body.role-admin .admin-only { display: block; }
+
+        /* Make some elements inline-block or flex for layout */
+        body.role-employee .employee-view-elements { display: block; }
+        body.role-manager .manager-view-elements { display: block; } /* Managers see employee stuff too */
+        body.role-manager .manager-specific-elements { display: block; }
+        body.role-admin .admin-view-elements { display: block; } /* Admin sees manager stuff too */
+        body.role-admin .admin-specific-elements { display: block; }
+
+        #qr-code-placeholder {
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            text-align: center;
+            width: 200px;
+        }
+        #qr-code-placeholder img { max-width:100%; }
+
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <nav id="main-nav">
+            <a href="#" onclick="app.showView('menu')">Menu Digital</a>
+            <a href="#" class="public-only employee-only manager-only admin-only" onclick="app.showView('cart')">Panier (<span id="cart-count">0</span>)</a>
+            
+            <a href="#" class="employee-only manager-only admin-only employee-view-elements" onclick="app.showView('employee-orders')">Commandes Employé</a>
+            
+            <a href="#" class="manager-only admin-only manager-view-elements manager-specific-elements" onclick="app.showView('admin-dashboard')">Tableau de Bord Manager</a>
+            
+            <a href="#" class="admin-only admin-view-elements admin-specific-elements" onclick="app.showView('admin-user-management')">Gestion Utilisateurs (Admin)</a>
+
+            <span id="auth-section" style="float: right;">
+                <span id="user-greeting"></span>
+                <button id="login-button" onclick="app.showView('login')">Connexion</button>
+                <button id="logout-button" class="hidden" onclick="app.logout()">Déconnexion</button>
+            </span>
+        </nav>
+
+        <div class="container">
+            <!-- Login View -->
+            <div id="login-view" class="view hidden">
+                <h2>Connexion</h2>
+                <div class="login-form">
+                    <input type="text" id="username" placeholder="Nom d'utilisateur (public, employee, manager, admin)">
+                    <input type="password" id="password" placeholder="Mot de passe (laisser vide)">
+                    <button onclick="app.login()">Se connecter</button>
+                    <p style="font-size:0.8em; margin-top:10px;">Utilisateurs de test :<br>
+                        - <b>public</b> (pas de mot de passe)<br>
+                        - <b>employee</b> (pas de mot de passe)<br>
+                        - <b>manager</b> (pas de mot de passe)<br>
+                        - <b>admin</b> (pas de mot de passe)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Menu View (Public, Employee, Manager, Admin) -->
+            <div id="menu-view" class="view">
+                <h1>Menu Sushi</h1>
+                <div id="qr-code-placeholder">
+                    <p>Scannez ce QR Code pour commander depuis votre table!</p>
+                    <p>(Simulation - pointe vers l'URL actuelle)</p>
+                    <img src="https_chart.googleapis.com_chart_cht_qr_chs_150x150_chl_placeholder.png" alt="QR Code Placeholder" id="qr-code-img">
+                    <p>Ou visitez: <span id="app-url"></span></p>
+                </div>
+                <div id="product-categories"></div>
+                <div id="product-grid" class="product-grid">
+                    <!-- Products will be rendered here by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Cart View (Public, Employee, Manager, Admin) -->
+            <div id="cart-view" class="view hidden public-only employee-only manager-only admin-only">
+                <h2>Votre Panier</h2>
+                <div id="cart">
+                    <ul id="cart-items">
+                        <!-- Cart items will be rendered here -->
+                    </ul>
+                    <p>Total: <strong id="cart-total">0.00 €</strong></p>
+                    <input type="text" id="table-number" placeholder="Numéro de table (si sur place)" style="margin-bottom: 10px; padding: 8px; width: 200px;">
+                    <button onclick="app.placeOrder()">Passer la Commande</button>
+                </div>
+            </div>
+
+            <!-- Employee Orders View (Employee, Manager, Admin) -->
+            <div id="employee-orders-view" class="view hidden employee-only manager-only admin-only employee-view-elements">
+                <h2>Commandes en Cours (Employé)</h2>
+                <div id="employee-orders-list">
+                    <!-- Orders for employees will be rendered here -->
+                </div>
+                <div class="manager-only admin-only manager-view-elements manager-specific-elements" style="margin-top:20px; padding-top:20px; border-top:1px solid #ccc;">
+                    <h3>Directives du Manager</h3>
+                    <ul id="manager-directives-for-employee">
+                        <!-- Directives for the logged-in employee -->
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Admin/Manager Dashboard View -->
+            <div id="admin-dashboard-view" class="view hidden manager-only admin-only manager-view-elements manager-specific-elements">
+                <h2>Tableau de Bord Manager/Admin</h2>
+                <div class="admin-tabs">
+                    <button onclick="app.showAdminTab('stats')">Statistiques de Vente</button>
+                    <button onclick="app.showAdminTab('orders')">Gestion des Commandes</button>
+                    <button onclick="app.showAdminTab('employees')">Gestion des Employés</button>
+                    <button onclick="app.showAdminTab('suppliers')">Gestion des Fournisseurs</button>
+                </div>
+
+                <div id="admin-content">
+                    <!-- Stats Section -->
+                    <div id="stats-section" class="admin-section">
+                        <h3>Statistiques de Vente</h3>
+                        <select id="stats-period" onchange="app.renderSalesStats()">
+                            <option value="today">Aujourd'hui</option>
+                            <option value="week">Cette Semaine</option>
+                            <option value="month">Ce Mois</option>
+                            <option value="all">Historique Complet</option>
+                        </select>
+                        <div id="sales-stats-display">
+                            <!-- Sales stats will be rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Order Management Section -->
+                    <div id="orders-section" class="admin-section hidden">
+                        <h3>Gestion des Commandes (Manager/Admin)</h3>
+                        <div id="admin-orders-list">
+                            <!-- All orders for admin/manager view -->
+                        </div>
+                    </div>
+
+                    <!-- Employee Management Section -->
+                    <div id="employees-section" class="admin-section hidden">
+                        <h3>Gestion des Employés</h3>
+                        <button onclick="app.showAddEmployeeForm()">Ajouter un Employé</button>
+                        <div id="add-employee-form" class="hidden" style="margin-top:15px; padding:10px; border:1px solid #eee;">
+                            <h4>Ajouter/Modifier Employé</h4>
+                            <input type="hidden" id="employee-id">
+                            <input type="text" id="employee-name" placeholder="Nom">
+                            <input type="text" id="employee-username" placeholder="Nom d'utilisateur (pour connexion)">
+                            <input type="tel" id="employee-phone" placeholder="Téléphone">
+                            <input type="text" id="employee-geo" placeholder="Position Géo (simulée, ex: Cuisine)">
+                            <input type="text" id="employee-assigned-tables" placeholder="Tables Assignées (ex: 1, 2, 5)">
+                            <textarea id="employee-calendar" placeholder="Calendrier (ex: Lundi: 9-17, Mardi: Repos)"></textarea>
+                            <button onclick="app.saveEmployee()">Sauvegarder Employé</button>
+                        </div>
+                        <table id="employees-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nom</th>
+                                    <th>Username</th>
+                                    <th>Téléphone</th>
+                                    <th>Position</th>
+                                    <th>Tables</th>
+                                    <th>Calendrier</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employees-table-body"></tbody>
+                        </table>
+                        <h4>Donner un ordre/directive à un employé</h4>
+                        <select id="directive-employee-select"></select>
+                        <textarea id="directive-text" placeholder="Contenu de la directive..."></textarea>
+                        <button onclick="app.sendDirectiveToEmployee()">Envoyer Directive</button>
+                         <div id="employee-directives-log" style="margin-top:10px; max-height:200px; overflow-y:auto; border:1px solid #ccc; padding:5px;">
+                            <h4>Directives Envoyées:</h4>
+                            <!-- Log of directives -->
+                        </div>
+                    </div>
+
+                    <!-- Supplier Management Section -->
+                    <div id="suppliers-section" class="admin-section hidden">
+                        <h3>Gestion des Fournisseurs</h3>
+                        <button onclick="app.showAddSupplierForm()">Ajouter un Fournisseur</button>
+                         <div id="add-supplier-form" class="hidden" style="margin-top:15px; padding:10px; border:1px solid #eee;">
+                            <h4>Ajouter/Modifier Fournisseur</h4>
+                            <input type="hidden" id="supplier-id">
+                            <input type="text" id="supplier-name" placeholder="Nom du fournisseur">
+                            <input type="text" id="supplier-contact" placeholder="Contact (email/tel)">
+                            <textarea id="supplier-products" placeholder="Produits fournis (ex: Saumon, Riz, Algues)"></textarea>
+                            <button onclick="app.saveSupplier()">Sauvegarder Fournisseur</button>
+                        </div>
+                        <table id="suppliers-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nom</th>
+                                    <th>Contact</th>
+                                    <th>Produits Fournis</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="suppliers-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Admin User Management (Admin Only) -->
+            <div id="admin-user-management-view" class="view hidden admin-only admin-view-elements admin-specific-elements">
+                <h2>Gestion des Utilisateurs (Admin)</h2>
+                <p>Cette section permettrait à l'admin de créer, modifier, supprimer des utilisateurs et leurs rôles.</p>
+                <p>Pour cette démo, les utilisateurs (public, employee, manager, admin) sont prédéfinis et leurs rôles sont fixés.</p>
+                <p>Dans une vraie application, cela interagirait avec une base de données utilisateurs.</p>
+                <div id="users-list-admin">
+                    <!-- List of users and roles could be displayed here -->
+                    <h4>Utilisateurs Prédéfinis:</h4>
+                    <ul>
+                        <li>public (role: public)</li>
+                        <li>employee (role: employee)</li>
+                        <li>manager (role: manager)</li>
+                        <li>admin (role: admin)</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div> <!-- /container -->
+    </div> <!-- /app-container -->
+
+    <script>
+        const app = {
+            // --- DATA SIMULATION ---
+            products_data: [
+                { id: 1, category: "Nigiri", name: "Nigiri Saumon", description: "Tranche de saumon frais sur riz vinaigré.", price: 2.50, image: "https://via.placeholder.com/100/FF7F50/FFFFFF?text=Nigiri+S" },
+                { id: 2, category: "Nigiri", name: "Nigiri Thon", description: "Tranche de thon rouge sur riz vinaigré.", price: 3.00, image: "https://via.placeholder.com/100/DC143C/FFFFFF?text=Nigiri+T" },
+                { id: 3, category: "Maki", name: "Maki Concombre", description: "Rouleau d'algue nori, riz et concombre.", price: 3.50, image: "https://via.placeholder.com/100/32CD32/FFFFFF?text=Maki+C" },
+                { id: 4, category: "Maki", name: "Maki Avocat Saumon", description: "Rouleau d'algue nori, riz, avocat et saumon.", price: 4.50, image: "https://via.placeholder.com/100/FFD700/000000?text=Maki+AS" },
+                { id: 5, category: "California Rolls", name: "California Saumon Avocat", description: "Riz à l'extérieur, algue, saumon, avocat, sésame.", price: 5.00, image: "https://via.placeholder.com/100/FFA07A/000000?text=Cali+SA" },
+                { id: 6, category: "California Rolls", name: "California Surimi Avocat", description: "Riz à l'extérieur, algue, surimi, avocat, masago.", price: 4.50, image: "https://via.placeholder.com/100/FFB6C1/000000?text=Cali+SuA" },
+                { id: 7, category: "Sashimi", name: "Sashimi Saumon (5pcs)", description: "Fines tranches de saumon cru.", price: 6.00, image: "https://via.placeholder.com/100/FA8072/FFFFFF?text=Sashimi+S" },
+                { id: 8, category: "Boissons", name: "Eau Minérale", description: "50cl", price: 1.50, image: "https://via.placeholder.com/100/ADD8E6/000000?text=Eau" },
+                { id: 9, category: "Boissons", name: "Coca-Cola", description: "33cl", price: 2.00, image: "https://via.placeholder.com/100/A52A2A/FFFFFF?text=Coca" },
+            ],
+            cart: [],
+            orders: [], // { id, items, total, status: 'pending'/'preparing'/'ready'/'delivered'/'cancelled', timestamp, tableNumber, customerInfo }
+            employees: [
+                { id: 1, name: "Alice Employée", username: "employee", phone: "0611223344", geo: "Zone de préparation", assignedTables: "1, 2, 3", calendar: "Lundi-Vendredi 10h-18h", directives: [] },
+                { id: 2, name: "Bob Manager", username: "manager", phone: "0655667788", geo: "Bureau", assignedTables: "Supervision", calendar: "Lundi-Samedi 9h-19h", directives: [] }
+            ],
+            suppliers: [
+                { id: 1, name: "Poisson Frais Express", contact: "contact@poissonfrais.com", productsSupplied: "Saumon, Thon, Crevettes" },
+                { id: 2, name: "Asia Food Import", contact: "sales@asiafood.fr", productsSupplied: "Riz, Nori, Wasabi, Sauce Soja" }
+            ],
+            currentUser: null, // { username, role }
+            nextOrderId: 1,
+            nextEmployeeId: 3,
+            nextSupplierId: 3,
+
+            // --- INITIALIZATION ---
+            init: function() {
+                this.loadData();
+                this.updateLoginStatus();
+                this.renderMenu();
+                this.renderCart();
+                this.showView('menu'); // Default view
+                this.updateQRCode();
+                document.getElementById('app-url').textContent = window.location.href.split('#')[0];
+
+                // Handle hash changes for basic routing
+                window.onhashchange = () => {
+                    const hash = window.location.hash.substring(1);
+                    if (hash) {
+                        const [view, param] = hash.split('?');
+                        this.showView(view);
+                        if (view === 'menu' && param && param.startsWith('table=')) {
+                            const tableNum = param.split('=')[1];
+                            document.getElementById('table-number').value = tableNum;
+                            alert(`Bienvenue à la table ${tableNum}! Vous pouvez commencer votre commande.`);
+                        }
+                    }
+                };
+                // Trigger hash change if already present on load
+                if (window.location.hash) {
+                    window.onhashchange();
+                }
+            },
+            
+            updateQRCode: function() {
+                const qrImg = document.getElementById('qr-code-img');
+                const baseUrl = window.location.href.split('#')[0]; // URL without hash
+                // For a real QR, you'd use a library or a service. Here, we just update the alt text.
+                // Example using Google Charts API (deprecated but works for simple cases)
+                qrImg.src = `https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=${encodeURIComponent(baseUrl)}`;
+                qrImg.alt = `QR Code pour ${baseUrl}`;
+            },
+
+            // --- DATA PERSISTENCE (localStorage) ---
+            saveData: function() {
+                localStorage.setItem('sushiAppCart', JSON.stringify(this.cart));
+                localStorage.setItem('sushiAppOrders', JSON.stringify(this.orders));
+                localStorage.setItem('sushiAppEmployees', JSON.stringify(this.employees));
+                localStorage.setItem('sushiAppSuppliers', JSON.stringify(this.suppliers));
+                localStorage.setItem('sushiAppCurrentUser', JSON.stringify(this.currentUser));
+                localStorage.setItem('sushiAppNextOrderId', this.nextOrderId.toString());
+                localStorage.setItem('sushiAppNextEmployeeId', this.nextEmployeeId.toString());
+                localStorage.setItem('sushiAppNextSupplierId', this.nextSupplierId.toString());
+            },
+
+            loadData: function() {
+                this.cart = JSON.parse(localStorage.getItem('sushiAppCart')) || [];
+                this.orders = JSON.parse(localStorage.getItem('sushiAppOrders')) || [];
+                this.employees = JSON.parse(localStorage.getItem('sushiAppEmployees')) || this.employees; // Keep defaults if nothing in LS
+                this.suppliers = JSON.parse(localStorage.getItem('sushiAppSuppliers')) || this.suppliers; // Keep defaults
+                this.currentUser = JSON.parse(localStorage.getItem('sushiAppCurrentUser')) || null;
+                this.nextOrderId = parseInt(localStorage.getItem('sushiAppNextOrderId')) || 1;
+                this.nextEmployeeId = parseInt(localStorage.getItem('sushiAppNextEmployeeId')) || Math.max(3, ...this.employees.map(e => e.id + 1));
+                this.nextSupplierId = parseInt(localStorage.getItem('sushiAppNextSupplierId')) || Math.max(3, ...this.suppliers.map(s => s.id + 1));
+            },
+
+            // --- AUTHENTICATION & ROLES ---
+            login: function() {
+                const username = document.getElementById('username').value.toLowerCase();
+                // Password check is omitted for this demo
+                let role = 'public'; // Default role
+
+                if (username === 'admin') role = 'admin';
+                else if (username === 'manager') role = 'manager';
+                else if (username === 'employee') role = 'employee';
+                else if (username === '' || username === 'public') role = 'public';
+                else {
+                    alert('Utilisateur inconnu.');
+                    return;
+                }
+                
+                this.currentUser = { username: username || "Client", role: role };
+                this.updateLoginStatus();
+                this.saveData();
+                alert(`Connecté en tant que ${this.currentUser.username} (${this.currentUser.role})`);
+                this.showView('menu'); // Go to menu after login
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            },
+
+            logout: function() {
+                this.currentUser = null;
+                this.updateLoginStatus();
+                this.saveData();
+                this.showView('menu'); // Go to menu after logout
+            },
+
+            updateLoginStatus: function() {
+                const userGreeting = document.getElementById('user-greeting');
+                const loginButton = document.getElementById('login-button');
+                const logoutButton = document.getElementById('logout-button');
+                const body = document.body;
+
+                // Clear previous role classes
+                body.className = '';
+
+                if (this.currentUser) {
+                    userGreeting.textContent = `Bonjour, ${this.currentUser.username}! (${this.currentUser.role})`;
+                    loginButton.classList.add('hidden');
+                    logoutButton.classList.remove('hidden');
+                    body.classList.add(`role-${this.currentUser.role}`);
+
+                    // Cascading visibility: employee sees public, manager sees employee, admin sees manager
+                    if (this.currentUser.role === 'employee') {
+                         body.classList.add('role-public'); // Employees see public stuff
+                    } else if (this.currentUser.role === 'manager') {
+                        body.classList.add('role-public', 'role-employee'); // Managers see employee & public
+                    } else if (this.currentUser.role === 'admin') {
+                        body.classList.add('role-public', 'role-employee', 'role-manager'); // Admins see all
+                    }
+                    this.renderEmployeeDirectives(); // Update directives if employee logs in
+
+                } else {
+                    userGreeting.textContent = '';
+                    loginButton.classList.remove('hidden');
+                    logoutButton.classList.add('hidden');
+                    body.classList.add('role-public'); // Default to public view
+                }
+                this.updateNavVisibility();
+            },
+            
+            updateNavVisibility: function() {
+                document.querySelectorAll('#main-nav [class*="-only"]').forEach(el => {
+                    el.style.display = 'none'; // Hide all role-specific nav links initially
+                });
+
+                if (!this.currentUser || this.currentUser.role === 'public') {
+                    document.querySelectorAll('#main-nav .public-only').forEach(el => el.style.display = 'inline');
+                }
+                if (this.currentUser && ['employee', 'manager', 'admin'].includes(this.currentUser.role)) {
+                    document.querySelectorAll('#main-nav .employee-only').forEach(el => el.style.display = 'inline');
+                }
+                if (this.currentUser && ['manager', 'admin'].includes(this.currentUser.role)) {
+                    document.querySelectorAll('#main-nav .manager-only').forEach(el => el.style.display = 'inline');
+                }
+                if (this.currentUser && this.currentUser.role === 'admin') {
+                    document.querySelectorAll('#main-nav .admin-only').forEach(el => el.style.display = 'inline');
+                }
+            },
+
+            isRole: function(role) {
+                return this.currentUser && this.currentUser.role === role;
+            },
+            hasMinRole: function(minRole) {
+                if (!this.currentUser) return minRole === 'public';
+                const rolesHierarchy = ['public', 'employee', 'manager', 'admin'];
+                return rolesHierarchy.indexOf(this.currentUser.role) >= rolesHierarchy.indexOf(minRole);
+            },
+
+
+            // --- VIEW MANAGEMENT ---
+            showView: function(viewId) {
+                document.querySelectorAll('.view').forEach(view => view.classList.add('hidden'));
+                const targetView = document.getElementById(viewId + '-view');
+                if (targetView) {
+                    targetView.classList.remove('hidden');
+                    window.location.hash = viewId; // Update hash for navigation
+                } else {
+                    console.error("View not found: ", viewId);
+                    document.getElementById('menu-view').classList.remove('hidden'); // Fallback to menu
+                    window.location.hash = "menu";
+                }
+
+                // Specific rendering for views when shown
+                if (viewId === 'employee-orders') this.renderEmployeeOrders();
+                if (viewId === 'admin-dashboard') {
+                     this.showAdminTab('stats'); // Default to stats
+                     this.renderEmployeesForManager();
+                     this.renderSuppliersForManager();
+                     this.populateEmployeeSelectForDirectives();
+                     this.renderDirectivesLog();
+                }
+                 if (viewId === 'menu') this.renderMenu(); // Ensure menu is fresh
+            },
+
+            showAdminTab: function(tabId) {
+                document.querySelectorAll('.admin-section').forEach(section => section.classList.add('hidden'));
+                document.getElementById(tabId + '-section').classList.remove('hidden');
+                if (tabId === 'stats') this.renderSalesStats();
+                if (tabId === 'orders') this.renderAdminOrders();
+                if (tabId === 'employees') this.renderEmployeesForManager();
+                if (tabId === 'suppliers') this.renderSuppliersForManager();
+            },
+
+            // --- MENU & CART ---
+            renderMenu: function() {
+                const grid = document.getElementById('product-grid');
+                const categoriesElem = document.getElementById('product-categories');
+                grid.innerHTML = '';
+                categoriesElem.innerHTML = '';
+
+                const categories = [...new Set(this.products_data.map(p => p.category))];
+                
+                categories.forEach(category => {
+                    const categoryTitle = document.createElement('h3');
+                    categoryTitle.textContent = category;
+                    categoriesElem.appendChild(categoryTitle);
+
+                    const categoryProducts = this.products_data.filter(p => p.category === category);
+                    categoryProducts.forEach(product => {
+                        const card = document.createElement('div');
+                        card.className = 'product-card';
+                        card.innerHTML = `
+                            <img src="${product.image}" alt="${product.name}">
+                            <h4>${product.name}</h4>
+                            <p>${product.description}</p>
+                            <p class="price">${product.price.toFixed(2)} €</p>
+                            <button onclick="app.addToCart(${product.id})">Ajouter au Panier</button>
+                        `;
+                        grid.appendChild(card);
+                    });
+                });
+            },
+
+            addToCart: function(productId) {
+                if (!this.hasMinRole('public')) {
+                    alert("Veuillez vous connecter pour ajouter des articles au panier.");
+                    this.showView('login');
+                    return;
+                }
+                const product = this.products_data.find(p => p.id === productId);
+                if (product) {
+                    const cartItem = this.cart.find(item => item.id === productId);
+                    if (cartItem) {
+                        cartItem.quantity++;
+                    } else {
+                        this.cart.push({ ...product, quantity: 1 });
+                    }
+                    this.renderCart();
+                    this.saveData();
+                }
+            },
+
+            renderCart: function() {
+                const cartItemsElem = document.getElementById('cart-items');
+                const cartTotalElem = document.getElementById('cart-total');
+                const cartCountElem = document.getElementById('cart-count');
+                cartItemsElem.innerHTML = '';
+                let total = 0;
+                let count = 0;
+
+                this.cart.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toFixed(2)} €`;
+                    
+                    const removeButton = document.createElement('button');
+                    removeButton.textContent = 'Retirer 1';
+                    removeButton.style.marginLeft = '10px';
+                    removeButton.style.fontSize = '0.8em';
+                    removeButton.style.padding = '3px 6px';
+                    removeButton.onclick = () => this.removeFromCart(item.id);
+                    li.appendChild(removeButton);
+
+                    cartItemsElem.appendChild(li);
+                    total += item.price * item.quantity;
+                    count += item.quantity;
+                });
+
+                cartTotalElem.textContent = `${total.toFixed(2)} €`;
+                cartCountElem.textContent = count;
+            },
+            
+            removeFromCart: function(productId) {
+                const itemIndex = this.cart.findIndex(item => item.id === productId);
+                if (itemIndex > -1) {
+                    this.cart[itemIndex].quantity--;
+                    if (this.cart[itemIndex].quantity <= 0) {
+                        this.cart.splice(itemIndex, 1);
+                    }
+                    this.renderCart();
+                    this.saveData();
+                }
+            },
+
+            placeOrder: function() {
+                if (this.cart.length === 0) {
+                    alert("Votre panier est vide.");
+                    return;
+                }
+                if (!this.hasMinRole('public')) {
+                     alert("Veuillez vous connecter pour passer une commande.");
+                    this.showView('login');
+                    return;
+                }
+
+                const tableNumber = document.getElementById('table-number').value;
+                const total = this.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+                const order = {
+                    id: this.nextOrderId++,
+                    items: JSON.parse(JSON.stringify(this.cart)), // Deep copy
+                    total: total,
+                    status: 'pending', // pending, preparing, ready, delivered, cancelled
+                    timestamp: new Date().toISOString(),
+                    tableNumber: tableNumber || "En ligne",
+                    customerInfo: this.currentUser ? this.currentUser.username : "Client Anonyme"
+                };
+                this.orders.push(order);
+                this.cart = [];
+                this.renderCart();
+                this.saveData();
+                alert(`Commande #${order.id} passée avec succès! Total: ${order.total.toFixed(2)} €`);
+                document.getElementById('table-number').value = '';
+                this.showView('menu'); 
+            },
+
+            // --- ORDER MANAGEMENT (Employee & Admin/Manager) ---
+            renderEmployeeOrders: function() {
+                const listElem = document.getElementById('employee-orders-list');
+                listElem.innerHTML = '';
+                const activeOrders = this.orders.filter(o => ['pending', 'preparing'].includes(o.status));
+
+                if (activeOrders.length === 0) {
+                    listElem.innerHTML = '<p>Aucune commande active pour le moment.</p>';
+                    return;
+                }
+
+                activeOrders.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp)).forEach(order => {
+                    const item = document.createElement('div');
+                    item.style.border = "1px solid #ccc"; item.style.padding="10px"; item.style.marginBottom="10px";
+                    let itemsSummary = order.items.map(i => `${i.name} (x${i.quantity})`).join(', ');
+                    item.innerHTML = `
+                        <h4>Commande #${order.id} (Table: ${order.tableNumber})</h4>
+                        <p>Client: ${order.customerInfo}</p>
+                        <p>Status: <strong>${this.translateStatus(order.status)}</strong></p>
+                        <p>Articles: ${itemsSummary}</p>
+                        <p>Total: ${order.total.toFixed(2)} €</p>
+                        <p>Passée le: ${new Date(order.timestamp).toLocaleString()}</p>
+                        <select id="status-select-${order.id}" onchange="app.updateOrderStatus(${order.id}, this.value)">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>En attente</option>
+                            <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>En préparation</option>
+                            <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Prête</option>
+                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Livrée</option>
+                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Annulée</option>
+                        </select>
+                    `;
+                    listElem.appendChild(item);
+                });
+            },
+
+            renderAdminOrders: function() { // For Manager/Admin view
+                const listElem = document.getElementById('admin-orders-list');
+                listElem.innerHTML = '';
+                
+                if (this.orders.length === 0) {
+                    listElem.innerHTML = '<p>Aucune commande enregistrée.</p>';
+                    return;
+                }
+
+                const sortedOrders = [...this.orders].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)); // Most recent first
+
+                sortedOrders.forEach(order => {
+                    const item = document.createElement('div');
+                    item.style.border = "1px solid #eee"; item.style.padding="10px"; item.style.marginBottom="10px";
+                    let itemsSummary = order.items.map(i => `${i.name} (x${i.quantity})`).join(', ');
+                    item.innerHTML = `
+                        <h4>Commande #${order.id} (Table: ${order.tableNumber})</h4>
+                        <p>Client: ${order.customerInfo}</p>
+                        <p>Status: <strong>${this.translateStatus(order.status)}</strong></p>
+                        <p>Articles: ${itemsSummary}</p>
+                        <p>Total: ${order.total.toFixed(2)} €</p>
+                        <p>Passée le: ${new Date(order.timestamp).toLocaleString()}</p>
+                        <label for="status-select-admin-${order.id}">Changer Statut: </label>
+                        <select id="status-select-admin-${order.id}" onchange="app.updateOrderStatus(${order.id}, this.value, true)">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>En attente</option>
+                            <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>En préparation</option>
+                            <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Prête</option>
+                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Livrée</option>
+                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Annulée</option>
+                        </select>
+                    `;
+                    listElem.appendChild(item);
+                });
+            },
+            
+            translateStatus: function(status) {
+                const statuses = {
+                    pending: 'En attente',
+                    preparing: 'En préparation',
+                    ready: 'Prête',
+                    delivered: 'Livrée',
+                    cancelled: 'Annulée'
+                };
+                return statuses[status] || status;
+            },
+
+            updateOrderStatus: function(orderId, newStatus, isAdminUpdate = false) {
+                const order = this.orders.find(o => o.id === orderId);
+                if (order) {
+                    order.status = newStatus;
+                    this.saveData();
+                    if (isAdminUpdate) {
+                        this.renderAdminOrders(); // Refresh admin view
+                    } else {
+                        this.renderEmployeeOrders(); // Refresh employee view
+                    }
+                    this.renderSalesStats(); // Stats might change
+                    alert(`Statut de la commande #${orderId} mis à jour à: ${this.translateStatus(newStatus)}`);
+                }
+            },
+
+            // --- MANAGER/ADMIN PANEL ---
+            renderSalesStats: function() {
+                const period = document.getElementById('stats-period').value;
+                const displayElem = document.getElementById('sales-stats-display');
+                displayElem.innerHTML = '';
+
+                let filteredOrders = this.orders.filter(o => o.status === 'delivered'); // Only count delivered orders for sales
+                const now = new Date();
+
+                if (period === 'today') {
+                    filteredOrders = filteredOrders.filter(o => new Date(o.timestamp).toDateString() === now.toDateString());
+                } else if (period === 'week') {
+                    const startOfWeek = new Date(now);
+                    startOfWeek.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)); // Monday
+                    startOfWeek.setHours(0,0,0,0);
+                    filteredOrders = filteredOrders.filter(o => new Date(o.timestamp) >= startOfWeek);
+                } else if (period === 'month') {
+                    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                    filteredOrders = filteredOrders.filter(o => new Date(o.timestamp) >= startOfMonth);
+                }
+                // 'all' uses all delivered orders
+
+                const totalSales = filteredOrders.reduce((sum, o) => sum + o.total, 0);
+                const numOrders = filteredOrders.length;
+                const avgOrderValue = numOrders > 0 ? (totalSales / numOrders) : 0;
+
+                displayElem.innerHTML = `
+                    <p>Période: ${this.translatePeriod(period)}</p>
+                    <p>Nombre de commandes livrées: ${numOrders}</p>
+                    <p>Chiffre d'affaires total: ${totalSales.toFixed(2)} €</p>
+                    <p>Panier moyen: ${avgOrderValue.toFixed(2)} €</p>
+                `;
+                // TODO: Could add charts here with a library
+            },
+            translatePeriod: function(period) {
+                const periods = { today: "Aujourd'hui", week: "Cette Semaine", month: "Ce Mois", all: "Historique Complet"};
+                return periods[period] || period;
+            },
+
+            // Employee Management (Manager/Admin)
+            renderEmployeesForManager: function() {
+                const tbody = document.getElementById('employees-table-body');
+                tbody.innerHTML = '';
+                this.employees.forEach(emp => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${emp.id}</td>
+                        <td>${emp.name}</td>
+                        <td>${emp.username}</td>
+                        <td>${emp.phone || 'N/A'}</td>
+                        <td>${emp.geo || 'N/A'}</td>
+                        <td>${emp.assignedTables || 'N/A'}</td>
+                        <td>${emp.calendar || 'N/A'}</td>
+                        <td>
+                            <button class="btn-secondary btn-sm" onclick="app.editEmployee(${emp.id})">Modifier</button>
+                            ${this.isRole('admin') ? `<button class="btn-warning btn-sm" onclick="app.deleteEmployee(${emp.id})">Supprimer</button>` : ''}
+                        </td>
+                    `;
+                });
+                 this.populateEmployeeSelectForDirectives();
+            },
+            showAddEmployeeForm: function() {
+                document.getElementById('add-employee-form').classList.remove('hidden');
+                document.getElementById('employee-id').value = ''; // Clear for new entry
+                document.getElementById('employee-name').value = '';
+                document.getElementById('employee-username').value = '';
+                document.getElementById('employee-phone').value = '';
+                document.getElementById('employee-geo').value = '';
+                document.getElementById('employee-assigned-tables').value = '';
+                document.getElementById('employee-calendar').value = '';
+            },
+            editEmployee: function(id) {
+                const emp = this.employees.find(e => e.id === id);
+                if (emp) {
+                    document.getElementById('add-employee-form').classList.remove('hidden');
+                    document.getElementById('employee-id').value = emp.id;
+                    document.getElementById('employee-name').value = emp.name;
+                    document.getElementById('employee-username').value = emp.username;
+                    document.getElementById('employee-phone').value = emp.phone || '';
+                    document.getElementById('employee-geo').value = emp.geo || '';
+                    document.getElementById('employee-assigned-tables').value = emp.assignedTables || '';
+                    document.getElementById('employee-calendar').value = emp.calendar || '';
+                }
+            },
+            saveEmployee: function() {
+                const id = document.getElementById('employee-id').value;
+                const name = document.getElementById('employee-name').value;
+                const username = document.getElementById('employee-username').value;
+                const phone = document.getElementById('employee-phone').value;
+                const geo = document.getElementById('employee-geo').value;
+                const assignedTables = document.getElementById('employee-assigned-tables').value;
+                const calendar = document.getElementById('employee-calendar').value;
+
+                if (!name || !username) {
+                    alert("Le nom et le nom d'utilisateur sont requis.");
+                    return;
+                }
+
+                if (id) { // Existing employee
+                    const emp = this.employees.find(e => e.id === parseInt(id));
+                    if (emp) {
+                        emp.name = name;
+                        emp.username = username;
+                        emp.phone = phone;
+                        emp.geo = geo;
+                        emp.assignedTables = assignedTables;
+                        emp.calendar = calendar;
+                    }
+                } else { // New employee
+                    this.employees.push({ 
+                        id: this.nextEmployeeId++, 
+                        name, username, phone, geo, assignedTables, calendar, directives: [] 
+                    });
+                }
+                this.saveData();
+                this.renderEmployeesForManager();
+                document.getElementById('add-employee-form').classList.add('hidden');
+            },
+            deleteEmployee: function(id) {
+                if (!this.isRole('admin')) {
+                    alert("Action réservée aux administrateurs.");
+                    return;
+                }
+                if (confirm("Êtes-vous sûr de vouloir supprimer cet employé ?")) {
+                    this.employees = this.employees.filter(e => e.id !== id);
+                    this.saveData();
+                    this.renderEmployeesForManager();
+                }
+            },
+            populateEmployeeSelectForDirectives: function() {
+                const select = document.getElementById('directive-employee-select');
+                select.innerHTML = '<option value="">-- Sélectionner Employé --</option>';
+                this.employees.forEach(emp => {
+                    if (emp.username !== 'manager' && emp.username !== 'admin') { // Don't send directives to managers/admins
+                        const option = document.createElement('option');
+                        option.value = emp.id;
+                        option.textContent = emp.name;
+                        select.appendChild(option);
+                    }
+                });
+            },
+            sendDirectiveToEmployee: function() {
+                const employeeId = document.getElementById('directive-employee-select').value;
+                const directiveText = document.getElementById('directive-text').value;
+
+                if (!employeeId || !directiveText.trim()) {
+                    alert("Veuillez sélectionner un employé et entrer une directive.");
+                    return;
+                }
+                const employee = this.employees.find(e => e.id === parseInt(employeeId));
+                if (employee) {
+                    if (!employee.directives) employee.directives = [];
+                    const directive = {
+                        text: directiveText,
+                        from: this.currentUser.username,
+                        timestamp: new Date().toISOString(),
+                        read: false
+                    };
+                    employee.directives.push(directive);
+                    this.saveData();
+                    alert(`Directive envoyée à ${employee.name}.`);
+                    document.getElementById('directive-text').value = '';
+                    this.renderDirectivesLog();
+                    this.renderEmployeeDirectives(); // Update view if current user is that employee
+                }
+            },
+            renderDirectivesLog: function() { // For manager view
+                const logContainer = document.getElementById('employee-directives-log');
+                logContainer.innerHTML = '<h4>Directives Envoyées:</h4>';
+                this.employees.forEach(emp => {
+                    if (emp.directives && emp.directives.length > 0) {
+                        emp.directives.forEach(dir => {
+                            const p = document.createElement('p');
+                            p.style.fontSize = "0.9em";
+                            p.innerHTML = `À <i>${emp.name}</i> (par ${dir.from} le ${new Date(dir.timestamp).toLocaleTimeString()}): ${dir.text}`;
+                            logContainer.appendChild(p);
+                        });
+                    }
+                });
+            },
+             renderEmployeeDirectives: function() { // For logged-in employee view
+                const directivesListElem = document.getElementById('manager-directives-for-employee');
+                directivesListElem.innerHTML = '';
+                if (this.currentUser && this.currentUser.role === 'employee') {
+                    const currentEmployee = this.employees.find(e => e.username === this.currentUser.username);
+                    if (currentEmployee && currentEmployee.directives && currentEmployee.directives.length > 0) {
+                        currentEmployee.directives.filter(d => !d.read).forEach(dir => { // Show unread first or all
+                            const li = document.createElement('li');
+                            li.innerHTML = `De: ${dir.from} (${new Date(dir.timestamp).toLocaleString()})<br><strong>${dir.text}</strong>`;
+                            // Could add a "mark as read" button here
+                            directivesListElem.appendChild(li);
+                        });
+                        if (directivesListElem.children.length === 0) {
+                             directivesListElem.innerHTML = '<li>Aucune nouvelle directive.</li>';
+                        }
+                    } else {
+                        directivesListElem.innerHTML = '<li>Aucune directive.</li>';
+                    }
+                }
+            },
+
+
+            // Supplier Management (Manager/Admin)
+            renderSuppliersForManager: function() {
+                const tbody = document.getElementById('suppliers-table-body');
+                tbody.innerHTML = '';
+                this.suppliers.forEach(sup => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${sup.id}</td>
+                        <td>${sup.name}</td>
+                        <td>${sup.contact || 'N/A'}</td>
+                        <td>${sup.productsSupplied || 'N/A'}</td>
+                        <td>
+                            <button class="btn-secondary btn-sm" onclick="app.editSupplier(${sup.id})">Modifier</button>
+                             ${this.isRole('admin') ? `<button class="btn-warning btn-sm" onclick="app.deleteSupplier(${sup.id})">Supprimer</button>` : ''}
+                        </td>
+                    `;
+                });
+            },
+            showAddSupplierForm: function() {
+                document.getElementById('add-supplier-form').classList.remove('hidden');
+                document.getElementById('supplier-id').value = '';
+                document.getElementById('supplier-name').value = '';
+                document.getElementById('supplier-contact').value = '';
+                document.getElementById('supplier-products').value = '';
+            },
+            editSupplier: function(id) {
+                const sup = this.suppliers.find(s => s.id === id);
+                if (sup) {
+                    document.getElementById('add-supplier-form').classList.remove('hidden');
+                    document.getElementById('supplier-id').value = sup.id;
+                    document.getElementById('supplier-name').value = sup.name;
+                    document.getElementById('supplier-contact').value = sup.contact || '';
+                    document.getElementById('supplier-products').value = sup.productsSupplied || '';
+                }
+            },
+            saveSupplier: function() {
+                const id = document.getElementById('supplier-id').value;
+                const name = document.getElementById('supplier-name').value;
+                const contact = document.getElementById('supplier-contact').value;
+                const productsSupplied = document.getElementById('supplier-products').value;
+
+                if (!name) {
+                    alert("Le nom du fournisseur est requis.");
+                    return;
+                }
+
+                if (id) { // Existing supplier
+                    const sup = this.suppliers.find(s => s.id === parseInt(id));
+                    if (sup) {
+                        sup.name = name;
+                        sup.contact = contact;
+                        sup.productsSupplied = productsSupplied;
+                    }
+                } else { // New supplier
+                    this.suppliers.push({ 
+                        id: this.nextSupplierId++, 
+                        name, contact, productsSupplied 
+                    });
+                }
+                this.saveData();
+                this.renderSuppliersForManager();
+                document.getElementById('add-supplier-form').classList.add('hidden');
+            },
+            deleteSupplier: function(id) {
+                 if (!this.isRole('admin')) { // Or manager, depending on desired strictness
+                    alert("Action réservée aux administrateurs.");
+                    return;
+                }
+                if (confirm("Êtes-vous sûr de vouloir supprimer ce fournisseur ?")) {
+                    this.suppliers = this.suppliers.filter(s => s.id !== id);
+                    this.saveData();
+                    this.renderSuppliersForManager();
+                }
+            }
+        };
+
+        // Initialize the app
+        window.onload = () => app.init();
+
+    </script>
+</body>
+</html>
