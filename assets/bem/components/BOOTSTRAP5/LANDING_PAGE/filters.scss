@@ -1,0 +1,226 @@
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function LP-Filters($defaultValues: ""){
+    
+    @return ($defaultValues);
+}
+
+/******VARAIBLES******/
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
+$LP-Filters: LP-Filters((
+    exempleParam_Block_ComponentVariable: red
+));
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT EN DUR VIA UNE MAP
+//SI DÉCOMMENTÉ, ÉCRASERA LA FUNCTION SI-DESSUS
+//$LP-Filters: ();
+/******ELEMENTS******/
+$__NavLinks01: (
+    exempleParam_Element_ComponentVariable: purple
+);
+/*************************************
+*************************************
+VARIABLES PARAMÉTRABLE DU BLOC BEM
+EX: 
+box-shadow(color), background, border-color
+*************************************
+*************************************/
+
+
+
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%LP-Filters{
+    // template_base:"blockTagName>elementTagName1+elementTagName2+elementTagName3>content.......";
+    // template_block_sample: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}";
+    // template_blockElement_sample__ElementName: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}+elementTagName3.elementClassName>(elementInnerTag>...+elementInnerTag{Content Text}+elementInnerTag{Content Text})*6";
+    @extend .container;
+
+    &§§§title {
+        text-align: center;
+        >h2{
+            @include h2_subline_01("___filter-name___");
+        }
+        >p{
+        }
+    }
+
+
+    >nav,&__NavLinks01 {
+        @extend .container-fluid;
+        @include newRowList(12 12 12);
+        @extend .text-center;
+        @extend %dfr-cc;
+        gap: 1em;
+        margin: 0;
+        padding: 0px 0px 20px;
+        >a:not(last-child){
+            margin-right: 1em;
+        }
+        >a{
+            @extend .btn;
+            // "btn-effect"
+            overflow: hidden;
+            // "btn-common"
+            position: relative;z-index: 1;padding: 12px 32px;border-radius: 30px;
+            margin:0 !important;
+            
+
+            background-color: #F97794;
+            &:not(:last-of-type){
+                margin-right: 1em;
+            }
+            &:after{
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 100%;
+                z-index: 1;
+                left: 0;
+                top: 0;
+                background: rgba(0, 0, 0, 0.1);
+                -webkit-transition: all 0.3s ease;
+                -moz-transition: all 0.3s ease;
+                transition: all 0.3s ease;
+            }
+            &:hover{
+                &:after{
+                    width: 100%;
+                }
+            }
+            &.active {
+                color: #F97794 !important;
+                border-color: #F97794;
+                background: transparent;
+            }
+            
+        }
+        
+    }
+
+    &__Cards01 {
+        @include newRowList(4 6 12);
+        >li{
+            @extend %dfr-cc;
+            padding: 10px;
+            overflow: hidden;
+            position: relative;
+            &:hover:before{
+                opacity: 0.8;
+                z-index: 1;
+            }
+            &:before{
+                content:"";
+                background-color: rgba(22, 26, 39, 0.7);
+                opacity: 0.90;
+                height: 100%;
+                left: 0;
+                opacity: 0;
+                position: absolute;
+                top: 0;
+                -webkit-transition-duration: 500ms;
+                -o-transition-duration: 500ms;
+                transition-duration: 500ms;
+                width: 100%;
+            }
+            &.off{display:none;}
+            &:hover>img{
+                filter: grayscale(.8);
+                -webkit-transform: scale(1.1);
+                -ms-transform: scale(1.1);
+                transform: scale(1.1);
+            }
+            >img{
+                // filter: grayscale(0);
+                width: 100%;
+                height: 100%;
+                -webkit-transition-duration: 4000ms;
+                -o-transition-duration: 4000ms;
+                transition-duration: 4000ms;
+            }
+            &:hover>nav{
+                opacity: .8;
+            }
+            >nav{
+                @extend %dfw;
+                text-align: center;
+                z-index: 2;
+                opacity: 0;
+                >a{
+                    margin-bottom: 15px;
+                    width: 100%;
+                    display: inline-block;
+                    position: absolute;
+                    left:0;
+                    color: #fff;
+                    font-size: 16px;
+                    &:first-of-type{
+                        top: calc(50% - 2em);
+                        font-size: 30px;
+                    }
+                    &:last-of-type{
+                        bottom: calc(50% - 2em);
+                    }
+                    >i{
+                        @extend %ff_icon0;
+                        &:before{
+                            content: "\ea31";
+                        }
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    //bgee
+    //bgm
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin LP-Filters(
+        $paramMixi: $LP-Filters
+        , $exempleParamFromBEMComponentVariable: map-get($LP-Filters, exempleParamFromBEMComponentVariable)
+        // BEMMixinParam
+    ){
+
+    // PRIVATE ELEMENTS
+    @extend %LP-Filters§§§title;
+
+    // BLOCK &&
+    // ELEMENTS
+    @extend %LP-Filters;
+    &__NavLinks01 {
+        @extend %LP-Filters__NavLinks01;
+    }
+    &__Cards01 {
+        @extend %LP-Filters__Cards01;
+    }
+    //bgee
+    //bgm
+}
+
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.LP-Filters{
+    @include LP-Filters(/*ICI, VOUS POUVEZ ÉCRASER LES VALEUR DE LA VARIABLES "$defaultValues"*/);
+    //bge
+    //bgm
+}
+
+@mixin generate_LP-Filters($name,$args){
+    .#{$name}{
+        @include LP-Filters();
+    }
+    // @extend %LP-Filters§§§title;    // ex: \"@extend %LP-Filters§§§title\";",	
+    >h2:after{
+        content:map-get($args, etitle_after);
+    }
+}
+@include generate_LP-Filters("FilterOurWorks", (etitle_after: "Works"));

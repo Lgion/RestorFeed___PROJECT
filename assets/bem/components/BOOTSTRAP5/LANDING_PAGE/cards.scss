@@ -1,0 +1,78 @@
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function LP-Cards($defaultValues: ""){
+    
+    @return ($defaultValues);
+}
+
+/******VARAIBLES******/
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
+$LP-Cards: LP-Cards((
+    exempleParam_Block_ComponentVariable: red
+));
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT EN DUR VIA UNE MAP
+//SI DÉCOMMENTÉ, ÉCRASERA LA FUNCTION SI-DESSUS
+//$LP-Cards: ();
+/******ELEMENTS******/
+$__PersonwSNS: (
+    exempleParam_Element_ComponentVariable: purple
+);
+/*************************************
+*************************************
+VARIABLES PARAMÉTRABLE DU BLOC BEM
+EX: 
+box-shadow(color), background, border-color
+*************************************
+*************************************/
+
+
+
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%LP-Cards{
+    template_base:"blockTagName>elementTagName1+elementTagName2+elementTagName3>content.......";
+    template_block_sample: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}";
+    template_blockElement_sample__ElementName: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}+elementTagName3.elementClassName>(elementInnerTag>...+elementInnerTag{Content Text}+elementInnerTag{Content Text})*6";
+
+    &__PersonwSNS {
+        
+    }
+
+    &__ELEMENT_NAME_2 {
+        
+    }
+    //bgee
+    //bgm
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin LP-Cards(
+        $paramMixi: $LP-Cards
+        , $exempleParamFromBEMComponentVariable: map-get($LP-Cards, exempleParamFromBEMComponentVariable)
+        // BEMMixinParam
+    ){
+    @extend %LP-Cards;
+
+    &__PersonwSNS {
+        @extend %LP-Cards__PersonwSNS;
+    }
+
+    &__ELEMENT_NAME_2 {
+        @extend %LP-Cards__ELEMENT_NAME_2;
+    }
+    //bgee
+    //bgm
+}
+
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.LP-Cards{
+    @include LP-Cards(/*ICI, VOUS POUVEZ ÉCRASER LES VALEUR DE LA VARIABLES "$defaultValues"*/);
+    //bge
+    //bgm
+}

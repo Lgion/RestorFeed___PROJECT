@@ -1,0 +1,281 @@
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function B5-Sidebars($defaultValues: ""){
+    
+    @return ($defaultValues);
+}
+
+/******VARAIBLES******/
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
+$B5-Sidebars: B5-Sidebars((
+    exempleParam_Block_ComponentVariable: red
+));
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT EN DUR VIA UNE MAP
+//SI DÉCOMMENTÉ, ÉCRASERA LA FUNCTION SI-DESSUS
+//$B5-Sidebars: ();
+/******ELEMENTS******/
+$__LogoLink: (
+    exempleParam_Element_ComponentVariable: purple
+);
+/*************************************
+*************************************
+VARIABLES PARAMÉTRABLE DU BLOC BEM
+EX: 
+box-shadow(color), background, border-color
+*************************************
+*************************************/
+
+
+
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%B5-Sidebars{
+    // template_base:"blockTagName>elementTagName1+elementTagName2+elementTagName3>content.......";
+    // template_block_sample: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}";
+    // template_blockElement_sample__ElementName: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}+elementTagName3.elementClassName>(elementInnerTag>...+elementInnerTag{Content Text}+elementInnerTag{Content Text})*6";
+
+
+    
+    svg{@extend .bi;@extend .me-2;transition: all .4s;}
+    svg+span,svg+label,img+small{display: inline-block;width: 100px;opacity:1;transition:all .4s;}
+    li>a{
+        @extend %h_b_coverEffect;
+        @extend %a_b_clickEffect;
+        // @extend %ha_b_effects;
+        &:before{background:$primary;}
+        &:hover{}
+    }
+    hr{
+        height: 1px;
+        background-color: currentcolor;
+        opacity: 0.25;
+        margin: 1rem 0px;
+        border-style: initial;
+    }
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left:0;
+    z-index: 1100;
+    border-right: 1px solid black;
+    box-shadow: 0 0 10px 1px black;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    @extend .d-flex;
+    @extend .flex-column;
+    @extend .flex-shrink-0;
+    @extend .p-3;
+    @extend .text-white;
+    min-width: 280px;
+    transition: min-width .4s;
+
+
+
+    &§§§dark{
+        background: $dark; // @extend .bg-dark;
+        border-right-color: white;
+        a{@extend .text-white;}
+    }
+    &§§§notDark{
+        @extend .bg-light;
+        a:not(.active){color:$dark !important; // @extend .link-dark;
+        }
+        hr{color:black;opacity:1;}
+    }
+    &§§§collapsible{
+        min-width: 0;
+        padding: 1rem 0 !important;
+        >*:not(a) a:not(.active)>svg{color:$primary;}
+        a{
+            border-radius: 0;
+            >svg{width: 24px;height: 24px;margin-right: 0;margin-right: 0 !important;}
+            >svg+span,>svg+label,>img+strong{width: 0;overflow: hidden;opacity:0;}
+        }
+        >a{
+            margin: 0 auto !important;
+            >svg{width: 48px;height: 36px;}
+        }
+    }
+    &§§§foldableMenuItems{
+        &:not(:hover)>ul>li>ul:not(:has(li.active)){display: none;}
+        &:not(:hover)>ul>li>ul>li:not(.active){display: none;}
+        >ul{
+            >li{
+                >a{
+                    display: inline-flex;
+                    &:after{
+                        display: flex;
+                        align-items: center;
+                        content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+                        width: 1.25em;
+                        line-height: 0;
+                        transition: transform .35s ease;
+                        transform-origin: 0.5em 50%;
+                    }
+                    >input{display: none;}
+                    >label{
+                        cursor: pointer;
+                        z-index: 1;
+                        &:after{
+                            content: "";
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            bottom: 0;
+                            right: 0;
+                        }
+                    }
+                }
+                >a:has(>input:checked){
+                    &:after{transform: rotate(90deg);}
+                    +ul{
+                        min-height: 60px;
+                    }
+                }
+                >ul{
+                    // @extend .btn-toggle-nav;
+                    // @extend .list-unstyled;
+                    // @extend .fw-normal;
+                    // @extend .pb-1;
+                    // @extend .small;
+                    overflow: hidden;
+                    min-height: 0;
+                    height: 0;
+                    transition: min-height .4s;
+                    a{
+                        @extend .link-dark;
+                        @extend .rounded;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+    &__LogoLink {
+        @extend .d-flex;
+        @extend .align-items-center;
+        @extend .mb-3;
+        // @extend .text-white;
+        @extend .text-decoration-none;
+        @include from-tablette(map-get($b5_breakpoints,mobile)+"px"){
+            margin-right: auto !important;
+            margin-bottom: 0px !important;
+        } // @extend .me-md-auto; @extend .mb-md-0;
+        >svg{
+            width: 40px;
+            height: 32px;
+        }
+        >span{font-size: calc(1.275rem + 0.3vw) !important; // @extend .fs-4;
+        }
+    }
+
+    &__Menu {
+        @extend .nav;
+        @extend .nav-pills;
+        @extend .flex-column;
+        @extend .mb-auto;
+        >li{
+            @extend .nav-item;
+            >a{
+                @extend .nav-link;
+                @extend .text-white;
+                &.active{@extend .bg-primary;}
+                &:not(.active){}
+                >svg{
+                    width: 16px;
+                    width: 16px;
+                }
+            }
+        }
+    }
+    &__Dropup {
+        @extend %dropbox;
+        >a{
+            @extend .d-flex;
+            @extend .align-items-center;
+            // @extend .text-white;
+            @extend .text-decoration-none;
+            // @extend .dropdown-toggle;
+            border:none;
+            >img{
+                @extend .rounded-circle;
+                @extend .me-2;
+                width:32px;
+                height:32px;
+            }
+            >strong{}
+        }
+        >ul{
+                        color: rgb(222, 226, 230);
+                        background-color: rgb(52, 58, 64);
+                        border-color: rgba(0, 0, 0, 0.15);/*
+                        @extend .dropdown-menu-dark;*/
+            // @extend .text-small;
+            bottom: 0;
+            top: auto;
+            @extend .shadow;
+            >li{
+                >a{
+                    color:white !important;
+                }
+            }
+        }
+    }
+    //bgee
+    //bgm
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin B5-Sidebars(
+        $paramMixi: $B5-Sidebars
+        , $exempleParamFromBEMComponentVariable: map-get($B5-Sidebars, exempleParamFromBEMComponentVariable)
+        // BEMMixinParam
+    ){
+
+    // PRIVATE ELEMENTS
+    &.--dark{@extend %B5-Sidebars§§§dark;}
+    &:not(.--dark){@extend %B5-Sidebars§§§notDark;}
+    &:not(.--collapsible),&.--collapsible:not(:hover){@extend %B5-Sidebars§§§collapsible;}
+    &.--foldableMenuItems{@extend %B5-Sidebars§§§foldableMenuItems;}
+
+    // BLOCK &&
+    // ELEMENTS
+    @extend %B5-Sidebars;
+    >a {
+        @extend %B5-Sidebars__LogoLink;
+    }
+    >ul {
+        @extend %B5-Sidebars__Menu;
+    }
+    >div {
+        @extend %B5-Sidebars__Dropup;
+    }
+    //bgee
+    //bgm
+}
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.B5-Sidebars{
+    @include B5-Sidebars(/*ICI, VOUS POUVEZ ÉCRASER LES VALEUR DE LA VARIABLES "$defaultValues"*/);
+    //bge
+    //bgm
+}
+@mixin generate_B5-Sidebars($name,$args:()){
+    .#{$name}{
+        @include B5-Sidebars();
+    }
+/*
+    >h2:before{
+        content:map-get($args, label);
+    }
+*/
+}
+@include generate_B5-Sidebars("sidebars"/*, (label: "value")*/);

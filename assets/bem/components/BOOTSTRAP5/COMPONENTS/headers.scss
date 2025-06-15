@@ -1,0 +1,322 @@
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function B5-Headers($defaultValues: ""){
+    
+    @return ($defaultValues);
+}
+
+/******VARAIBLES******/
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
+$B5-Headers: B5-Headers((
+    exempleParam_Block_ComponentVariable: red
+));
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT EN DUR VIA UNE MAP
+//SI DÉCOMMENTÉ, ÉCRASERA LA FUNCTION SI-DESSUS
+//$B5-Headers: ();
+/******ELEMENTS******/
+$__Logo: (
+    exempleParam_Element_ComponentVariable: purple
+);
+/*************************************
+*************************************
+VARIABLES PARAMÉTRABLE DU BLOC BEM
+EX: 
+box-shadow(color), background, border-color
+*************************************
+*************************************/
+
+
+
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%B5-Headers{
+    // template_base:"blockTagName>elementTagName1+elementTagName2+elementTagName3>content.......";
+    // template_block_sample: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}";
+    // template_blockElement_sample__ElementName: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}+elementTagName3.elementClassName>(elementInnerTag>...+elementInnerTag{Content Text}+elementInnerTag{Content Text})*6";
+
+
+
+    @extend %dfr-cc;
+    // &:not(.--forth):not(.--dark):not(.--grid):not(.--doubleHeader){@extend .container_;} 
+    &:not(.--forth):not(.--dark):not(.--grid):not(.--doubleHeader){@extend .container;} 
+    @extend .py-3;
+    @extend .mb-4;
+    @extend .border-bottom;
+    flex-wrap: wrap;
+    >*{
+        padding:0 !important;
+    }
+    @include from-tablette(map-get($b5_breakpoints,mobile)+"px"){
+        justify-content: center !important;
+    }
+    
+    &.--fluid{@extend .container-fluid;}
+
+
+
+    &§§§dark {
+        @extend .container-fluid;
+        background: $darkmode !important;
+        >a{color:white !important;}
+        >ul>li>a{color:white !important;}
+        
+        >form>input[type="search"]{
+            color: #fff !important;
+            background-color: #212529 !important;
+            border-color: #6c757d !important;
+        }
+    }
+    &§§§grid {
+        @extend .container-fluid;
+        gap:1rem;
+        align-items: center;
+        grid-template-columns: 1fr 2fr;
+        &:has(input:focus)+nav{@extend .pb-3;max-height: 200px;height:auto;}
+        &>*:first-child{
+            margin-right: auto!important; // @extend .me-lg-auto;
+        }
+        
+        &+nav{
+            @extend .container-fluid;
+            @extend .d-grid;
+            position: relative;
+            gap:1rem;
+            grid-template-columns: 1fr 2fr;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height .3s;
+            &.active{
+                @extend .pb-3;
+                max-height: 200px;
+                height:auto;
+            }
+            >div{
+                @extend .bg-light;
+                @extend .border;
+                border-radius: .3rem!important; // @extend .rounded-3;
+                height: 100px;
+            }
+            
+        }
+    }
+    &§§§doubleHeader {
+        box-shadow: 0 0.5em 1.5em rgba(0, 0, 0, .1), 0 0.125em 0.5em rgba(0, 0, 0, .15);
+        background: $dark;
+        @include from-desktop(map-get($b5_breakpoints,tablette)+"px"){
+            justify-content: space-between !important;
+        }
+        
+        >ul{
+            @include from-desktop(map-get($b5_breakpoints,tablette)+"px"){
+                &:nth-child(2){margin-right: unset!important; // @extend .me-lg-auto;}
+                justify-content: space-between !important;
+                }
+            }
+        }
+        
+        >nav{
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem !important;
+            margin-top: 1.5rem;
+            border: solid silver;
+            border-width: 1px 0;
+            background: white;
+            >a{
+                // display: flex;
+                // align-items: center;
+                // gap: 1rem;
+                text-wrap: nowrap;
+            }
+            @include to-desktop(map-get($b5_breakpoints,desktop)+"px"){
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                >a{
+                    margin-bottom: 1rem;
+                }
+                
+                >form{
+                    width: 100%;
+                }
+                
+            }
+        }
+    }
+    &§§§pills {
+        @extend .nav-pills;
+        li>a{@extend .nav-link;
+            &.active{
+                color: #fff;
+                background-color: $primary;
+                // @extend .nav-link;
+            }
+        }
+    }
+    &__Logo {
+        @extend %dfr-vc;
+        text-decoration: none!important; // @extend  text-decoration-none;
+        color:rgb(33,37,41); // @extend  text-dark;
+        gap: 1rem;
+        @include from-tablette(map-get($b5_breakpoints,mobile)+"px"){
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: unset;
+            >img{
+                object-fit: contain;
+            }
+        }
+        >svg{
+            vertical-align: -0.125em;fill: currentColor; // @extend .bi;
+            margin-right: .5rem!important; // @extend .me-2;
+        }
+        >span{
+            text-wrap: nowrap;
+            font-size: (1.5rem)!important // @extend .fs-4;    
+        }
+    }
+
+    &__Nav {
+        @extend .nav;
+        // @extend .col-12;
+        @extend .mb-2;
+        flex-wrap: nowrap;
+        justify-content: center;
+        @include mobile-only(map-get($b5_breakpoints,mobile)+"px"){
+        }
+        @include to-desktop(map-get($b5_breakpoints,desktop)+"px"){
+        }
+        @include from-desktop(map-get($b5_breakpoints,tablette)+"px"){
+            margin-right: auto!important; // @extend .me-lg-auto;
+            margin-bottom: 0!important; // @extend .mb-md-0; 
+        }
+        >li{
+            @extend .nav-item;
+            >a{
+                @extend .nav-link;
+                @extend .px-2;
+                >svg{
+                    background: white;
+                }
+                
+            }
+        }
+    }
+    &__Forms, &__SearchBox, &__SignInOut {
+        @extend %dfr-hc;
+        gap:1rem;
+        // @extend .mb-3;
+        text-align: right!important; // @extend .text-end;
+
+        >input{@extend .form-control;}
+        >button{
+            @extend .btn;
+            &:first-of-type{
+                @extend .btn-outline-primary;
+            }
+            &:last-of-type{
+                @extend .btn-primary;
+            }
+            // &:nth-of-type(n){}
+        }
+    }
+    &__DropBox {
+        @extend %dropbox;
+    }
+    //bgee
+    //bgm
+    &--two{
+        >a{@extend .mb-3;}
+    }
+    &--three{
+        >a{@extend .col-md-3;}
+        >ul{@extend .col-md-6;
+            // >li>a{color: #212529/*@extend .link-dark;*/}
+        }
+        >form{@extend .col-md-3;}
+    }
+    &--forth{
+        >ul{@extend .col-lg-auto;}
+        >form{@extend .col-lg-auto;
+            padding: 0;
+            @include to-desktop(map-get($b5_breakpoints,desktop)+"px"){
+                margin-bottom: 1rem!important; // @extend .mb-3;
+            }
+        }
+    }
+    &.center{
+        justify-content: center;
+        button:not(.active){
+            flex-basis:content;
+        }
+        >ul{
+            margin-right: 0 !important;flex-grow:0;
+        }
+    } //align
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin B5-Headers(
+        $paramMixi: $B5-Headers
+        , $exempleParamFromBEMComponentVariable: map-get($B5-Headers, exempleParamFromBEMComponentVariable)
+        // BEMMixinParam
+    ){
+
+    // PRIVATE ELEMENTS
+    &.--dark{@extend %B5-Headers§§§dark;}
+    &.--grid{@extend %B5-Headers§§§grid;}
+    &.--doubleHeader{@extend %B5-Headers§§§doubleHeader;}
+    &.--pills>ul,&.--pills>nav>ul{@extend %B5-Headers§§§pills;}
+    &.--two{@extend %B5-Headers--two;}
+    &.--three{@extend %B5-Headers--three;}
+    &.--forth{@extend %B5-Headers--forth;}
+
+    // BLOCK &&
+    // ELEMENTS
+    @extend %B5-Headers;
+
+    // &__Logo 
+    >a
+    {
+        @extend %B5-Headers__Logo;
+    }
+    // &__Nav 
+    >ul
+    {
+        @extend %B5-Headers__Nav;
+    }
+    // &__SearchBox 
+    // &__SignInOut 
+    // &__Forms 
+    >form,>nav,>nav>form
+    {
+        @extend %B5-Headers__Forms;
+    }
+    //bgee
+    //bgm
+}
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.B5-Headers{
+    background: red;
+    @include B5-Headers(/*ICI, VOUS POUVEZ ÉCRASER LES VALEUR DE LA VARIABLES "$defaultValues"*/);
+    //bge
+    //bgm
+}
+@mixin generate_B5-Headers($name,$args:()){
+    .#{$name}{
+        @include B5-Headers();
+    }
+/*
+    >h2:before{
+        content:map-get($args, label);
+    }
+*/
+}
+@include generate_B5-Headers("headers"/*, (label: "value")*/);

@@ -1,0 +1,36 @@
+@import "../main.scss";
+
+
+
+
+
+body{width:80%;margin:0 auto;
+  >h1{text-align: center;}
+}
+
+
+
+
+
+.mynav{
+  @extend .navbar; @extend .navbar-expand-md; @extend .navbar-dark; @extend .bg-dark;
+  // >div{
+    // @extend .container-fluid;
+    >a{
+      @extend .navbar-brand;
+    }
+    >button{
+      @extend .navbar-toggler;
+      >span{@extend .navbar-toggler-icon;}
+    }
+    >menu{
+      @extend .collapse; @extend .navbar-collapse;
+      li{
+        @extend .navbar-nav;
+        >a{@extend .nav-link; 
+          &.active{@extend .active;} 
+        }
+      }
+    // }
+  }
+}

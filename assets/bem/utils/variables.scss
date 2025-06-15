@@ -1,0 +1,41 @@
+/**/
+
+
+
+$black: black;
+$white: white;
+$darkmode: rgba(33,37,41,1);
+// $dark: #eaeaea;
+$dark: $darkmode;
+$bright: #eaeaea;
+
+$black1: lighten($black,10%);
+$black2: lighten($black,20%);
+$black3: lighten($black,30%);
+$black4: lighten($black,40%);
+$black5: lighten($black,50%);
+
+$white1: darken($white,10%);
+$white2: darken($white,20%);
+$white3: darken($white,30%);
+$white4: darken($white,40%);
+$white5: darken($white,50%);
+
+$dark1: lighten($dark,10%);
+$dark2: lighten($dark,20%);
+$dark3: lighten($dark,30%);
+$dark4: lighten($dark,40%);
+$dark5: lighten($dark,50%);
+
+$bright1: lighten($bright,10%);
+$bright2: lighten($bright,20%);
+$bright3: lighten($bright,30%);
+$bright4: lighten($bright,40%);
+$bright5: lighten($bright,50%);
+
+
+
+$shadow0: 8px 25px 45px -12px rgba(94, 94, 94, 0.62);
+$shadow0_: 8px 25px 45px -0px rgba(94, 94, 94, 1);
+$shadow1: 8px 8px 45px -12px rgba(94, 94, 94, 0.62);
+$shadow2: 0px 5px 30px -10px rgb(94 94 94 / 62%);

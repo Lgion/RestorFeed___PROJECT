@@ -1,0 +1,168 @@
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function B5-FootersNavbar($defaultValues: ""){
+    
+    @return ($defaultValues);
+}
+
+/******VARAIBLES******/
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
+$B5-FootersNavbar: B5-FootersNavbar((
+    exempleParam_Block_ComponentVariable: red
+));
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT EN DUR VIA UNE MAP
+//SI DÉCOMMENTÉ, ÉCRASERA LA FUNCTION SI-DESSUS
+//$B5-FootersNavbar: ();
+/******ELEMENTS******/
+$__hamburgerBtn: (
+    exempleParam_Element_ComponentVariable: purple
+);
+/*************************************
+*************************************
+VARIABLES PARAMÉTRABLE DU BLOC BEM
+EX: 
+box-shadow(color), background, border-color
+*************************************
+*************************************/
+
+
+
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%B5-FootersNavbar{
+    template_base:"blockTagName>elementTagName1+elementTagName2+elementTagName3>content.......";
+    template_block_sample: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}";
+    template_blockElement_sample__ElementName: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}+elementTagName3.elementClassName>(elementInnerTag>...+elementInnerTag{Content Text}+elementInnerTag{Content Text})*6";
+
+    background: black;
+    @extend .navbar;
+    @extend .fixed-bottom;
+    @extend .navbar-expand-sm;
+    @extend .navbar-dark;
+    @extend .bg-dark;
+    background: $darkmode !important;
+    box-shadow: 0 0 10px 1px;
+    border-top: 1px solid silver;
+
+
+
+    &§§§anchor {
+        >a{
+            @extend .navbar-brand;
+        }
+    }
+    
+    
+
+    &__hamburgerBtn
+    // , >button
+    {
+
+        &.active+*{
+            @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){display:block;}
+        }
+        @include from-tablette(map-get($b5_breakpoints,mobile) + "px"){
+            display:none;
+        }
+        color: rgba(255,255,255,.55);
+        border-color: rgba(255,255,255,.1);
+        cursor: pointer;
+        
+        // @extend .navbar-toggler;
+            padding: 0.25rem 0.75rem;
+            font-size: 1.25rem;
+            line-height: 1;
+            background-color: transparent;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+            transition: box-shadow .15s ease-in-out;
+        >span{
+            @extend .navbar-toggler-icon;
+        }
+    }
+
+    &__nav
+    // , >ul
+    {
+        @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){display:none;}
+        @extend .navbar-nav;
+        display: flex;
+        flex-basis: 100%;
+        flex-grow: 1;
+        >li{
+            // @extend .nav-item;
+            >a{
+                @extend .nav-link;
+            }
+            &.dropup{                
+                >a{
+                    @extend .dropdown-toggle;
+                    &.active+ul{
+                        display: block;
+                    }
+                }
+                >ul{
+                    @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){position: static;}
+                    @extend .dropdown-menu;
+                    position: absolute;
+                    top: auto;
+                    bottom: 100%;
+                    margin-top: 0;
+                    margin-bottom: 0.125rem;
+                    >li>a{
+                        @extend .dropdown-item;
+                    }
+                }
+            }
+        }
+    }
+    //bgee
+    //bgm
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin B5-FootersNavbar(
+        $paramMixi: $B5-FootersNavbar
+        , $exempleParamFromBEMComponentVariable: map-get($B5-FootersNavbar, exempleParamFromBEMComponentVariable)
+        // BEMMixinParam
+    ){
+
+    // PRIVATE ELEMENTS
+    @extend %B5-FootersNavbar§§§anchor;
+
+    // BLOCK &&
+    // ELEMENTS
+    @extend %B5-FootersNavbar;
+    &__hamburgerBtn {
+        @extend %B5-FootersNavbar__hamburgerBtn;
+    }
+    &__nav {
+        @extend %B5-FootersNavbar__nav;
+    }
+    //bgee
+    //bgm
+}
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.B5-FootersNavbar{
+    @include B5-FootersNavbar(/*ICI, VOUS POUVEZ ÉCRASER LES VALEUR DE LA VARIABLES "$defaultValues"*/);
+    //bge
+    //bgm
+}
+@mixin generate_B5-FootersNavbar($name,$args: ()){
+    .#{$name}{
+        @include B5-FootersNavbar();
+    }
+/*
+    >h2:before{
+        content:map-get($args, label);
+    }
+*/
+}
+@include generate_B5-FootersNavbar("footer"/*, (label: "value")*/);
+

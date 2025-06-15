@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>bootstrap tests</title>
+        <link rel="stylesheet" href="build/index.css">
+        <script src="./../jquery.js"></script>
+        <!-- <script src="./../js/bootstrap.bundle.min.js"></script> -->
+        <script src="./../js/bootstrap.js"></script>
+    </head>
+    <body>
+        <h1>navbars</h1>
+        <h2>b5-navbar-default</h2>
+        <nav class="mynav" data-type="standard">
+            {
+                "block": {"behavior": "standard", "expand": "md", "mode": "dark"},
+                "types": {
+                    "expand": ["never", "always", "sm", "md", "lg", "xl", "xxl"],
+                    "mode": ["dark", "light"]
+                },
+                "type_default": ["md", "dark"],
+                "logo": {
+                    "type": "basic",
+                    "types": {"basic": "a", "seo": "h1>(a>img)+a>em"},
+                    "type_default": "basic",
+                    "style": {"string": "of", "css": "rules"},
+                    "attr": {"monattr": "mavaleurdattribut"},
+                    "a": {
+                        "html": "dark", 
+                        "attr": {"href": "#"}
+                    }
+                },
+                "collapse": {
+                    "types": {"void": "aucun type possible, le collapse est un élément présent par défaut, il dépend de la valeur 'type.expand' du composant"},
+                    "style": {"string": "of", "css": "rules"},
+                    "attr": {"monattr": "mavaleurdattribut"},
+                    "button": {
+                        "attr": {"data-toggle": "collapse", "data-target": "navbarID"},
+                        "event": {
+                            "clic": "ok"
+                        }
+                    }
+                },
+                "menu": {
+                    "type": "basic",
+                    "types": {"basic": "a", "icon": "menu>li>a>i", "seo": "menu>li>a>img+em"},
+                    "type_default": "basic",
+                    "style": {"string": "of", "css": "rules"},
+                    "attr": {"id": "mynavbarmenu"},
+                    "items": [
+                        {
+                            "types": ["dropdown", "button"],
+                            "html": "Home", 
+                            "attr": {"href": "#", "class": "active"},
+                            "event": {
+                                "mouseover": "alert('mouseover')"
+                            }
+                        },
+                        {
+                            "type": "button",
+                            "types": ["dropdown", "button"],
+                            "html": "Menu-1", 
+                            "attr": {"href": "#"},
+                            "event": {
+                                "mouseout": "alert('mmmouseout')"
+                            }
+                        },
+                        {
+                            "html": "Menu-2", 
+                            "attr": {"href": "#"},
+                            "event": {
+                                "focus": "alert('focus')"
+                            }
+                        },
+                        {
+                            "html": "Menu-3", 
+                            "attr": {"href": "#"},
+                            "event": {
+                                "clic": "ok"
+                            }
+                        },
+                        {
+                            "type": "dropdown",
+                            "html": "dropdown-0", 
+                            "attr": {"href": "#"},
+                            "event": {
+                                "clic": "ok"
+                            }
+                        },
+                        {
+                            "type": "dropdown",
+                            "html": "dropdown-1", 
+                            "attr": {"href": "#"},
+                            "event": {
+                                "clic": "ok"
+                            }
+                        }
+                    ]
+                },
+                "menu_account": {
+                    "type": "basic",
+                    "types": {"basic": "button+ul>li>a", "img": "img+ul>li>a"},
+                    "type_default": "basic",
+                    "style": {"string": "of", "css": "rules"},
+                    "attr": {"monattr": "mavaleurdattribut"},
+                    "items": [
+                        {
+                            "html": "sousmenu 1", 
+                            "attr": {"href": "#"}
+                        },
+                        {
+                            "html": "sousmenu 2", 
+                            "attr": {"href": "#"}
+                        },
+                        {
+                            "html": "sousmenu 3", 
+                            "attr": {"href": "#"}
+                        }
+                    ]
+                },
+                <!--    
+                    LE SCRIPT DOIT DÉTERMINER LE TYPE DU SOUS COMPOSANT GRÂCE 
+                    - À LA VALEUR DE LA PROPRIÉTÉ 'json.type'
+                    - AUX VALEURS DU json
+                -->
+                "form": {
+                    "type": "basic",
+                    "types": {"basic": "form>input", "search": "", "login": ""},
+                    "type_default": "basic",
+                    "style": {"string": "of", "css": "rules"},
+                    "attr": {"monattr": "mavaleurdattribut"},
+                    "input": {
+                        "attr": {"placeholder": "search...."}
+                    }
+                }
+            }
+            <!-- 
+                <a href="#">dark</a>
+                <button type="button" data-toggle="collapse" data-target="#navbarID"
+                    aria-controls="navbarID" aria-expanded="false" aria-label="Toggle navigation">
+                    <span></span>
+                </button>
+                <menu id="navbarID">
+                    <li>
+                        <a class="active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li>
+                        <a href="">un petit test</a>
+                    </li>
+                </menu> 
+            -->
+        </nav>
+        <hr>
+        <h2>b5-navbar...???</h2>
+        
+        <hr>
+        <hr>
+        <hr>
+        <h1>suivant..</h1>
+        <script type="module" src="index.js"></script>
+    </body>
+</html>

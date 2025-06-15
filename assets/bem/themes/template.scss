@@ -1,0 +1,99 @@
+/**/
+
+
+
+// TYPOGRAPHIES
+// $titres: 'typography des titre';
+// $contenus: 'typography des contenus';
+
+
+// COULEURS FONDS
+$primary:#9356DC;
+$secondary:#FF79DA;
+$ternary:#99E2D0;
+
+
+// COULEUR TEXTES
+$primary_text:#000;
+$secondary_text:#FFF;
+$ternary_text:#aaa;
+
+
+// BREAKPOINTS
+// $watch: "taille XS";
+$mobile: 570;
+$tablette: 960;
+$desktop: 1460;
+// $tv: "taille XL";
+$breakpoints:(mobile:$mobile,tablette:$tablette,desktop:$desktop);
+//BOOTSTRAP BREAKPOINTS
+// $b5_watch: "taille XS";
+$b5_mobile: 575;
+$b5_tablette: 767;
+$b5_desktop: 991;
+$b5_bigScreen: 1299;
+$b5_tv: 1399;
+// $b5_tv: "taille XL";
+$b5_breakpoints:(mobile:$b5_mobile,tablette:$b5_tablette,desktop:$b5_desktop);
+
+// ICONES
+// background:url("path/to/image.webp")
+.fb{}
+.x{}
+.tiktok,.tt{}
+//UTILISER UNICODE
+.home{}
+
+// BALISES DE CHARTE GRAPHIQUE
+h1{
+    // color:;
+    // font-family:;
+    // font-size:;
+    // font-weight:;
+    // _gcsstf
+}
+h2{
+    // color:;
+    // font-family:;
+    // font-size:;
+    // font-weight:;
+    // _gcsstf
+}
+h3{
+    // color:;
+    // font-family:;
+    // font-size:;
+    // font-weight:;
+    // _gcsstf
+}
+h4{
+    // color:;
+    // font-family:;
+    // font-size:;
+    // font-weight:;
+    // _gcsstf
+}
+h5{
+    // color:;
+    // font-family:;
+    // font-size:;
+    // font-weight:;
+    // _gcsstf
+}
+h6{
+    // color:;
+    // font-family:;
+    // font-size:;
+    // font-weight:;
+    // _gcsstf
+}
+
+a{
+    // color:;
+    // font-family:;
+}
+
+ul{}
+ol{}
+dt{}
+dd{}

@@ -1,0 +1,156 @@
+// Généré à partir de la structure BEM de .action-header dans index.scss, avec modifier contrast
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%actionHeader {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 3000;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: 18px 0 14px 0;
+  justify-content: center;
+  background: #fff;
+  box-shadow: 0 2px 18px #0002;
+  min-height: 64px;
+  border-bottom: solid #e74c3c;
+  transition: padding 0.22s cubic-bezier(.65,.05,.36,1), box-shadow 0.22s, transform 0.25s cubic-bezier(.65,.05,.36,1), opacity 0.18s;
+  will-change: padding, box-shadow, transform, opacity;
+  
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+  }
+  &__cart {
+    position: absolute;
+    right: 10px;
+    bottom: -40px;
+  }
+  &__action {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.14s;
+    min-width: 44px;
+    min-height: 44px;
+    box-shadow: none;
+  }
+  &__action--hovered {
+    background: #f4f4f4;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin actionHeader(
+  $paramMixi_: $actionHeader,
+  $exempleParamFromBEMComponentVariable: map-get($actionHeader, exempleParamFromBEMComponentVariable)
+  // BEMMixinParam
+){
+  $paramMixi: actionHeader(map-merge($actionHeader, $paramMixi_));
+  @extend %actionHeader;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 3000;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: map-get($paramMixi, padding, 18px 0 14px 0);
+  justify-content: center;
+  background: map-get($paramMixi, background, #fff);
+  box-shadow: map-get($paramMixi, box-shadow, 0 2px 18px #0002);
+  min-height: map-get($paramMixi, min-height, 64px);
+  border-bottom: solid map-get($paramMixi, border-bottom-color, #e74c3c);
+  transition: padding 0.22s cubic-bezier(.65,.05,.36,1), box-shadow 0.22s, transform 0.25s cubic-bezier(.65,.05,.36,1), opacity 0.18s;
+  will-change: padding, box-shadow, transform, opacity;
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+  }
+  &__cart {
+    position: absolute;
+    right: 10px;
+    bottom: -40px;
+  }
+  &__action {
+    background: white;
+    border: 1px solid map-get($paramMixi, border-color, #e0e0e0);
+    border-radius: 8px;
+    padding: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.14s;
+    min-width: 44px;
+    min-height: 44px;
+    box-shadow: none;
+  }
+  &__action--hovered {
+    background: #f4f4f4;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+
+  // Modifier contrast
+  &--contrast {
+    background: map-get($paramMixi, background-contrast);
+    box-shadow: map-get($paramMixi, shadow-contrast);
+    border-bottom: solid map-get($paramMixi, border-bottom-contrast, #c0392b);
+    color: map-get($paramMixi, color-contrast);
+    &__action {
+      border-color: map-get($paramMixi, border-color-contrast);
+    }
+  }
+}
+
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function actionHeader($defaultValues){
+  @return map-merge(
+    $defaultValues,
+    (
+      background-contrast: darken(map-get($defaultValues, background, #fff), 12%),
+      color-contrast: lighten(map-get($defaultValues, color, #222), 36%),
+      border-color-contrast: darken(map-get($defaultValues, border-color, #e0e0e0), 18%),
+      border-bottom-contrast: darken(map-get($defaultValues, border-bottom-color, #e74c3c), 18%),
+      shadow-contrast: 0 6px 24px rgba(0,0,0,0.16)
+    )
+  );
+}
+
+/******VARAIBLES******/
+$actionHeader: (
+  background: #fff,
+  color: #222,
+  border-color: #e0e0e0,
+  border-bottom-color: #e74c3c,
+  min-height: 64px,
+  box-shadow: 0 2px 18px #0002
+);
+
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.action-header {
+  @include actionHeader();
+}

@@ -1,0 +1,255 @@
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function B5-Heroes($defaultValues: ""){
+    
+    @return ($defaultValues);
+}
+
+/******VARAIBLES******/
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
+$B5-Heroes: B5-Heroes((
+    exempleParam_Block_ComponentVariable: red
+));
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT EN DUR VIA UNE MAP
+//SI DÉCOMMENTÉ, ÉCRASERA LA FUNCTION SI-DESSUS
+//$B5-Heroes: ();
+/******ELEMENTS******/
+$__Article: (
+    exempleParam_Element_ComponentVariable: purple
+);
+/*************************************
+*************************************
+VARIABLES PARAMÉTRABLE DU BLOC BEM
+EX: 
+box-shadow(color), background, border-color
+*************************************
+*************************************/
+
+
+
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%B5-Heroes{
+    // template_base:"blockTagName>elementTagName1+elementTagName2+elementTagName3>content.......";
+    // template_block_sample: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}";
+    // template_blockElement_sample__ElementName: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}+elementTagName3.elementClassName>(elementInnerTag>...+elementInnerTag{Content Text}+elementInnerTag{Content Text})*6";
+
+
+
+    @extend .px-4;
+    @extend .pt-5;
+    @extend .my-5;
+    @extend .text-center;
+    @extend .border-bottom;
+
+
+
+    &§§§dark{@extend %dark;}
+    &§§§vcenter{
+        @extend .container;
+        >article{
+            @extend .col-lg-7;
+            >h1{
+                @extend .col-lg-12; 
+                font-size: calc(1.475rem + 2.7vw);
+                font-weight: 700!important;
+                line-height: 1!important;
+                margin-bottom: 1rem!important;
+            }
+            >p{
+                @extend .col-lg-10; 
+                font-size: calc(1.275rem + .3vw)!important; // @extend .fs-4; 
+            }
+        }
+        >form{
+            @extend .mx-auto;
+            @extend .col-md-10;
+            @extend .col-lg-5;
+            @extend .p-4;
+            @extend .p-md-5;
+            @extend .border;
+            @extend .bg-light;
+            border-radius: .3rem!important; // @extend .rounded-3;
+            display: block !important;
+            >fieldset{
+                @extend %b5_fieldset01;
+            }
+            >button{
+                @extend .btn-primary;
+                @extend .w-100;
+            }
+        }
+        @include from-desktop(map-get($b5_breakpoints,tablette)+"px"){
+            display: flex;
+            text-align: left !important;
+            align-items: center;
+        }
+    }
+    &§§§center{
+        @extend .container;
+        @extend .px-5;
+        >*:not(div){
+            @extend .col-lg-6;
+            @extend .mx-auto;
+        }
+        >form{
+            @extend .d-grid;
+        }
+        >div{
+            @extend .overflow-hidden;
+            max-height: 30vh;
+        }
+    }
+    &§§§wImage{
+        @extend .col-md-10;
+        @extend .mx-auto;
+        @extend %dfr-vc;
+        flex-wrap: wrap;
+        text-align: left !important;
+        // >*{@extend .col-12;}
+        >div{@extend .col-10;@extend .col-sm-8;@extend .col-lg-6;}
+        >article{
+            @extend .col-lg-6;
+            >form{
+                flex-wrap: wrap;
+                justify-content: start !important;
+                @include to-tablette(map-get($b5_breakpoints,tablette)+"px"){
+                    button{width: 100%;margin-bottom:1.5rem !important;}
+                }
+            }
+        }
+        @include to-desktop(map-get($b5_breakpoints,desktop)+"px"){
+            >div{order:1;}
+            >article{order:2;}
+        }
+        &.--shadow{
+            @extend .shadow-lg;
+            padding-right: 0!important; // @extend .pe-lg-0;
+            border-radius: .3rem!important; // @extend .rounded-3;
+            >article{
+                @extend .col-lg-7;
+                @extend .p-3;
+                @extend .p-lg-5;
+                @extend .pt-lg-3;
+            }
+            >div{
+                @extend .col-lg-4;
+                @extend .offset-lg-1;
+                @extend .p-0;
+                @extend .overflow-hidden;
+                @extend .shadow-lg;
+                >img{
+                    width: unset;
+                }
+                @include to-desktop(map-get($b5_breakpoints,desktop)+"px"){
+                    flex-basis: 100%;
+                    max-width: calc(100% - 15px);
+                }
+            }
+            @include to-desktop(map-get($b5_breakpoints,desktop)+"px"){
+                >div{order:2;}
+                >article{order:1;}
+            }
+        }
+    }
+
+
+
+    >img,&__Article>img{
+        @extend .d-block;
+        @extend .mx-auto;
+        @extend .mb-4;
+        
+        object-fit: contain;
+    }
+    >h1
+    ,&__Article>h1
+    {
+        font-size: calc(1.425rem + 2.1vw);font-weight: 300;line-height: 1.2; // @extend .display-5;
+        font-weight: 700!important; // @extend .fw-bold;
+    }
+    >p
+    ,&__Article>p
+    {
+        @extend .lead;
+        @extend .mb-4;
+    }
+    &__Form
+    ,&__Article>form
+    {
+        @extend .d-md-flex;
+        @extend .justify-content-md-center;
+        @extend .mb-5;
+        gap: .5rem!important; // @extend .gap-2;
+        >button{
+            @extend .btn;
+            @extend .btn-lg;
+            @extend .px-4;
+            &:first-child{@extend .btn-primary;}
+            &:last-child{@extend .btn-outline-secondary;}
+        }
+    }
+    &__DesignImg{ 
+        >img{
+            // @extend .img-fluid;
+            @extend .border;
+            border-radius: .3rem!important; // @extend .rounded-3;
+            @extend .shadow-lg;
+            @extend .mb-4;
+        }
+        
+    }
+    //bgm
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin B5-Heroes(
+        $paramMixi: $B5-Heroes
+        , $exempleParamFromBEMComponentVariable: map-get($B5-Heroes, exempleParamFromBEMComponentVariable)
+        // BEMMixinParam
+    ){
+
+    // PRIVATE ELEMENTS
+    &.--dark{@extend %B5-Heroes§§§dark;}
+    &.--vcenter{@extend %B5-Heroes§§§vcenter;}
+    &.--center{@extend %B5-Heroes§§§center;}
+    &.--wImage{@extend %B5-Heroes§§§wImage;}
+
+    // BLOCK &&
+    // ELEMENTS
+    @extend %B5-Heroes;
+    >article {
+        @extend %B5-Heroes__Article;
+    }
+    >form {
+        @extend %B5-Heroes__Form;
+    }
+    >div {
+        @extend %B5-Heroes__DesignImg;
+    }
+    //bgee
+    //bgm
+}
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.B5-Heroes{
+    @include B5-Heroes(/*ICI, VOUS POUVEZ ÉCRASER LES VALEUR DE LA VARIABLES "$defaultValues"*/);
+    //bge
+    //bgm
+}
+@mixin generate_B5-Heroes($name,$args:()){
+    .#{$name}{
+        @include B5-Heroes();
+    }
+/*
+    >h2:before{
+        content:map-get($args, label);
+    }
+*/
+}
+@include generate_B5-Heroes("heroes"/*, (label: "value")*/);

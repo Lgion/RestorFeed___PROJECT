@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Tooltip } from "react-tooltip";
 import { ClipboardList, LayoutDashboard, Users, ShieldCheck, Truck } from "lucide-react";
 import RoleGuard from "./RoleGuard";
@@ -29,7 +29,7 @@ const actions = [
   {
     minRole: "admin",
     icon: ShieldCheck,
-    href: "/menu/admin",
+    href: "/admin",
     label: "Administration complète",
   },
   {
@@ -44,50 +44,61 @@ import CartHover from "./CartHover";
 
 export default function ActionHeader() {
   const [hovered, setHovered] = useState(null);
+  const [shrink, setShrink] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastScroll = useRef(0);
+
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      const y = window.scrollY;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          // console.log('[ActionHeader] scrollY:', y, 'lastScroll:', lastScroll.current, 'shrink:', shrink, 'hidden:', hidden);
+          setShrink(prev => {
+            const newShrink = y > 40;
+            // if (prev !== newShrink) console.log('[ActionHeader] setShrink:', newShrink);
+            return newShrink;
+          });
+          // Le header ne disparaît que si on scrolle vers le bas ET qu’on est sous 80px
+          if (y > 80) {
+            setHidden(prev => {
+              // if (prev !== false) console.log('[ActionHeader] setHidden: false (y > 80)');
+              return false;
+            });
+          } else {
+            const shouldHide = y > 40 && y > lastScroll.current;
+            setHidden(prev => {
+              // if (prev !== shouldHide) console.log('[ActionHeader] setHidden:', shouldHide, '(y <= 80)');
+              return shouldHide;
+            });
+          }
+          lastScroll.current = y;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <header style={{display: 'flex', gap: 24, alignItems: 'center', padding: '16px 0', justifyContent: 'center', position: 'relative'}}>
-      <div style={{display: 'flex', gap: 24, alignItems: 'center', flex: 1, justifyContent: 'center'}}>
+    <header className={`action-header${shrink ? ' action-header--shrink' : ''}${hidden ? ' action-header--hide' : ''}`}>
+      <div className="action-header__actions">
       {actions.map(({ minRole, icon: Icon, href, label }, idx) => (
         <RoleGuard key={label} minRole={minRole}>
           <Link href={href} legacyBehavior>
             <a
+              className={`action-header__action${hovered === idx ? ' action-header__action--hovered' : ''}`}
               onMouseEnter={() => setHovered(idx)}
               onMouseLeave={() => setHovered(null)}
               onMouseDown={() => setHovered(idx)}
               onMouseUp={() => setHovered(null)}
-              style={{
-                background: hovered === idx ? '#f4f4f4' : 'white',
-                border: '1px solid #e0e0e0',
-                borderRadius: 8,
-                padding: 10,
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                position: 'relative',
-                boxShadow: hovered === idx ? '0 2px 8px rgba(0,0,0,0.07)' : 'none',
-                transition: 'all 0.14s',
-                minWidth: 44,
-                minHeight: 44
-              }}
             >
               <Icon size={28} color="#c0392b" />
               {hovered === idx && (
-                <span style={{
-                  position: 'absolute',
-                  bottom: -38,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: '#222',
-                  color: '#fff',
-                  padding: '6px 14px',
-                  borderRadius: 6,
-                  fontSize: 14,
-                  whiteSpace: 'nowrap',
-                  zIndex: 100,
-                  pointerEvents: 'none',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.13)'
-                }}>{label}</span>
+                <span>{label}</span>
               )}
             </a>
           </Link>
@@ -95,7 +106,7 @@ export default function ActionHeader() {
       ))}
       <RoleSwitcher />
       </div>
-      <div style={{position: 'absolute', right: 24, top: 10}}>
+      <div className="action-header__cart">
         <CartHover />
       </div>
     </header>

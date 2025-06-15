@@ -1,0 +1,30 @@
+// VENDORS
+// @import "../../vendors/bootstrap/scss/bootstrap.scss";
+@import "../../vendors/bootstrap_v5/scss/bootstrap.scss";
+@import "../../vendors/animate.scss";
+
+// CUSTOM PLUGINS
+@import "./B5mixins.scss";
+@import "./B5mixins_.scss";
+
+// CONTAINER BLOCKS
+@import "./COMPONENTS/footers.scss";
+@import "./COMPONENTS/headerbars.scss";
+@import "./COMPONENTS/headers.scss";
+@import "./COMPONENTS/heroes.scss";
+@import "./COMPONENTS/features.scss";
+@import "./COMPONENTS/pricings.scss";
+@import "./COMPONENTS/sidebars.scss";
+@import "./COMPONENTS/carousels.scss";
+@import "./COMPONENTS/cards.scss";
+@import "./COMPONENTS/dashboard.scss";
+
+// PAGE BLOCKS
+@import "./COMPONENTS/pages/checkout.scss";
+
+
+// LANDING PAGE BLOCKS
+@import "./LANDING_PAGE/features.scss";
+@import "./LANDING_PAGE/cards.scss";
+@import "./LANDING_PAGE/jumbotron.scss";
+@import "./LANDING_PAGE/filters.scss";

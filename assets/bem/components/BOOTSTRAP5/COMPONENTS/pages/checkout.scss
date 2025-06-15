@@ -1,0 +1,104 @@
+.checkout{
+    @extend .container;
+    >img{}
+    >h1{}
+    >p{}
+    
+
+
+    &.--XXXX{}
+    
+    
+    
+    >article{
+        @extend .py-5;
+        >section{
+            @extend .col-md-5;
+            @extend .col-lg-4;
+            &:first-of-type{
+                @extend .order-md-last;
+                >h2{
+                    @extend .d-flex;
+                    @extend .justify-content-between;
+                    @extend .align-items-center;
+                    @extend .mb-3;
+                    >span{
+                        &:first-of-type{@extend .text-primary;}
+                        &:last-of-type{
+                            @extend .badge;
+                            @extend .bg-primary;
+                            @extend .rounded-pill;
+                        }
+                    }
+                }
+                >ul{
+                    @extend .list-group;
+                    @extend .mb-3;
+                    text-align: left;
+                    >li{
+                        @extend %dfr-jcsb;
+                        @extend %fw;
+                        @extend .list-group-item;
+                        @extend .lh-sm;
+                        &.codePromo{
+                            @extend .text-success;
+                        }
+                        >h3{
+                            @extend %w100;
+                            @extend .my-0;
+                        }
+                        >small{
+                            
+                        }
+                        >span{
+                            float:right;
+                        }
+                    }
+                }
+                >form{
+                    @extend .card;
+                    @extend .p-2;
+                    @extend .input-group;
+                    flex-direction: row;
+                    >input{}
+                    >button{@extend .btn-secondary;}
+                }
+            }
+            &:last-of-type{
+                @extend .col-md-7;
+                @extend .col-lg-8;
+                >h2{
+                    @extend .mb-3;
+                }
+                >form{
+                    // @extend .needs-validation;
+                    @extend .row;
+                    @extend .g-3;
+                    text-align: left;
+                    >hr{@extend .my-4;}
+                    >fieldset{
+                        @extend %b5_fieldset01;
+                        &:not(:has(input+label)){::placeholder {color: rgab(0,0,0,.5) !important;}}
+                        &.col-sm-6{@extend .col-sm-6;}
+                        &.col-md-5{@extend .col-md-5;}
+                        &.col-md-4{@extend .col-md-4;}
+                        &.col-md-3{@extend .col-md-3;}
+                        &.col-12{@extend .col-12;}
+                        &.form-check{@extend .form-check;}
+                        >span:first-child{@extend .input-group-text;}
+                        >label{
+                            >span{
+                                @extend .text-muted;
+                            }
+                        }
+                        >input{
+                        }
+                        >div{
+                            @extend .invalid-feedback;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

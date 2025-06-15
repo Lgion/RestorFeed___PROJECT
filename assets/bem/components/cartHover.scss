@@ -1,0 +1,161 @@
+// Généré à partir de la structure BEM de .cart-hover dans index.scss, avec modifier contrast
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%cartHover {
+  position: relative;
+  display: inline-block;
+  
+  &__btn {
+    background: #e74c3c;
+    box-shadow: 0 1px 10px .1px black;
+    color: #fff;
+    border: none;
+    border-radius: 0 0 5px 5px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  &__popup {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    min-width: 260px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    padding: 16px;
+    z-index: 200;
+  }
+  &__title {
+    margin: 0 0 8px 0;
+    color: #c0392b;
+  }
+  &__empty {
+    color: #888;
+  }
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  &__item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    flex: 1;
+  }
+  &__total {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  &__validate {
+    display: inline-block;
+    margin-top: 14px;
+    background: #e74c3c;
+    color: #fff;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1em;
+  }
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin cartHover(
+  $paramMixi_: $cartHover,
+  $exempleParamFromBEMComponentVariable: map-get($cartHover, exempleParamFromBEMComponentVariable)
+  // BEMMixinParam
+){
+  $paramMixi: cartHover(map-merge($cartHover, $paramMixi_));
+  @extend %cartHover;
+  position: relative;
+  display: inline-block;
+
+  &__btn {
+    background: map-get($paramMixi, btn-background, #e74c3c);
+    color: map-get($paramMixi, btn-color, #fff);
+  }
+  &__popup {
+    background: map-get($paramMixi, popup-background, #fff);
+    border: 1px solid map-get($paramMixi, popup-border, #e0e0e0);
+  }
+  &__title {
+    color: map-get($paramMixi, title-color, #c0392b);
+  }
+  &__empty {
+    color: map-get($paramMixi, empty-color, #888);
+  }
+  &__validate {
+    background: map-get($paramMixi, validate-background, #e74c3c);
+    color: map-get($paramMixi, validate-color, #fff);
+  }
+
+  // Modifier contrast
+  &--contrast {
+    background: map-get($paramMixi, background-contrast);
+    box-shadow: map-get($paramMixi, shadow-contrast);
+    border-color: map-get($paramMixi, border-color-contrast);
+    color: map-get($paramMixi, color-contrast);
+    &__btn, &__validate {
+      background: map-get($paramMixi, btn-background-contrast, #c0392b);
+      color: map-get($paramMixi, btn-color-contrast, #fff);
+    }
+    &__popup {
+      background: map-get($paramMixi, popup-background-contrast, #f3f3f3);
+      border-color: map-get($paramMixi, popup-border-contrast, #c0392b);
+    }
+    &__title {
+      color: map-get($paramMixi, title-color-contrast, #e74c3c);
+    }
+  }
+}
+
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function cartHover($defaultValues){
+  @return map-merge(
+    $defaultValues,
+    (
+      background-contrast: darken(map-get($defaultValues, popup-background, #fff), 10%),
+      color-contrast: lighten(map-get($defaultValues, title-color, #c0392b), 30%),
+      border-color-contrast: darken(map-get($defaultValues, popup-border, #e0e0e0), 18%),
+      shadow-contrast: 0 8px 32px rgba(0,0,0,0.18),
+      btn-background-contrast: darken(map-get($defaultValues, btn-background, #e74c3c), 15%),
+      btn-color-contrast: #fff,
+      popup-background-contrast: darken(map-get($defaultValues, popup-background, #fff), 7%),
+      popup-border-contrast: darken(map-get($defaultValues, popup-border, #e0e0e0), 18%),
+      title-color-contrast: darken(map-get($defaultValues, title-color, #c0392b), 10%),
+      validate-background-contrast: darken(map-get($defaultValues, validate-background, #e74c3c), 15%),
+      validate-color-contrast: #fff
+    )
+  );
+}
+
+/******VARAIBLES******/
+$cartHover: (
+  btn-background: #e74c3c,
+  btn-color: #fff,
+  popup-background: #fff,
+  popup-border: #e0e0e0,
+  title-color: #c0392b,
+  empty-color: #888,
+  validate-background: #e74c3c,
+  validate-color: #fff
+);
+
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.cart-hover {
+  @include cartHover();
+}

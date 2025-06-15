@@ -11,9 +11,15 @@ export default function CartHover() {
     if (typeof window !== "undefined") {
       setCart(JSON.parse(localStorage.getItem("cart") || "[]"));
     }
-    const handle = () => setCart(JSON.parse(localStorage.getItem("cart") || "[]"));
+    const handle = () => { console.log("dispatch eventndhidfhsdfuiohfuih");
+    
+      return setCart(JSON.parse(localStorage.getItem("cart") || "[]"));}
     window.addEventListener("storage", handle);
-    return () => window.removeEventListener("storage", handle);
+    window.addEventListener("cart-updated", handle);
+    return () => {
+      window.removeEventListener("storage", handle);
+      window.removeEventListener("cart-updated", handle);
+    };
   }, []);
 
   useEffect(() => {
@@ -30,60 +36,50 @@ export default function CartHover() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  // Grouper les produits par id
+  const grouped = cart.reduce((acc, item) => {
+    const key = item.id;
+    if (!acc[key]) {
+      acc[key] = { ...item, quantity: item.quantity || 1 };
+    } else {
+      acc[key].quantity += item.quantity || 1;
+    }
+    return acc;
+  }, {});
+  const groupedArr = Object.values(grouped);
+  const total = groupedArr.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
 
   return (
-    <div style={{ position: "relative", display: "inline-block" }} ref={ref}>
+    <div className="cart-hover" ref={ref}>
       <button
+        className="cart-hover__btn"
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
-        style={{
-          background: "#e74c3c",
-          color: "#fff",
-          border: "none",
-          borderRadius: 8,
-          padding: "10px 20px",
-          fontWeight: "bold",
-          cursor: "pointer",
-          fontSize: 16,
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-        }}
       >
-        🛒 Panier ({cart.length})
+        🛒 <span>Panier ({groupedArr.reduce((sum, item) => sum + item.quantity, 0) })</span>
       </button>
       {open && (
         <div
+          className="cart-hover__popup"
           onMouseEnter={() => setOpen(true)}
           onMouseLeave={() => setOpen(false)}
-          style={{
-            position: "absolute",
-            top: "110%",
-            right: 0,
-            minWidth: 260,
-            background: "#fff",
-            border: "1px solid #e0e0e0",
-            borderRadius: 8,
-            boxShadow: "0 4px 24px rgba(0,0,0,0.13)",
-            padding: 16,
-            zIndex: 200,
-          }}
         >
-          <h4 style={{margin: 0, marginBottom: 8, color: '#c0392b'}}>Votre panier</h4>
-          {cart.length === 0 ? (
-            <div style={{color: '#888'}}>Votre panier est vide.</div>
+          <h4 className="cart-hover__title">Votre panier</h4>
+          {groupedArr.length === 0 ? (
+            <div className="cart-hover__empty">Votre panier est vide.</div>
           ) : (
-            <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
-              {cart.map((item, idx) => (
-                <li key={idx} style={{display: 'flex', alignItems: 'center', marginBottom: 6}}>
-                  <span style={{flex: 1}}>{item.name} - {item.price.toFixed(2)} €</span>
+            <ul className="cart-hover__list">
+              {groupedArr.map((item) => (
+                <li key={item.id} className="cart-hover__item">
+                  <span style={{flex: 2}}>{item.name}</span>
+                  <span style={{flex: 1, textAlign: 'right'}}>{item.quantity} × {item.price.toFixed(2)} €</span>
+                  <span style={{flex: 1, textAlign: 'right', fontWeight: 'bold'}}>{(item.price * item.quantity).toFixed(2)} €</span>
                 </li>
               ))}
             </ul>
           )}
-          <div style={{marginTop: 10, fontWeight: 'bold'}}>Total : {total.toFixed(2)} €</div>
-          <Link href="/cart" style={{display: 'inline-block', marginTop: 14, background: '#e74c3c', color: '#fff', borderRadius: 4, padding: '10px 20px', fontWeight: 'bold', textDecoration: 'none', fontSize: '1em'}}>Valider le panier</Link>
+          <div className="cart-hover__total">Total : {total.toFixed(2)} €</div>
+          <Link href="/cart" className="cart-hover__validate">Valider le panier</Link>
         </div>
       )}
     </div>

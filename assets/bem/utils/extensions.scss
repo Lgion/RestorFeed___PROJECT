@@ -1,0 +1,203 @@
+%w0{width: 0%;}
+%w100{width: 100%;}
+%h0{height: 0%;}
+%h100{height: 100%;}
+
+
+/**/
+%pa{position: absolute;}
+%pr{position: relative;}
+%pf{position: fixed;}
+
+
+
+%go_tl{top:0;left:0;}
+%go_tr{top:0;right:0;}
+%go_bl{bottom:0;left:0;}
+%go_br{bottom:0;right:0;}
+%go_tbr{top:0;bottom:0;right:0;}
+%go_tbl{top:0;bottom:0;left:0;}
+%go_tlr{top:0;left:0;right:0;}
+%go_blr{bottom:0;left:0;right:0;}
+%go_tblr{top:0;bottom:0;left:0;right:0;}
+
+
+
+%goa_tl{@extend %pa;@extend %go_tl;}
+%goa_tr{@extend %pa;@extend %go_tr;}
+%goa_bl{@extend %pa;@extend %go_bl;}
+%goa_br{@extend %pa;@extend %go_br;}
+%goa_tbr{@extend %pa;@extend %go_tbr;}
+%goa_tbl{@extend %pa;@extend %go_tbl;}
+%goa_tlr{@extend %pa;@extend %go_tlr;}
+%goa_blr{@extend %pa;@extend %go_blr;}
+%goa_tblr{@extend %pa;@extend %go_tblr;}
+
+%gof_tl{@extend %pf;@extend %go_tl;}
+%gof_tr{@extend %pf;@extend %go_tr;}
+%gof_bl{@extend %pf;@extend %go_bl;}
+%gof_br{@extend %pf;@extend %go_br;}
+%gof_tbr{@extend %pf;@extend %go_tbr;}
+%gof_tbl{@extend %pf;@extend %go_tbl;}
+%gof_tlr{@extend %pf;@extend %go_tlr;}
+%gof_blr{@extend %pf;@extend %go_blr;}
+%gof_tblr{@extend %pf;@extend %go_tblr;}
+
+
+
+
+
+
+%pe_b{&::before{content:"";}}
+%pe_a{&::after{content:"";}}
+%pe_ba{&::before{content:"";} &::after{content:"";}}
+
+%after_cover{position:relative;&:after{content:"";z-index:100;@extend %goa_tblr;}}
+%h_b_coverEffect{
+    position: relative;
+    &:hover::before{
+        @extend %w100;
+    }
+    &::before{
+        content:"";
+        @extend %goa_tbl;
+        @extend %w0;
+        z-index: -1;
+        transition: all .25s, width .4s;
+    }
+}
+%a_b_clickEffect{
+    &:active{
+        &:before{
+            background:white !important;
+        }
+        color:$primary !important;
+        >*{color:$primary !important;}
+    }
+}
+%ha_b_effects{
+    @extend %h_b_coverEffect;
+    @extend %a_b_clickEffect;
+}
+
+
+
+//OLD flex RULES SYSTEM
+/** */
+/** */
+            %df{display:flex;}
+            %dfc{@extend %df;justify-content: center;align-items: center;}
+            %dfch{@extend %df;justify-content: center;}
+            %dfcv{@extend %df;align-items: center;}
+/* **/
+/* **/
+//NEW  flex RULES SYSTEM 
+%df{display: flex;}
+%ffr{flex-flow:row;}
+%ffc{flex-flow:column;}
+%fw{flex-wrap:wrap;}
+%fcw{flex-wrap:wrap;}
+%dfc{@extend %df;@extend %ffc;}
+%dfw{@extend %df;@extend %fw;}
+%dfcw{@extend %df;@extend %fcw;}
+%dfr-cc{@extend %df;   justify-content: center;align-items: center;}
+%dfr-hc{@extend %df;   justify-content: center;}
+%dfr-vc{@extend %df;   align-items: center;}
+%dfc-cc{@extend %dfc;  justify-content: center;align-items: center;}
+%dfc-hc{@extend %dfc;  align-items: center;}
+%dfc-vc{@extend %dfc;  justify-content: center;}
+%dfr-cc100{@extend %df;@extend %w100;   justify-content: center;align-items: center;}
+%dfr-hc100{@extend %df;@extend %w100;   justify-content: center;}
+%dfr-vc100{@extend %df;@extend %w100;   align-items: center;}
+%dfc-cc100{@extend %dfc;@extend %h100;  justify-content: center;align-items: center;}
+%dfc-hc100{@extend %dfc;@extend %h100;  align-items: center;}
+%dfc-vc100{@extend %dfc;@extend %h100;  justify-content: center;}
+%dfr-jcsb{@extend %df;   justify-content: space-between;}
+%dfr-jcsb_{@extend %df;   justify-content: space-between;align-items: center;}
+%dfr-jcsa{@extend %df;   justify-content: space-around;}
+%dfr-jcsa_{@extend %df;   justify-content: space-around;align-items: center;}
+%dfr-jcse{@extend %df;   justify-content: space-evenly;}
+%dfr-jcse_{@extend %df;   justify-content: space-evenly;align-items: center;}
+
+
+
+
+//FORM RULES
+
+
+/*-------------------
+-------------------
+----FORM PDA----
+-------------------
+-------------------*/
+
+
+%trbl0{top: 0;right: 0;bottom: 0;left: 0;}
+%pa_trbl0{position:absolute;top: 0;right: 0;bottom: 0;left: 0;}
+%pf_trbl0{position:fixed;top: 0;right: 0;bottom: 0;left: 0;}
+%after_cover{position:relative;&:after{z-index:1000000000;content:"";@extend %pa_trbl0;}}
+
+%devise_cfa{
+    &:after{
+        content:"Fcfa";
+    }
+}
+
+%btn_close{
+    z-index: 1000000000000000000000;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 30px;
+    background: black;
+    color:orangered;
+    font-weight: 900;
+    border-radius: 0 0 0 5px;
+    cursor:pointer;
+    transition: all .3s;
+    &:before{content:"X";}
+    &:hover{color:white;}
+    &.off{
+        background:silver;
+        &:hover{background:black;}
+    }
+}
+
+%modal{
+    z-index: 1000000000000000000000;
+    position: fixed;
+    top: 0em;right: 0em;bottom: 0em;left: 0em;
+    padding:1.5em;
+    background: rgba(10,10,10,.5);
+    &:not(.active){display: none;}
+    &.active{
+        display: flex;
+        flex-direction: column;
+    }
+    >span.close{
+        @extend %btn_close;
+        top: 1.5em;
+        right: 1.5em;
+    }
+    >div{background:whitesmoke;}
+    >.modal___header{
+        border-radius: 10px 10px 0 0;overflow: hidden;height:10%;
+    }
+    >.modal___footer{
+        border-radius: 0 0 10px 10px;overflow: hidden;height:10%;
+    }
+    >.modal___main{
+        height: 80%;
+    }
+        &.active{
+    }
+}
+%txt_rogner{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

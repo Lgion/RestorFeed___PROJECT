@@ -1,0 +1,117 @@
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%card {
+  display: flex;
+  flex-direction: column;
+  background: map-get($paramMixi, background);
+  border-radius: map-get($paramMixi, border-radius);
+  box-shadow: map-get($paramMixi, box-shadow);
+  overflow: hidden;
+  border: 1px solid map-get($paramMixi, border-color);
+  
+  &__header {
+    background: map-get($paramMixi, header-background);
+    padding: map-get($paramMixi, header-padding);
+    font-weight: bold;
+    font-size: map-get($paramMixi, header-font-size);
+    border-bottom: 1px solid map-get($paramMixi, border-color);
+  }
+
+  &__body {
+    padding: map-get($paramMixi, body-padding);
+    font-size: map-get($paramMixi, body-font-size);
+    color: map-get($paramMixi, body-color);
+  }
+
+  &__footer {
+    background: map-get($paramMixi, footer-background);
+    padding: map-get($paramMixi, footer-padding);
+    border-top: 1px solid map-get($paramMixi, border-color);
+    text-align: right;
+  }
+  //bgee
+  //bgm
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin card(
+  $paramMixi: $card,
+  $exempleParamFromBEMComponentVariable: map-get($card, exempleParamFromBEMComponentVariable)
+  // BEMMixinParam
+){
+  @extend %card;
+
+  &__header {
+    @extend %card__header;
+  }
+
+  &__body {
+    @extend %card__body;
+  }
+
+  &__footer {
+    @extend %card__footer;
+  }
+  //bgee
+  //bgm
+}
+
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function card($defaultValues){
+  @return ($defaultValues);
+}
+
+/******VARAIBLES******/
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
+$card: card((
+  background: #fff,
+  border-radius: 16px,
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08),
+  border-color: #e0e0e0,
+  header-background: #f7f7f7,
+  header-padding: 1rem 1.5rem,
+  header-font-size: 1.1rem,
+  body-padding: 1.5rem,
+  body-font-size: 1rem,
+  body-color: #222,
+  footer-background: #fafafa,
+  footer-padding: 1rem 1.5rem,
+  exempleParamFromBEMComponentVariable: red
+));
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT EN DUR VIA UNE MAP
+//SI DÉCOMMENTÉ, ÉCRASERA LA FUNCTION SI-DESSUS
+//$card: ();
+
+/*************************************
+VARIABLES PARAMÉTRABLE DU BLOC BEM
+EX: 
+box-shadow(color), background, border-color
+*************************************/
+
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.card{
+  @include card();
+  //bge
+  //bgm
+}
+
+// Exemple d'utilisation personnalisée
+$myCard: card((
+  background: #f0f0f0,
+  border-radius: 24px,
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12),
+  header-background: #eaeaea,
+  body-color: #005,
+  footer-background: #e0e0ff
+));
+
+.card-custom {
+  @include card($myCard);
+}

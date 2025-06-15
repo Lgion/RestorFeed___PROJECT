@@ -1,0 +1,265 @@
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function B5-Features($defaultValues: ""){
+    
+    @return ($defaultValues);
+}
+
+/******VARAIBLES******/
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
+$B5-Features: B5-Features((
+    exempleParam_Block_ComponentVariable: red
+));
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT EN DUR VIA UNE MAP
+//SI DÉCOMMENTÉ, ÉCRASERA LA FUNCTION SI-DESSUS
+//$B5-Features: ();
+/******ELEMENTS******/
+$__Title: (
+    exempleParam_Element_ComponentVariable: purple
+);
+/*************************************
+*************************************
+VARIABLES PARAMÉTRABLE DU BLOC BEM
+EX: 
+box-shadow(color), background, border-color
+*************************************
+*************************************/
+
+
+
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%B5-Features{
+    // template_base:"blockTagName>elementTagName1+elementTagName2+elementTagName3>content.......";
+    // template_block_sample: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}";
+    // template_blockElement_sample__ElementName: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}+elementTagName3.elementClassName>(elementInnerTag>...+elementInnerTag{Content Text}+elementInnerTag{Content Text})*6";
+
+
+
+    @extend .container;
+    @extend .px-4;
+    @extend .py-5;
+
+
+
+    &__Title {
+        @extend .pb-2;
+        @extend .border-bottom;
+    }
+
+    &__List {
+        @extend .row;
+        // @extend .g-4;
+        @extend .py-5;
+        @extend .row-cols-1;
+        @extend .row-cols-lg-3;
+        >li{
+            // @extend .feature;
+            @extend .col;
+            >i{
+                @extend .bg-primary;
+                background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))!important; // @extend .bg-gradient;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 4rem;
+                height: 4rem;
+                margin-bottom: 1rem;
+                font-size: 2rem;
+                color: #fff;
+                border-radius: 0.75rem;
+
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 3rem;
+                height: 3rem;
+                font-size: 1.5rem;
+                border-radius: 0.75rem;
+                >svg{
+                    @extend .bi;
+                    width: 1em;
+                }
+            }
+            >h2{}
+            >p{text-align: justify;}
+            >a{
+                display: inline-flex;align-items: center; // @extend .icon-link;
+                &:hover>svg{transform: translate(.25rem);}
+                >svg{
+                    width: 1em;
+                    height:1em;
+                    margin-top: 0.125rem;
+                    margin-left: 0.125rem;
+                    transition: transform .25s ease-in-out;
+                    fill: currentColor;
+                }
+            }
+        }
+    }
+
+
+
+        
+    &§§§btn {
+        >ul{
+            >li{
+                >a{
+                    @extend .btn;
+                    @extend .btn-primary;
+                }
+            }
+        }
+    }
+    &§§§cards {
+        >ul{
+            @extend .align-items-stretch;
+            >li{
+                @extend .card;
+                background-repeat: no-repeat;background-position: center center;background-size: cover; // @extend .card-cover;
+                // @extend .h-100;
+                @extend .overflow-hidden;
+                @extend .text-white;
+                @extend .bg-dark;
+                border-radius: 1rem; // @extend .rounded-5;
+                @extend .shadow-lg;
+                @extend .d-flex;
+                @extend .flex-column;
+                @extend .p-5;
+                @extend .pb-3;
+                @extend .text-white;
+                text-shadow: 0 .125rem .25rem rgba(0, 0, 0, .25); // @extend .text-shadow-1;
+                margin-right: 1em;
+                >h2{
+                    @extend .pt-5;
+                    @extend .mt-5;
+                    @extend .mb-4;
+                    font-size: 2.5rem; // @extend .display-6;
+                    line-height: 1!important; // @extend .lh-1;
+                    font-weight: 700!important; // @extend .fw-bold;
+                }
+                >ul{
+                    @extend .d-flex;
+                    @extend .list-unstyled;
+                    @extend .mt-auto;
+                    >li{
+                        &:nth-of-type(1){
+                            margin-right: auto!important; // @extend .me-auto;
+                            >img{
+                                @extend .rounded-circle;
+                                @extend .border;
+                                @extend .border-white;
+                            }
+                        }
+                        &:not(:nth-of-type(1)){
+                            @extend .d-flex;
+                            @extend .align-items-center;
+                            >svg{
+                                vertical-align: -0.125em;
+                                fill: currentColor;width: 1em;height: 1em;
+                                margin-right: .5rem!important; // @extend .me-2;
+                            }
+                            >small{}
+                        }
+                        &:nth-of-type(2){
+                            margin-right: 1rem!important; // @extend .me-3;
+                        }
+                    }
+                    
+                }
+                
+                
+            }
+            
+        }
+    }
+    &§§§hanging {
+        >ul{
+            >li{
+                position: relative;
+                padding-left: calc(48px + 2rem);
+                margin-top: 1.5rem;
+                @include to-desktop(map-get($b5_breakpoints,desktop)){flex-basis: auto !important;}
+                >i{
+                    position: absolute;
+                    left: 1rem;
+                    width: 3rem;height: 3rem;font-size: 1.5rem;
+                    color:unset !important;margin-bottom: unset;background-image: unset;/*
+                    @extend .icon-square;*/
+                    @extend .bg-light;
+                    @extend .text-dark;
+                    @extend .flex-shrink-0;
+                    margin-right: 1rem!important; // @extend .me-3;
+                }
+                >a{
+                    @extend .btn;
+                    @extend .btn-primary;
+                }
+            }
+        }
+    }
+    &§§§grid {
+        >ul{
+            @extend  .row-cols-sm-2;
+            @extend .row-cols-md-3;
+            @extend .row-cols-lg-4;
+            >li>i{
+                background-color: unset !important;
+                color: #6c757d !important;
+            }
+            
+        }
+    }
+
+    //bgee
+    //bgm
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin B5-Features(
+        $paramMixi: $B5-Features
+        , $exempleParamFromBEMComponentVariable: map-get($B5-Features, exempleParamFromBEMComponentVariable)
+        // BEMMixinParam
+    ){
+
+    // PRIVATE ELEMENTS
+    &.--btn{@extend %B5-Features§§§btn;}
+    &.--cards{@extend %B5-Features§§§cards;}
+    &.--hanging{@extend %B5-Features§§§hanging;}
+    &.--grid{@extend %B5-Features§§§grid;@extend %B5-Features§§§hanging;}
+
+    // BLOCK &&
+    // ELEMENTS
+    @extend %B5-Features;
+    >h2 {
+        @extend %B5-Features__Title;
+    }
+    >ul {
+        @extend %B5-Features__List;
+    }
+    //bgee
+    //bgm
+}
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.B5-Features{
+    @include B5-Features(/*ICI, VOUS POUVEZ ÉCRASER LES VALEUR DE LA VARIABLES "$defaultValues"*/);
+    //bge
+    //bgm
+}
+@mixin generate_B6-Features($name,$args:()){
+    .#{$name}{
+        @include B5-Features();
+    }
+/*
+    >h2:before{
+        content:map-get($args, label);
+    }
+*/
+}
+@include generate_B6-Features("features"/*, (label: "value")*/);

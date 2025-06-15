@@ -1,0 +1,230 @@
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function B5-Pricings($defaultValues: ""){
+    
+    @return ($defaultValues);
+}
+
+/******VARAIBLES******/
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
+$B5-Pricings: B5-Pricings((
+    exempleParam_Block_ComponentVariable: red
+));
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT EN DUR VIA UNE MAP
+//SI DÉCOMMENTÉ, ÉCRASERA LA FUNCTION SI-DESSUS
+//$B5-Pricings: ();
+/******ELEMENTS******/
+$__Heading: (
+    exempleParam_Element_ComponentVariable: purple
+);
+/*************************************
+*************************************
+VARIABLES PARAMÉTRABLE DU BLOC BEM
+EX: 
+box-shadow(color), background, border-color
+*************************************
+*************************************/
+
+
+
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%B5-Pricings{
+    template_base:"blockTagName>elementTagName1+elementTagName2+elementTagName3>content.......";
+    template_block_sample: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}";
+    template_blockElement_sample__ElementName: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}+elementTagName3.elementClassName>(elementInnerTag>...+elementInnerTag{Content Text}+elementInnerTag{Content Text})*6";
+    \$datas: "{title,text,options,pricings}";
+    \$datas: '{\
+        title: "Pricing"\
+        , text: "Quickly build an effective pricing table for your potential customers with this Bootstrap example. It’s built with default Bootstrap components and utilities with little customization."\
+        , currency: "$"\
+        , every: "mo"\
+        , list: [\
+            {\
+                plan: "Free"\
+                , price: 0\
+                , list: [\
+                    "10 users included"\
+                    , "2 GB of storage"\
+                    , "Email support"\
+                    , "Help center access"\
+                ]\
+                , cta: "Sign up for free"\
+            }\
+            , ...[]\
+        ]\
+    }';
+
+
+
+    // &§§§privateELEMENT_NAME_1 {}
+
+    &__Heading {
+        >h1{
+            \$datas-title: "string";
+            @extend .display-4;
+            @extend .fw-normal;
+        }
+        >p{
+            \$datas-text: "string";
+            @extend .fs-5;
+            @extend .text-muted;
+        }
+        >h1,>p{
+            max-width: 700px; // @extend .pricing-header;
+            @extend .p-3;
+            @extend .pb-md-4;
+            @extend .mx-auto;
+            @extend .text-center;
+        }
+    }
+
+    &__List {
+        \$datas-options: "{}";
+        \$datas-pricings: "{}";
+        @extend .container;
+        @extend .row;
+        @extend .row-cols-1;
+        @extend .row-cols-md-3;
+        @extend .mb-3;
+        @extend .text-center;
+        margin:0 auto;
+        >li{
+            @extend %paddingWBefore;
+            @extend .col;
+            @extend .card;
+            @extend .mb-3;
+            // @extend .rounded-3;
+            // @extend .shadow-sm;
+            border:none;
+            >*{padding: 0 1rem;}
+            >:first-child,>h2{padding: 1rem;}
+            &:last-of-type{
+                &:before{@extend .border-primary;}
+                >h4{@extend .bg-primary;@extend .text-white;}
+            }
+            >h4{
+                \$datas-pricings-plan: "string";
+                            margin-bottom: 0px;
+                            background-color: rgba(0, 0, 0, 0.03);
+                            // padding: 0.5rem 1rem;
+                            border-bottom: 1px solid rgba(0, 0, 0, 0.125);/* 
+                            @extend .card-header;*/
+                // @extend .py-3 ;
+                @extend .my-0;
+                @extend .fw-normal;
+                &:first-child{border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0px 0px; }
+            }
+            >h2{
+                \$datas-pricings-price: "integer";
+                options-currency: "string";
+                margin-top: 1rem;
+                margin-bottom: 0.5rem; // @extend .card-title; // @extend .pricing-card-title;
+                >small{
+                    options-every: "string";
+                    @extend .text-muted;
+                    @extend .fw-light;
+                }
+            }
+            >ul{
+                \$datas-pricings-list: "[]";
+                @extend .list-unstyled;
+                @extend .mt-3;
+                @extend .mb-4;
+                >li{
+                    \$datas-pricings-list---values: "string";
+                }
+                
+            }
+            >button{
+                \$datas-pricings-cta: "string";
+                @extend .w-100;
+                @extend .btn;
+                @extend .btn-lg;
+                margin: 1rem;
+                width: calc(100% - 2rem) !important;
+            }
+            &:first-of-type>button{@extend .btn-outline-primary;}
+            &:not(:first-of-type)>button{@extend .btn-primary;}
+        }
+    }
+    &__TableCompares {
+        @extend .container;
+        @extend .table;
+        @extend .text-center;
+        margin: 0 auto;
+        >thead{
+            >tr{
+                >th{
+                    width: 22%;
+                    &:first-of-type{width: 34%;}
+                }
+            }
+        }
+        >tbody{
+            >tr{
+                &.sep{border-top: 2px solid currentColor;}
+                >th{
+                    text-align: left!important; // @extend .text-start;
+                }
+                >td{
+                    >svg{
+                        @extend .bi;
+                        width: 24px;
+                        height: 24px;
+                    }
+                }
+            }
+        }
+    }
+    //bgm
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin B5-Pricings(
+        $paramMixi: $B5-Pricings
+        , $exempleParamFromBEMComponentVariable: map-get($B5-Pricings, exempleParamFromBEMComponentVariable)
+        // BEMMixinParam
+    ){
+
+    // PRIVATE ELEMENTS
+    // @extend %B5-Pricings§§§privateELEMENT_NAME_1;
+
+    // BLOCK &&
+    // ELEMENTS
+    @extend %B5-Pricings;
+    & {
+        @extend %B5-Pricings__Heading;
+    }
+    >ul {
+        @extend %B5-Pricings__List;
+    }
+    >table {
+        @extend %B5-Pricings__TableCompares;
+    }
+    //bgee
+    //bgm
+}
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.B5-Pricings{
+    @include B5-Pricings(/*ICI, VOUS POUVEZ ÉCRASER LES VALEUR DE LA VARIABLES "$defaultValues"*/);
+    //bge
+    //bgm
+}
+@mixin generate_B5-Pricings($name,$args:()){
+    .#{$name}{
+        @include B5-Pricings();
+    }
+/*
+    >h2:before{
+        content:map-get($args, label);
+    }
+*/
+}
+@include generate_B5-Pricings("pricings"/*, (label: "value")*/);

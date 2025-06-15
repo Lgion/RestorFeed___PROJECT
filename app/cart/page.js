@@ -11,7 +11,18 @@ export default function CartPage() {
     return [];
   });
 
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  // Grouper les produits par id
+  const grouped = cart.reduce((acc, item) => {
+    const key = item.id;
+    if (!acc[key]) {
+      acc[key] = { ...item, quantity: item.quantity || 1 };
+    } else {
+      acc[key].quantity += item.quantity || 1;
+    }
+    return acc;
+  }, {});
+  const groupedArr = Object.values(grouped);
+  const total = groupedArr.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
   const [orderSent, setOrderSent] = useState(false);
 
   const handleValidate = () => {
@@ -43,13 +54,17 @@ export default function CartPage() {
   return (
     <div style={{maxWidth: 600, margin: '0 auto', padding: 24}}>
       <h1>Votre panier</h1>
-      {cart.length === 0 ? (
+      {groupedArr.length === 0 ? (
         <div>Votre panier est vide.</div>
       ) : (
         <>
-          <ul>
-            {cart.map((item, idx) => (
-              <li key={idx}>{item.name} - {item.price.toFixed(2)} €</li>
+          <ul style={{padding: 0, listStyle: 'none'}}>
+            {groupedArr.map((item) => (
+              <li key={item.id} style={{display: 'flex', alignItems: 'center', marginBottom: 8}}>
+                <span style={{flex: 2}}>{item.name}</span>
+                <span style={{flex: 1, textAlign: 'right'}}>{item.quantity} × {item.price.toFixed(2)} €</span>
+                <span style={{flex: 1, textAlign: 'right', fontWeight: 'bold'}}>{(item.price * item.quantity).toFixed(2)} €</span>
+              </li>
             ))}
           </ul>
           <div style={{marginTop: 12, fontWeight: 'bold'}}>

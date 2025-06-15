@@ -1,0 +1,184 @@
+@import "./main.scss";
+.light,
+.light body {
+  color: #000;
+  background: #fff;
+}
+
+.dark,
+.dark body {
+  color: #fff;
+  background: #000;
+}
+
+
+/***********************************/
+/***********************************/
+/***********************************/
+/************base*******************/
+//BASE
+//NORMALIZE
+//TYPOGRAPHY
+// @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+/***********************************/
+/***********************************/
+/************component**************/
+//BUTTONS
+
+/***********************************/
+/***********************************/
+/************layouts****************/
+//HEADER
+//NAV
+//MAIN
+//FOOTER
+
+/***********************************/
+/***********************************/
+/************pages******************/
+
+/***********************************/
+/***********************************/
+/************themes*****************/
+
+/***********************************/
+/***********************************/
+/************utils******************/
+//EXTENSIONS
+//FONCTIONS
+//MIXINS
+//VARIABLES 
+/*
+$primary: #9356DC;
+$secondary: #FF79DA;
+$ternary: #99E2D0;
+*/
+
+/***********************************/
+/***********************************/
+/************vendors****************/
+
+
+
+/***********************************/
+/***********************************/
+/***********************************/
+/********/
+/********/
+/***********************************/
+/***********************************/
+/*******custom rules***************/
+// :root{font-family:Roboto;}
+body{
+  height: 2000px;
+}
+// ul.safe,ol.safe{margin:0;}
+
+
+body{
+  &::before{}
+  &::after{}
+  >header{
+    >nav{
+      &.navbar{}
+    }
+    >#carousel-area{
+      >#carousel-slider{
+        >ol{
+          >li{
+            &::before{}
+            &::after{}
+          }
+        }
+        >.carousel-inner{
+          >.carousel-item{
+            &.active{
+
+            }
+            >img{}
+            >div{
+              >a{}
+              >h2{}
+              >h3{}
+              >h4{}
+            }
+          }
+        }
+        >a{
+          >span{
+            >i{}
+          }
+          &.carousel-control-prev{}
+          &.carousel-control-next{}
+        }
+      }
+    }
+    >section{
+      &.logIn{}
+      &.loggedIn{}
+    }
+  }
+  >nav{
+
+  }
+  >main{
+    >section{
+    }
+    >article{
+    }
+    .carte{
+    }
+  }
+  >footer{
+    >h4{
+    }
+    >h5,>a{}
+    >h5{
+    }
+    >a{
+    }
+  }
+}
+
+
+@include mobile-only{
+  body{
+    &>header{}
+    &>nav{}
+    &>main{
+      &>section{}
+      &>article{}
+    }
+    &>footer{
+      &>ul{}
+    }
+  }
+}
+@include tablette-only{
+  body{
+    &>header{}
+    &>nav{}
+    &>main{
+      &>section{}
+      &>article{}
+    }
+    &>footer{
+      &>ul{}
+    }
+  }
+}
+@include from-desktop{
+  body{
+    &>header{}
+    &>nav{}
+    &>main{
+      &>section{}
+      &>article{}
+    }
+    &>footer{
+      &>ul{}
+    }
+  }
+}
+

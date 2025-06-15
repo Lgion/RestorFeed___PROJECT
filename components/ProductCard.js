@@ -10,26 +10,37 @@ const CATEGORY_FALLBACKS = {
   entree: "/sushi/entree_cat.png",
 };
 
-export default function ProductCard({ product, onAdd }) {
-  console.log(product);
+export default function ProductCard({ product, onAdd, onSub, isAdmin, onEdit, onDelete, quantity = 0 }) {
   
   
   return (
-    <div style={{border: '1px solid #eee', borderRadius: 8, padding: 16, marginBottom: 16, background: '#fff', display: 'flex', alignItems: 'center', gap: 16}}>
-      <img src={product.image} alt={product.name} width={80} height={80} style={{borderRadius: 8}} 
+    <li className="productCard">
+      <img src={product.image} alt={product.name} width={80} height={80} className="productCard__image" 
               onError={e => { e.target.src = CATEGORY_FALLBACKS[product.category] }}
       />
-      <div style={{flex: 1}}>
-        <h4 style={{margin: 0}}>{product.name}</h4>
-        <p style={{margin: '4px 0', color: '#666'}}>{product.description}</p>
-        <div style={{fontWeight: 'bold', color: '#c0392b', marginBottom: 8}}>
+      <article className="productCard__info">
+        <h4 className="productCard__title">{product.name}</h4>
+        <p className="productCard__desc">{product.description}</p>
+        <div className="productCard__price">
           {product.price.toFixed(2)} €
         </div>
-        {product.customizable && <span style={{fontSize: '0.8em', color: '#3498db'}}>Customisable</span>}
-      </div>
-      <button style={{background: '#e74c3c', color: '#fff', border: 'none', borderRadius: 4, padding: '10px 18px', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => onAdd(product)}>
+        {product.customizable && <span className="productCard__customizable">Customisable</span>}
+      </article>
+      <button className="productCard__add-btn" onClick={() => onAdd(product)}>
         Ajouter
       </button>
-    </div>
+      <section className="productCard__quantity">
+        <button className="productCard__quantity-btn" onClick={() => onSub({ ...product, quantity: product.quantity - 1 })}>-</button>
+        <span className="productCard__quantity-value">{quantity}</span>
+        <button className="productCard__quantity-btn" onClick={() => onAdd({ ...product, quantity: product.quantity + 1 })}>+</button>
+      </section>
+
+      {isAdmin && (
+        <div className="productCard__admin-actions">
+          <button className="productCard__edit-btn" onClick={() => onEdit(product)} title="Éditer">✏️</button>
+          <button className="productCard__delete-btn" onClick={() => onDelete(product.id)} title="Supprimer">🗑️</button>
+        </div>
+      )}
+    </li>
   );
 }

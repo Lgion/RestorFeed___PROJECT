@@ -1,0 +1,141 @@
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function B5-Cards($defaultValues: ""){
+    
+    @return ($defaultValues);
+}
+
+/******VARAIBLES******/
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
+$B5-Cards: B5-Cards((
+    exempleParam_Block_ComponentVariable: red
+));
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT EN DUR VIA UNE MAP
+//SI DÉCOMMENTÉ, ÉCRASERA LA FUNCTION SI-DESSUS
+//$B5-Cards: ();
+/******ELEMENTS******/
+$__Image: (
+    exempleParam_Element_ComponentVariable: purple
+);
+/*************************************
+*************************************
+VARIABLES PARAMÉTRABLE DU BLOC BEM
+EX: 
+box-shadow(color), background, border-color
+*************************************
+*************************************/
+
+
+
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%B5-Cards{
+    // template_base:"blockTagName>elementTagName1+elementTagName2+elementTagName3>content.......";
+    // template_block_sample: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}";
+    // template_blockElement_sample__ElementName: "blockTagName.blockClassName>elementTagName1{Content Text}+elementTagName2{Content Text}+elementTagName3.elementClassName>(elementInnerTag>...+elementInnerTag{Content Text}+elementInnerTag{Content Text})*6";
+
+
+
+    @extend .row;
+    @extend .row-cols-1;
+    @extend .row-cols-sm-2;
+    @extend .row-cols-md-3;
+    @extend .g-3;
+    margin: 0 auto;
+    padding:0;
+
+
+
+    &§§§privateELEMENT_NAME_1 {}
+
+
+
+    >li{
+        >figure{
+            @extend .card;
+            @extend .shadow-sm;
+            >svg{
+                rect{width:100%;height:100%;}
+            }
+        }
+    }
+    &__Image {
+        @extend %bd-placeholder-img;
+        @extend .card-img-top;
+        width: 100%;
+        height: 225px;
+    }
+
+    &__Caption {
+        @extend .card-body;
+        @extend %dfr-jcsb_;
+        @extend %fw;
+        >p{
+            @extend .card-text;
+            width: 100%;
+        }
+        >div{
+            @extend .btn-group;
+            >button,>a{
+               @extend .btn;
+               @extend .btn-sm;
+               @extend .btn-outline-secondary;
+            }
+        }
+        >small{
+            @extend .text-muted;
+        }
+    }
+    //bgee
+    //bgm
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin B5-Cards(
+        $paramMixi: $B5-Cards
+        , $exempleParamFromBEMComponentVariable: map-get($B5-Cards, exempleParamFromBEMComponentVariable)
+        // BEMMixinParam
+    ){
+
+    // PRIVATE ELEMENTS
+    @extend %B5-Cards§§§privateELEMENT_NAME_1;
+
+    // BLOCK &&
+    // ELEMENTS
+    @extend %B5-Cards;
+    >li{
+        >figure{
+            >svg,>img {
+                @extend %B5-Cards__Image;
+            }
+            >figcaption {
+                @extend %B5-Cards__Caption;
+            }
+        }
+    }
+    //bgee
+    //bgm
+}
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.B5-Cards{
+    @include B5-Cards(/*ICI, VOUS POUVEZ ÉCRASER LES VALEUR DE LA VARIABLES "$defaultValues"*/);
+    //bge
+    //bgm
+}
+@mixin generate_B5-Cards($name,$args:()){
+    .#{$name}{
+        @include B5-Cards();
+    }
+/*
+    >h2:before{
+        content:map-get($args, label);
+    }
+*/
+}
+@include generate_B5-Cards("cards"/*, (label: "value")*/);

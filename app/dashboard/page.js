@@ -78,80 +78,80 @@ export default function DashboardPage() {
   const salesChange = "+15%"; // Simulation
 
   return (
-    <div style={{maxWidth:400,margin:"0 auto",padding:0,fontFamily:'Inter,sans-serif',background:'#fff',minHeight:'100vh'}}>
+    <div className="dashboard">
       {/* Header */}
-      <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:54,borderBottom:'1px solid #eee',position:'sticky',top:0,background:'#fff',zIndex:10}}>
-        <span style={{fontSize:20,fontWeight:600}}>Dashboard</span>
+      <div className="dashboard__header">
+        <span className="dashboard__header-title">Dashboard</span>
       </div>
       {/* Tabs */}
-      <div style={{display:'flex',borderBottom:'1px solid #eee',marginBottom:8}}>
-        <div onClick={()=>setTab("Employees")} style={{flex:1,padding:12,cursor:'pointer',fontWeight:500,borderBottom:tab==="Employees"?'2px solid #111':'none'}}>Employees</div>
-        <div onClick={()=>setTab("Sales")} style={{flex:1,padding:12,cursor:'pointer',fontWeight:500,borderBottom:tab==="Sales"?'2px solid #111':'none'}}>Sales</div>
+      <div className="dashboard__tabs">
+        <div onClick={()=>setTab("Employees")} className={`dashboard__tab${tab==="Employees" ? ' dashboard__tab--active' : ''}`}>Employees</div>
+        <div onClick={()=>setTab("Sales")} className={`dashboard__tab${tab==="Sales" ? ' dashboard__tab--active' : ''}`}>Sales</div>
       </div>
       {/* Employees tab */}
       {tab==="Employees" && (
         <>
-          <div style={{padding:'0 20px'}}>
-            <div style={{fontWeight:600,fontSize:16,marginBottom:10,marginTop:12}}>Employee Info</div>
-            <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:8}}>
-              <img src={EMPLOYEE.avatar} alt="avatar" style={{width:48,height:48,borderRadius:'50%'}}/>
+          <div className="dashboard__employee">
+            <div className="dashboard__employee-title">Employee Info</div>
+            <div className="dashboard__employee-row">
+              <img src={EMPLOYEE.avatar} alt="avatar" className="dashboard__employee-avatar"/>
               <div>
-                <div style={{fontWeight:500}}>{EMPLOYEE.name}</div>
-                <div style={{fontSize:13,color:'#888'}}>Contact: {EMPLOYEE.contact}</div>
+                <div className="dashboard__employee-name">{EMPLOYEE.name}</div>
+                <div className="dashboard__employee-contact">Contact: {EMPLOYEE.contact}</div>
               </div>
             </div>
-            <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:6}}>
-              <div style={{fontSize:18}}>📅</div>
+            <div className="dashboard__employee-row">
+              <div className="dashboard__employee-icon">📅</div>
               <div>
                 <b>Assigned Tables:</b> {EMPLOYEE.assignedTables.join(', ')}
-                <div style={{fontSize:13,color:'#888'}}>Current Location: {EMPLOYEE.location}</div>
+                <div className="dashboard__employee-location">Current Location: {EMPLOYEE.location}</div>
               </div>
             </div>
-            <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
-              <div style={{fontSize:18}}>🗓️</div>
+            <div className="dashboard__employee-row">
+              <div className="dashboard__employee-icon">🗓️</div>
               <div>
                 <b>Availability:</b> {EMPLOYEE.availability}
-                <div style={{fontSize:13,color:'#888'}}>Schedule: {EMPLOYEE.schedule}</div>
+                <div className="dashboard__employee-schedule">Schedule: {EMPLOYEE.schedule}</div>
               </div>
             </div>
-            <div style={{fontWeight:600,marginBottom:10}}>Employee Management</div>
-            <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:18}}>
-              <button onClick={()=>setShowAssign(true)} style={{display:'flex',alignItems:'center',gap:10,padding:12,background:'#f4f4f4',border:'none',borderRadius:8,fontWeight:500,cursor:'pointer'}}>📋 Assign Tables <span style={{marginLeft:'auto'}}>›</span></button>
-              <button onClick={()=>setShowChat(true)} style={{display:'flex',alignItems:'center',gap:10,padding:12,background:'#f4f4f4',border:'none',borderRadius:8,fontWeight:500,cursor:'pointer'}}>💬 Chat <span style={{marginLeft:'auto'}}>›</span></button>
-              <button onClick={()=>setShowDirect(true)} style={{display:'flex',alignItems:'center',gap:10,padding:12,background:'#f4f4f4',border:'none',borderRadius:8,fontWeight:500,cursor:'pointer'}}>📍 Direct to Location <span style={{marginLeft:'auto'}}>›</span></button>
+            <div className="dashboard__employee-section">Employee Management</div>
+            <div className="dashboard__employee-actions">
+              <button onClick={()=>setShowAssign(true)} className="dashboard__button dashboard__button--assign">📋 Assign Tables <span className="dashboard__button-arrow">›</span></button>
+              <button onClick={()=>setShowChat(true)} className="dashboard__button dashboard__button--chat">💬 Chat <span className="dashboard__button-arrow">›</span></button>
+              <button onClick={()=>setShowDirect(true)} className="dashboard__button dashboard__button--direct">📍 Direct to Location <span className="dashboard__button-arrow">›</span></button>
             </div>
           </div>
           {/* Assign Tables Modal */}
           {showAssign && (
-            <div style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',background:'rgba(0,0,0,0.15)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
-              <div style={{background:'#fff',borderRadius:16,padding:28,minWidth:260,boxShadow:'0 4px 24px #0002',position:'relative'}}>
-                <button onClick={()=>setShowAssign(false)} style={{position:'absolute',top:10,right:10,border:'none',background:'none',fontSize:22,cursor:'pointer'}}>×</button>
-                <div style={{fontWeight:600,marginBottom:12}}>Assign Tables</div>
-                <div style={{marginBottom:10}}>Select tables to assign to {EMPLOYEE.name} :</div>
-                <input type="text" placeholder="e.g. 1,2,3" defaultValue={EMPLOYEE.assignedTables.join(', ')} style={{padding:7,width:'100%',marginBottom:12,border:'1px solid #ccc',borderRadius:6}}/>
-                <button onClick={()=>setShowAssign(false)} style={{background:'#111',color:'#fff',padding:'8px 18px',border:'none',borderRadius:6,fontWeight:500,width:'100%'}}>Save</button>
+            <div className="dashboard__modal-bg">
+              <div className="dashboard__modal">
+                <button onClick={()=>setShowAssign(false)} className="dashboard__modal-close">×</button>
+                <div className="dashboard__modal-title">Assign Tables</div>
+                <div className="dashboard__modal-desc">Select tables to assign to {EMPLOYEE.name} :</div>
+                <input type="text" placeholder="e.g. 1,2,3" defaultValue={EMPLOYEE.assignedTables.join(', ')} className="dashboard__modal-input"/>
+                <button onClick={()=>setShowAssign(false)} className="dashboard__modal-btn dashboard__modal-btn--save">Save</button>
               </div>
             </div>
           )}
           {/* Chat Modal */}
           {showChat && (
-            <div style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',background:'rgba(0,0,0,0.15)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
-              <div style={{background:'#fff',borderRadius:16,padding:28,minWidth:260,boxShadow:'0 4px 24px #0002',position:'relative'}}>
-                <button onClick={()=>setShowChat(false)} style={{position:'absolute',top:10,right:10,border:'none',background:'none',fontSize:22,cursor:'pointer'}}>×</button>
-                <div style={{fontWeight:600,marginBottom:12}}>Chat with {EMPLOYEE.name}</div>
-                <textarea placeholder="Type your message..." style={{width:'100%',height:60,padding:7,marginBottom:12,border:'1px solid #ccc',borderRadius:6}}/>
-                <button onClick={()=>setShowChat(false)} style={{background:'#111',color:'#fff',padding:'8px 18px',border:'none',borderRadius:6,fontWeight:500,width:'100%'}}>Send</button>
+            <div className="dashboard__modal-bg">
+              <div className="dashboard__modal">
+                <button onClick={()=>setShowChat(false)} className="dashboard__modal-close">×</button>
+                <div className="dashboard__modal-title">Chat with {EMPLOYEE.name}</div>
+                <textarea placeholder="Type your message..." className="dashboard__modal-input dashboard__modal-input--textarea"/>
+                <button onClick={()=>setShowChat(false)} className="dashboard__modal-btn dashboard__modal-btn--send">Send</button>
               </div>
             </div>
           )}
           {/* Direct to Location Modal */}
           {showDirect && (
-            <div style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',background:'rgba(0,0,0,0.15)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
-              <div style={{background:'#fff',borderRadius:16,padding:28,minWidth:260,boxShadow:'0 4px 24px #0002',position:'relative'}}>
-                <button onClick={()=>setShowDirect(false)} style={{position:'absolute',top:10,right:10,border:'none',background:'none',fontSize:22,cursor:'pointer'}}>×</button>
-                <div style={{fontWeight:600,marginBottom:12}}>Direct to Location</div>
-                <div style={{marginBottom:10}}>Send directions to {EMPLOYEE.name} for: <b>{EMPLOYEE.location}</b></div>
-                <button onClick={()=>setShowDirect(false)} style={{background:'#111',color:'#fff',padding:'8px 18px',border:'none',borderRadius:6,fontWeight:500,width:'100%'}}>Send</button>
+            <div className="dashboard__modal-bg">
+              <div className="dashboard__modal">
+                <button onClick={()=>setShowDirect(false)} className="dashboard__modal-close">×</button>
+                <div className="dashboard__modal-title">Direct to Location</div>
+                <div className="dashboard__modal-desc">Send directions to {EMPLOYEE.name} for: <b>{EMPLOYEE.location}</b></div>
+                <button onClick={()=>setShowDirect(false)} className="dashboard__modal-btn dashboard__modal-btn--send">Send</button>
               </div>
             </div>
           )}
@@ -159,48 +159,48 @@ export default function DashboardPage() {
       )}
       {/* Sales tab */}
       {tab==="Sales" && (
-        <div style={{padding:'0 20px'}}>
-          <div style={{fontWeight:600,fontSize:16,marginBottom:10,marginTop:12}}>Sales Statistics</div>
-          <div style={{display:'flex',gap:8,marginBottom:18}}>
-            <button style={{padding:'6px 14px',borderRadius:16,border:'none',background:'#eee',fontWeight:500,marginRight:4}}>Daily</button>
-            <button style={{padding:'6px 14px',borderRadius:16,border:'none',background:'#fff',fontWeight:500,marginRight:4}}>Weekly</button>
-            <button style={{padding:'6px 14px',borderRadius:16,border:'none',background:'#fff',fontWeight:500,marginRight:4}}>Monthly</button>
-            <button style={{padding:'6px 14px',borderRadius:16,border:'none',background:'#fff',fontWeight:500}}>Historical</button>
+        <div className="dashboard__sales">
+          <div className="dashboard__sales-title">Sales Statistics</div>
+          <div className="dashboard__sales-tabs">
+            <button className="dashboard__sales-tab dashboard__sales-tab--active">Daily</button>
+            <button className="dashboard__sales-tab">Weekly</button>
+            <button className="dashboard__sales-tab">Monthly</button>
+            <button className="dashboard__sales-tab">Historical</button>
           </div>
-          <div style={{fontSize:32,fontWeight:600,marginBottom:4}}>${dailySales.toLocaleString()}</div>
-          <div style={{color:'#2ecc40',fontWeight:500,marginBottom:10}}>Today {salesChange}</div>
+          <div className="dashboard__sales-total">${dailySales.toLocaleString()}</div>
+          <div className="dashboard__sales-change">Today {salesChange}</div>
           {/* Bar chart simple */}
-          <div style={{display:'flex',alignItems:'end',height:90,gap:8,marginBottom:14}}>
+          <div className="dashboard__sales-bars">
             {getHourlySales(orders).map((v,i)=>(
-              <div key={i} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center'}}>
-                <div style={{height:Math.max(10,v/10),width:18,background:'#ddd',borderRadius:6,marginBottom:4}}></div>
-                <span style={{fontSize:12,color:'#888'}}>{10+i}AM</span>
+              <div key={i} className="dashboard__sales-bar-col">
+                <div className="dashboard__sales-bar" style={{height:Math.max(10,v/10)}}></div>
+                <span className="dashboard__sales-bar-label">{10+i}AM</span>
               </div>
             ))}
           </div>
         </div>
       )}
       {/* Bottom nav (factice) */}
-      <div style={{position:'fixed',bottom:0,left:0,width:'100vw',background:'#fff',borderTop:'1px solid #eee',display:'flex',justifyContent:'space-around',padding:'6px 0',zIndex:100}}>
-        <div style={{display:'flex',flexDirection:'column',alignItems:'center',fontSize:13,color:'#888'}}>
+      <div className="dashboard__nav">
+        <div className="dashboard__nav-item">
           <span>🏠</span>
-          <span style={{fontSize:12}}>Home</span>
+          <span className="dashboard__nav-label">Home</span>
         </div>
-        <div style={{display:'flex',flexDirection:'column',alignItems:'center',fontSize:13,color:'#888'}}>
+        <div className="dashboard__nav-item">
           <span>🧾</span>
-          <span style={{fontSize:12}}>Orders</span>
+          <span className="dashboard__nav-label">Orders</span>
         </div>
-        <div style={{display:'flex',flexDirection:'column',alignItems:'center',fontSize:13,color:'#888'}}>
+        <div className="dashboard__nav-item">
           <span>🍣</span>
-          <span style={{fontSize:12}}>Menu</span>
+          <span className="dashboard__nav-label">Menu</span>
         </div>
-        <div style={{display:'flex',flexDirection:'column',alignItems:'center',fontSize:13,color:'#111',fontWeight:600}}>
+        <div className="dashboard__nav-item dashboard__nav-item--active">
           <span>📊</span>
-          <span style={{fontSize:12}}>Dashboard</span>
+          <span className="dashboard__nav-label">Dashboard</span>
         </div>
-        <div style={{display:'flex',flexDirection:'column',alignItems:'center',fontSize:13,color:'#888'}}>
+        <div className="dashboard__nav-item">
           <span>👤</span>
-          <span style={{fontSize:12}}>Account</span>
+          <span className="dashboard__nav-label">Account</span>
         </div>
       </div>
     </div>
