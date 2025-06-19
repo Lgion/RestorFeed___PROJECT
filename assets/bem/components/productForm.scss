@@ -1,0 +1,148 @@
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%productForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: #fafbfc;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px #0001;
+  padding: 26px 20px 20px 20px;
+  min-width: 320px;
+
+  >label {
+    font-weight: 500;
+    font-size: 15px;
+    color: #222;
+    margin-bottom: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  &__input {
+    padding: 9px 13px;
+    border-radius: 7px;
+    border: 1.5px solid #ddd;
+    font-size: 16px;
+    margin-top: 2px;
+    background: #fff;
+    transition: border-color 0.14s;
+    &--textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+    &:focus {
+      border-color: #c0392b;
+      outline: none;
+    }
+  }
+  &__checkbox {
+    accent-color: #c0392b;
+    margin-right: 7px;
+    width: 17px;
+    height: 17px;
+    &Wrapper{
+      display: flex;
+      align-items: center;
+      gap: 8;
+    }
+  }
+  &__actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  &__submit {
+    background: linear-gradient(90deg, #c0392b 60%, #e74c3c 100%);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.14s;
+    &:hover {
+      background: #e74c3c;
+    }
+  }
+  &__cancel {
+    background: #eee;
+    color: #c0392b;
+    border: none;
+    border-radius: 7px;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.14s, color 0.14s;
+    &:hover {
+      background: #fbeaea;
+      color: #e74c3c;
+    }
+  }
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin productForm(
+  $paramMixi_: $productForm,
+  $exempleParamFromBEMComponentVariable: map-get($productForm, exempleParamFromBEMComponentVariable)
+  // BEMMixinParam
+) {
+  $paramMixi: productForm(map-merge($productForm, $paramMixi_));
+  @extend %productForm;
+  display: map-get($paramMixi, display, flex);
+  flex-direction: map-get($paramMixi, flex-direction, column);
+  gap: map-get($paramMixi, gap, 18px);
+  background: map-get($paramMixi, background, #fafbfc);
+  border-radius: map-get($paramMixi, border-radius, 12px);
+  box-shadow: map-get($paramMixi, box-shadow, 0 4px 24px #0001);
+  padding: map-get($paramMixi, padding, 26px 20px 20px 20px);
+  min-width: map-get($paramMixi, min-width, 320px);
+
+  // &__label { @extend %productForm__label; }
+  &__input { @extend %productForm__input; }
+  &__input--textarea { @extend %productForm__input--textarea; }
+  &__checkbox { @extend %productForm__checkbox; }
+  &__checkboxWrapper { @extend %productForm__checkboxWrapper; }
+  &__actions { @extend %productForm__actions; }
+  &__submit { @extend %productForm__submit; }
+  &__cancel { @extend %productForm__cancel; }
+}
+
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function productForm($defaultValues) {
+  @return map-merge(
+    $defaultValues,
+    (
+      // background-contrast: darken(map-get($defaultValues, background), 12%),
+    )
+  );
+}
+
+/******VARAIBLES******/
+$productForm: (
+  display: flex,
+  flex-direction: column,
+  gap: 18px,
+  background: #fafbfc,
+  border-radius: 12px,
+  box-shadow: 0 4px 24px #0001,
+  padding: 26px 20px 20px 20px,
+  min-width: 320px,
+  exempleParamFromBEMComponentVariable: null
+);
+
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.productForm {
+  @include productForm();
+}

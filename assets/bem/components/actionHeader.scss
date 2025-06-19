@@ -9,12 +9,7 @@
   display: flex;
   gap: 24px;
   align-items: center;
-  padding: 18px 0 14px 0;
   justify-content: center;
-  background: #fff;
-  box-shadow: 0 2px 18px #0002;
-  min-height: 64px;
-  border-bottom: solid #e74c3c;
   transition: padding 0.22s cubic-bezier(.65,.05,.36,1), box-shadow 0.22s, transform 0.25s cubic-bezier(.65,.05,.36,1), opacity 0.18s;
   will-change: padding, box-shadow, transform, opacity;
   
@@ -25,12 +20,96 @@
     align-items: center;
     flex: 1;
     justify-content: center;
+    >a{
+      >span{
+        position: absolute;
+        bottom: -38px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #222;
+        color: #fff;
+        padding: 6px 14px;
+        border-radius: 6;
+        font-size: 14px;
+        white-space: nowrap;
+        z-index: 100;
+        pointer-events: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+      }
+    }
+    >div{
+      background: white;
+      padding: 1em;
+      border-radius: 5px;
+      background: white;
+      padding: 1em;
+      border-radius: 0 0 5px 5px;
+      position: absolute;
+      bottom: -75px;
+      box-shadow: 0 1px 10px .1px black;
+      color: white;
+    }
   }
   &__cart {
     position: absolute;
     right: 10px;
     bottom: -40px;
   }
+
+  &__clerk {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    z-index: 3100;
+    @media (max-width: 600px) {
+      flex-direction: column;
+      top: 60px;
+      right: 10px;
+    }
+  }
+  &__clerk-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #222;
+    border: 1px solid #e0e0e0;
+    border-radius: 7px;
+    padding: 7px 18px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.13s;
+    outline: none;
+    &:hover, &:focus {
+      background: #f5f5f5;
+      color: #0a6;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      transform: translateY(-2px) scale(1.04);
+    }
+    &--signin {
+      color: #1565c0;
+      border-color: #1976d2;
+      &:hover, &:focus { color: #fff; background: #1976d2; }
+    }
+    &--signup {
+      color: #2e7d32;
+      border-color: #388e3c;
+      &:hover, &:focus { color: #fff; background: #388e3c; }
+    }
+    &--user {
+      padding: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      &:hover, &:focus { background: #f5f5f5; }
+    }
+  }
+
   &__action {
     background: white;
     border: 1px solid #e0e0e0;
@@ -45,10 +124,10 @@
     min-width: 44px;
     min-height: 44px;
     box-shadow: none;
-  }
-  &__action--hovered {
-    background: #f4f4f4;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    &--hovered {
+      background: #f4f4f4;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
   }
 }
 
@@ -62,52 +141,30 @@
 ){
   $paramMixi: actionHeader(map-merge($actionHeader, $paramMixi_));
   @extend %actionHeader;
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 3000;
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  padding: map-get($paramMixi, padding, 18px 0 14px 0);
-  justify-content: center;
-  background: map-get($paramMixi, background, #fff);
-  box-shadow: map-get($paramMixi, box-shadow, 0 2px 18px #0002);
-  min-height: map-get($paramMixi, min-height, 64px);
-  border-bottom: solid map-get($paramMixi, border-bottom-color, #e74c3c);
-  transition: padding 0.22s cubic-bezier(.65,.05,.36,1), box-shadow 0.22s, transform 0.25s cubic-bezier(.65,.05,.36,1), opacity 0.18s;
-  will-change: padding, box-shadow, transform, opacity;
+  padding: map-get($paramMixi, padding_);
+  background: map-get($paramMixi, background_, #fff);
+  box-shadow: map-get($paramMixi, box-shadow_, 0 2px 18px #0002);
+  min-height: map-get($paramMixi, min-height_, 64px);
+  border-bottom: solid map-get($paramMixi, border-bottom-color_);
 
   &__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    align-items: center;
-    flex: 1;
-    justify-content: center;
+    @extend %actionHeader__actions;
+    >div{
+      background: map-get($actionHeader, border-bottom-color_);
+    }
   }
   &__cart {
-    position: absolute;
-    right: 10px;
-    bottom: -40px;
+    @extend %actionHeader__cart;
   }
   &__action {
-    background: white;
-    border: 1px solid map-get($paramMixi, border-color, #e0e0e0);
-    border-radius: 8px;
-    padding: 10px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.14s;
-    min-width: 44px;
-    min-height: 44px;
-    box-shadow: none;
-  }
-  &__action--hovered {
-    background: #f4f4f4;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    @extend %actionHeader__action;
+    &:focus {
+      outline: 2px solid map-get($actionHeader, border-bottom-color_);
+    }
+    // &__action--hovered {
+    //   background: #f4f4f4;
+    //   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    // }
   }
 
   // Modifier contrast
@@ -129,10 +186,10 @@
   @return map-merge(
     $defaultValues,
     (
-      background-contrast: darken(map-get($defaultValues, background, #fff), 12%),
-      color-contrast: lighten(map-get($defaultValues, color, #222), 36%),
-      border-color-contrast: darken(map-get($defaultValues, border-color, #e0e0e0), 18%),
-      border-bottom-contrast: darken(map-get($defaultValues, border-bottom-color, #e74c3c), 18%),
+      background-contrast: darken(map-get($defaultValues, background_), 12%),
+      color-contrast: lighten(map-get($defaultValues, color_), 36%),
+      border-color-contrast: darken(map-get($defaultValues, border-color_), 18%),
+      border-bottom-contrast: darken(map-get($defaultValues, border-bottom-color_), 18%),
       shadow-contrast: 0 6px 24px rgba(0,0,0,0.16)
     )
   );
@@ -140,17 +197,18 @@
 
 /******VARAIBLES******/
 $actionHeader: (
-  background: #fff,
-  color: #222,
-  border-color: #e0e0e0,
-  border-bottom-color: #e74c3c,
-  min-height: 64px,
-  box-shadow: 0 2px 18px #0002
+  background_: #fff,
+  color_: #222,
+  border-color_: #e0e0e0,
+  border-bottom-color_: #e74c3c,
+  min-height_: 64px,
+  box-shadow_: 0 2px 18px #0002,
+  padding_: 18px 0 14px 0
 );
 
 /************************************************************/
 /**************************BLOC BEM (extension)**************************/
 /************************************************************/
-.action-header {
+.actionHeader {
   @include actionHeader();
 }

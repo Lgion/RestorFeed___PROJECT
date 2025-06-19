@@ -2,42 +2,46 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
-export default function CartHover() {
+export default function CartHover({ handleValidate, isLoading }) {
+  const [orders, setOrders] = useState([]);
   const [cart, setCart] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [openOrderIdx, setOpenOrderIdx] = useState(null);
+
   const ref = useRef();
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setCart(JSON.parse(localStorage.getItem("cart") || "[]"));
+    function loadData() {
+      if (typeof window !== "undefined") {
+        const raw = localStorage.getItem("restOrFeed");
+        if (!raw) {
+          setOrders([]);
+          setCart([]);
+          return;
+        }
+        try {
+          const appData = JSON.parse(raw);
+          setOrders(appData.orders || []);
+          setCart(appData.cart || []);
+        } catch {
+          setOrders([]);
+          setCart([]);
+        }
+      }
     }
-    const handle = () => { console.log("dispatch eventndhidfhsdfuiohfuih");
-    
-      return setCart(JSON.parse(localStorage.getItem("cart") || "[]"));}
+    loadData();
+    const handle = () => loadData();
     window.addEventListener("storage", handle);
+    window.addEventListener("orders-updated", handle);
     window.addEventListener("cart-updated", handle);
     return () => {
       window.removeEventListener("storage", handle);
+      window.removeEventListener("orders-updated", handle);
       window.removeEventListener("cart-updated", handle);
     };
   }, []);
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        setOpen(false);
-      }
-    }
-    if (open) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
-
-  // Grouper les produits par id
-  const grouped = cart.reduce((acc, item) => {
+  // Affichage du panier courant (cart)
+  const groupedCart = cart.reduce((acc, item) => {
     const key = item.id;
     if (!acc[key]) {
       acc[key] = { ...item, quantity: item.quantity || 1 };
@@ -46,42 +50,70 @@ export default function CartHover() {
     }
     return acc;
   }, {});
-  const groupedArr = Object.values(grouped);
-  const total = groupedArr.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+  const cartArr = Object.values(groupedCart);
+  const cartTotal = cartArr.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
 
   return (
-    <div className="cart-hover" ref={ref}>
-      <button
-        className="cart-hover__btn"
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-      >
-        🛒 <span>Panier ({groupedArr.reduce((sum, item) => sum + item.quantity, 0) })</span>
-      </button>
-      {open && (
-        <div
-          className="cart-hover__popup"
-          onMouseEnter={() => setOpen(true)}
-          onMouseLeave={() => setOpen(false)}
+    <div className="cartHover" ref={ref}>
+      <div className="cartHover__popup">
+        <h4 className="cartHover__title">Panier en cours</h4>
+        {cartArr.length === 0 ? (
+          <div className="cartHover__empty">Votre panier est vide.</div>
+        ) : (
+          <ul className="cartHover__list">
+            {cartArr.map(item => (
+              <li key={item.id} className="cartHover__item">
+                <span>{item.name}</span>
+                <span>x{item.quantity}</span>
+                <span>{(item.price * item.quantity).toFixed(2)} €</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="cartHover__total">Total : {cartTotal.toFixed(2)} €</div>
+        <button
+          className="cartHover__validate"
+          disabled={cartArr.length === 0 || isLoading}
+          onClick={handleValidate}
         >
-          <h4 className="cart-hover__title">Votre panier</h4>
-          {groupedArr.length === 0 ? (
-            <div className="cart-hover__empty">Votre panier est vide.</div>
-          ) : (
-            <ul className="cart-hover__list">
-              {groupedArr.map((item) => (
-                <li key={item.id} className="cart-hover__item">
-                  <span style={{flex: 2}}>{item.name}</span>
-                  <span style={{flex: 1, textAlign: 'right'}}>{item.quantity} × {item.price.toFixed(2)} €</span>
-                  <span style={{flex: 1, textAlign: 'right', fontWeight: 'bold'}}>{(item.price * item.quantity).toFixed(2)} €</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          <div className="cart-hover__total">Total : {total.toFixed(2)} €</div>
-          <Link href="/cart" className="cart-hover__validate">Valider le panier</Link>
-        </div>
-      )}
+          {isLoading ? 'Envoi en cours...' : 'Valider la commande'}
+        </button>
+        <hr style={{margin: '1rem 0'}} />
+        <h4 className="cartHover__title">Commandes enregistrées</h4>
+        {orders.length === 0 ? (
+          <div className="cartHover__empty">Aucune commande enregistrée.</div>
+        ) : (
+          <ul className="cartHover__orders">
+            {orders.map((order, idx) => (
+              <li
+                key={order.id || idx}
+                className="cartHover__order"
+                onClick={() => setOpenOrderIdx(openOrderIdx === idx ? null : idx)}
+                style={{cursor: 'pointer'}}
+              >
+                <div className="cartHover__orderBtn" style={{width: '100%', textAlign: 'left'}}>
+                  <b>Commande #{order.id || idx+1}</b> — {order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Date inconnue'}
+                  <span style={{marginLeft:8, color:'#888', fontWeight:'normal'}}>
+                    {order.status ? `(${order.status})` : ''}
+                    {order.table ? ` | Table ${order.table}` : ''}
+                  </span>
+                </div>
+                {openOrderIdx === idx && (order.items || order.products) && (
+                  <ul className="cartHover__orderList">
+                    {(order.items || order.products).map(prod => (
+                      <li key={prod.id || prod.productId} className="cartHover__orderItem">
+                        <span>{prod.name || prod.product?.name || ''}</span>
+                        <span>x{prod.quantity || 1}</span>
+                        <span>{((prod.price || prod.product?.price || 0) * (prod.quantity || 1)).toFixed(2)} €</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

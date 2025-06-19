@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { getAppDataKey, setAppDataKey, getAppData, setAppDataKey as setAppKey } from "../../utils/localStorageApp";
 
 export default function CartPage() {
-  // Le panier sera récupéré du localStorage pour persister entre les pages
+  // Le panier sera récupéré depuis la clé unique restOrFeed dans le localStorage pour persister entre les pages
   const [cart, setCart] = useState(() => {
     if (typeof window !== "undefined") {
-      return JSON.parse(localStorage.getItem("cart") || "[]");
+      return getAppDataKey("cart") || [];
     }
     return [];
   });
@@ -27,17 +28,18 @@ export default function CartPage() {
 
   const handleValidate = () => {
     // Simule l'envoi de la commande
-    localStorage.setItem("orders", JSON.stringify([
-      ...(JSON.parse(localStorage.getItem("orders") || "[]")),
-      {
-        items: cart,
-        date: new Date().toISOString(),
-        status: "En cours",
-        client: (localStorage.getItem("userPseudo")),
-        table: localStorage.getItem("tableNumber") 
-      }
-    ]));
-    localStorage.removeItem("cart");
+    const orders = getAppDataKey("orders") || [];
+    const userPseudo = getAppDataKey("userPseudo");
+    const tableNumber = getAppDataKey("tableNumber");
+    const newOrder = {
+      items: cart,
+      date: new Date().toISOString(),
+      status: "En cours",
+      client: userPseudo,
+      table: tableNumber
+    };
+    setAppDataKey("orders", [...orders, newOrder]);
+    setAppDataKey("cart", []);
     setCart([]);
     setOrderSent(true);
   };

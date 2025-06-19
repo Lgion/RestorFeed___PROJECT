@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { setAppDataKey } from "../../utils/localStorageApp";
 
 export default function AdminPage() {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -37,15 +38,15 @@ export default function AdminPage() {
       return;
     }
     if (typeof window !== "undefined") {
-      localStorage.setItem("role", "superadmin");
+      setAppDataKey("role", "superadmin");
     }
     router.push("/menu");
   };
 
   return (
-    <div className="admin-page">
+    <div className="adminPage">
       <h1>Connexion Admin</h1>
-      <form className="admin-page__form" onSubmit={handleSubmit}>
+      <form className="adminPage__form" onSubmit={handleSubmit}>
         <label>
           Nom d'utilisateur
           <input
@@ -66,8 +67,8 @@ export default function AdminPage() {
             required
           />
         </label>
-        {error && <div className="admin-page__error">{error}</div>}
-        <button className="admin-page__submit" type="submit">Valider</button>
+        {error && <div className="adminPage__error">{error}</div>}
+        <button className="adminPage__submit" type="submit">Valider</button>
       </form>
     </div>
   );

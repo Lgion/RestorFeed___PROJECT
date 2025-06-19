@@ -1,6 +1,12 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react";
+import { UserButton,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+} from '@clerk/nextjs'
 import { Tooltip } from "react-tooltip";
 import { ClipboardList, LayoutDashboard, Users, ShieldCheck, Truck } from "lucide-react";
 import RoleGuard from "./RoleGuard";
@@ -42,7 +48,7 @@ const actions = [
 
 import CartHover from "./CartHover";
 
-export default function ActionHeader() {
+export default function ActionHeader({ handleValidate, isLoading }) {
   const [hovered, setHovered] = useState(null);
   const [shrink, setShrink] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -84,13 +90,13 @@ export default function ActionHeader() {
   }, []);
 
   return (
-    <header className={`action-header${shrink ? ' action-header--shrink' : ''}${hidden ? ' action-header--hide' : ''}`}>
-      <div className="action-header__actions">
+    <header className={`actionHeader${shrink ? ' actionHeader--shrink' : ''}${hidden ? ' actionHeader--hide' : ''}`}>
+      <div className="actionHeader__actions">
       {actions.map(({ minRole, icon: Icon, href, label }, idx) => (
         <RoleGuard key={label} minRole={minRole}>
           <Link href={href} legacyBehavior>
             <a
-              className={`action-header__action${hovered === idx ? ' action-header__action--hovered' : ''}`}
+              className={`actionHeader__action${hovered === idx ? ' actionHeader__action--hovered' : ''}`}
               onMouseEnter={() => setHovered(idx)}
               onMouseLeave={() => setHovered(null)}
               onMouseDown={() => setHovered(idx)}
@@ -106,8 +112,17 @@ export default function ActionHeader() {
       ))}
       <RoleSwitcher />
       </div>
-      <div className="action-header__cart">
-        <CartHover />
+      <div className="actionHeader__cart">
+        <CartHover handleValidate={handleValidate} isLoading={isLoading} />
+      </div>
+      <div className="actionHeader__clerk">
+        <SignedOut>
+          <SignInButton className="actionHeader__clerk-btn actionHeader__clerk-btn--signin" />
+          <SignUpButton className="actionHeader__clerk-btn actionHeader__clerk-btn--signup" />
+        </SignedOut>
+        <SignedIn>
+          <UserButton className="actionHeader__clerk-btn actionHeader__clerk-btn--user" />
+        </SignedIn>
       </div>
     </header>
   );

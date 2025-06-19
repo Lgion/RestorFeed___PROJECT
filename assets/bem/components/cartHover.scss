@@ -19,6 +19,11 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    >span{
+      @media (max-width: 640px) {
+        display: none;
+      }
+    }
   }
   &__popup {
     position: absolute;
@@ -81,22 +86,19 @@
   display: inline-block;
 
   &__btn {
-    background: map-get($paramMixi, btn-background, #e74c3c);
-    color: map-get($paramMixi, btn-color, #fff);
+    @extend %cartHover__btn;
   }
   &__popup {
-    background: map-get($paramMixi, popup-background, #fff);
-    border: 1px solid map-get($paramMixi, popup-border, #e0e0e0);
+    @extend %cartHover__popup;
   }
   &__title {
-    color: map-get($paramMixi, title-color, #c0392b);
+    @extend %cartHover__title;
   }
   &__empty {
-    color: map-get($paramMixi, empty-color, #888);
+    @extend %cartHover__empty;
   }
   &__validate {
-    background: map-get($paramMixi, validate-background, #e74c3c);
-    color: map-get($paramMixi, validate-color, #fff);
+    @extend %cartHover__validate;
   }
 
   // Modifier contrast
@@ -126,16 +128,16 @@
   @return map-merge(
     $defaultValues,
     (
-      background-contrast: darken(map-get($defaultValues, popup-background, #fff), 10%),
-      color-contrast: lighten(map-get($defaultValues, title-color, #c0392b), 30%),
-      border-color-contrast: darken(map-get($defaultValues, popup-border, #e0e0e0), 18%),
+      background-contrast: darken(map-get($defaultValues, popup-background), 10%),
+      color-contrast: lighten(map-get($defaultValues, title-color), 30%),
+      border-color-contrast: darken(map-get($defaultValues, popup-border), 18%),
       shadow-contrast: 0 8px 32px rgba(0,0,0,0.18),
-      btn-background-contrast: darken(map-get($defaultValues, btn-background, #e74c3c), 15%),
+      btn-background-contrast: darken(map-get($defaultValues, btn-background), 15%),
       btn-color-contrast: #fff,
-      popup-background-contrast: darken(map-get($defaultValues, popup-background, #fff), 7%),
-      popup-border-contrast: darken(map-get($defaultValues, popup-border, #e0e0e0), 18%),
-      title-color-contrast: darken(map-get($defaultValues, title-color, #c0392b), 10%),
-      validate-background-contrast: darken(map-get($defaultValues, validate-background, #e74c3c), 15%),
+      popup-background-contrast: darken(map-get($defaultValues, popup-background), 7%),
+      popup-border-contrast: darken(map-get($defaultValues, popup-border), 18%),
+      title-color-contrast: darken(map-get($defaultValues, title-color), 10%),
+      validate-background-contrast: darken(map-get($defaultValues, validate-background), 15%),
       validate-color-contrast: #fff
     )
   );
@@ -156,6 +158,6 @@ $cartHover: (
 /************************************************************/
 /**************************BLOC BEM (extension)**************************/
 /************************************************************/
-.cart-hover {
+.cartHover {
   @include cartHover();
 }

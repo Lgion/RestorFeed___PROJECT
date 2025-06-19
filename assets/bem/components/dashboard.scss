@@ -1,0 +1,351 @@
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%dashboard {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background: #fff;
+  min-height: 100vh;
+  position: relative;
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 54px;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+  }
+  &__header-title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+  &__tabs {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 8px;
+  }
+  &__tab {
+    flex: 1;
+    padding: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    border-bottom: none;
+    text-align: center;
+    transition: border-bottom 0.15s;
+    &--active {
+      border-bottom: 2px solid #111;
+    }
+  }
+  &__employee {
+    padding: 0 20px;
+  }
+  &__employee-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 10px;
+    margin-top: 12px;
+  }
+  &__employee-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  &__employee-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  &__employee-name {
+    font-weight: 500;
+  }
+  &__employee-contact,
+  &__employee-location,
+  &__employee-schedule {
+    font-size: 13px;
+    color: #888;
+  }
+  &__employee-icon {
+    font-size: 18px;
+  }
+  &__employee-section {
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  &__employee-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  &__button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: #f4f4f4;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.14s;
+    &-arrow {
+      margin-left: auto;
+    }
+    &--assign, &--chat, &--direct {
+      // pour extensions futures
+    }
+  }
+  &__modal-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  &__modal {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px;
+    min-width: 260px;
+    box-shadow: 0 4px 24px #0002;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  &__modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: none;
+    font-size: 22px;
+    cursor: pointer;
+  }
+  &__modal-title {
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  &__modal-desc {
+    margin-bottom: 10px;
+  }
+  &__modal-input {
+    padding: 7px;
+    width: 100%;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    &--textarea {
+      height: 60px;
+      resize: vertical;
+    }
+  }
+  &__modal-btn {
+    background: #111;
+    color: #fff;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    width: 100%;
+    &--save, &--send {
+      // pour extensions futures
+    }
+  }
+  &__sales {
+    padding: 0 20px;
+  }
+  &__sales-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 10px;
+    margin-top: 12px;
+  }
+  &__sales-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  &__sales-tab {
+    padding: 6px 14px;
+    border-radius: 16px;
+    border: none;
+    background: #eee;
+    font-weight: 500;
+    margin-right: 4px;
+    cursor: pointer;
+    &--active {
+      background: #fff;
+      border: 1px solid #e74c3c;
+    }
+  }
+  &__sales-total {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  &__sales-change {
+    color: #2ecc40;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  &__sales-bars {
+    display: flex;
+    align-items: end;
+    height: 90px;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  &__sales-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  &__sales-bar {
+    width: 18px;
+    background: #ddd;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    // hauteur dynamique en inline style
+  }
+  &__sales-bar-label {
+    font-size: 12px;
+    color: #888;
+  }
+  &__nav {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100vw;
+    background: #fff;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-around;
+    padding: 6px 0;
+    z-index: 100;
+  }
+  &__nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 13px;
+    color: #888;
+    &--active {
+      color: #111;
+      font-weight: 600;
+    }
+  }
+  &__nav-label {
+    font-size: 12px;
+  }
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin dashboard(
+  $paramMixi_: $dashboard,
+  $exempleParamFromBEMComponentVariable: map-get($dashboard, exempleParamFromBEMComponentVariable)
+  // BEMMixinParam
+) {
+  $paramMixi: dashboard(map-merge($dashboard, $paramMixi_));
+  @extend %dashboard;
+  max-width: map-get($paramMixi, max-width, 400px);
+  margin: map-get($paramMixi, margin, 0 auto);
+  padding: map-get($paramMixi, padding, 0);
+  font-family: map-get($paramMixi, font-family, 'Inter, sans-serif');
+  background: map-get($paramMixi, background, #fff);
+  min-height: map-get($paramMixi, min-height, 100vh);
+  position: map-get($paramMixi, position, relative);
+
+  &__header { @extend %dashboard__header; }
+  &__header-title { @extend %dashboard__header-title; }
+  &__tabs { @extend %dashboard__tabs; }
+  &__tab { @extend %dashboard__tab; }
+  &__tab--active { @extend %dashboard__tab--active; }
+  &__employee { @extend %dashboard__employee; }
+  &__employee-title { @extend %dashboard__employee-title; }
+  &__employee-row { @extend %dashboard__employee-row; }
+  &__employee-avatar { @extend %dashboard__employee-avatar; }
+  &__employee-name { @extend %dashboard__employee-name; }
+  &__employee-contact { @extend %dashboard__employee-contact; }
+  &__employee-location { @extend %dashboard__employee-location; }
+  &__employee-schedule { @extend %dashboard__employee-schedule; }
+  &__employee-icon { @extend %dashboard__employee-icon; }
+  &__employee-section { @extend %dashboard__employee-section; }
+  &__employee-actions { @extend %dashboard__employee-actions; }
+  &__button { @extend %dashboard__button; }
+  &__button-arrow { @extend %dashboard__button-arrow; }
+  &__button--assign { @extend %dashboard__button--assign; }
+  &__button--chat { @extend %dashboard__button--chat; }
+  &__button--direct { @extend %dashboard__button--direct; }
+  &__modal-bg { @extend %dashboard__modal-bg; }
+  &__modal { @extend %dashboard__modal; }
+  &__modal-close { @extend %dashboard__modal-close; }
+  &__modal-title { @extend %dashboard__modal-title; }
+  &__modal-desc { @extend %dashboard__modal-desc; }
+  &__modal-input { @extend %dashboard__modal-input; }
+  &__modal-input--textarea { @extend %dashboard__modal-input--textarea; }
+  &__modal-btn { @extend %dashboard__modal-btn; }
+  &__modal-btn--save { @extend %dashboard__modal-btn--save; }
+  &__modal-btn--send { @extend %dashboard__modal-btn--send; }
+  &__sales { @extend %dashboard__sales; }
+  &__sales-title { @extend %dashboard__sales-title; }
+  &__sales-tabs { @extend %dashboard__sales-tabs; }
+  &__sales-tab { @extend %dashboard__sales-tab; }
+  &__sales-tab--active { @extend %dashboard__sales-tab--active; }
+  &__sales-total { @extend %dashboard__sales-total; }
+  &__sales-change { @extend %dashboard__sales-change; }
+  &__sales-bars { @extend %dashboard__sales-bars; }
+  &__sales-bar-col { @extend %dashboard__sales-bar-col; }
+  &__sales-bar { @extend %dashboard__sales-bar; }
+  &__sales-bar-label { @extend %dashboard__sales-bar-label; }
+  &__nav { @extend %dashboard__nav; }
+  &__nav-item { @extend %dashboard__nav-item; }
+  &__nav-item--active { @extend %dashboard__nav-item--active; }
+  &__nav-label { @extend %dashboard__nav-label; }
+}
+
+
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function dashboard($defaultValues) {
+  @return map-merge(
+    $defaultValues,
+    (
+      // background-contrast: darken(map-get($defaultValues, background), 12%),
+    )
+  );
+}
+
+/******VARAIBLES******/
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
+$dashboard: (
+  max-width: 400px,
+  margin: 0 auto,
+  padding: 0,
+  font-family: 'Inter, sans-serif',
+  background: #fff,
+  min-height: 100vh,
+  position: relative,
+  exempleParamFromBEMComponentVariable: null
+);
+
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.dashboard {
+  @include dashboard();
+}

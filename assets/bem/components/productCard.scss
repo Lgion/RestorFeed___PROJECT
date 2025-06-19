@@ -11,7 +11,33 @@
   padding: 16px;
   margin-bottom: 16px;
   background: #fff;
-  
+
+  // Nouveau : le lien qui recouvre la partie cliquable
+  &__link {
+    display: flex;
+    flex: 1 1 auto;
+    text-decoration: none;
+    color: inherit;
+    background: transparent;
+    border-radius: 8px;
+    transition: box-shadow 0.15s, background 0.15s;
+    &:hover, &:focus {
+      background: silver;
+      box-shadow: 0 2px 12px 0 rgba(44,62,80,0.06);
+      outline: none;
+    }
+    // Pour éviter que le lien prenne tout le padding du parent
+    padding: 0;
+    margin: 0;
+  }
+  // Nouveau : la "main" partie cliquable (image + info)
+  &__main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+  }
+
   &__image {
     border-radius: 8px;
     width: 80px;
@@ -48,6 +74,7 @@
   }
   &__admin-actions {
     display: flex;
+    flex-flow: column;
     gap: 8px;
     margin-top: 8px;
     justify-content: flex-end;
@@ -56,8 +83,7 @@
     border-radius: 8px;
     padding: 4px 0 0 0;
   }
-  &__edit-btn,
-  &__delete-btn {
+  &__btn {
     background: #f4f4f4;
     border: none;
     border-radius: 8px;
@@ -70,13 +96,17 @@
     align-items: center;
     justify-content: center;
   }
-  &__edit-btn:hover {
+  &__edit-btn-hover {
     background: #ffe9b3;
     color: #a67c00;
   }
-  &__delete-btn:hover {
+  &__delete-btn-hover {
     background: #ffeaea;
     color: #c0392b;
+  }
+  &__public {
+    display: flex;
+    flex-flow: column;
   }
   &__quantity {
     display: flex;
@@ -95,6 +125,35 @@
     border: 1.5px solid #eee;
     border-radius: 50%;
     width: 34px;
+    height: 34px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #c0392b;
+    cursor: pointer;
+    transition: background 0.16s, color 0.16s, box-shadow 0.12s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px #0001;
+    outline: none;
+    &:hover, &:focus {
+      background: #e74c3c;
+      color: #fff;
+      border-color: #e74c3c;
+      box-shadow: 0 4px 16px #e74c3c22;
+    }
+  }
+  &__quantity-value {
+    font-size: 19px;
+    font-weight: 600;
+    min-width: 32px;
+    text-align: center;
+    color: #c0392b;
+    background: #fff;
+    border-radius: 8px;
+    padding: 3px 10px;
+    border: 1.5px solid #eee;
+    box-shadow: 0 1px 4px #0001;
   }
 }
 
@@ -111,51 +170,74 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  border: 1px solid map-get($paramMixi, border-color, #eee);
+  border: 1px solid map-get($paramMixi, border-color);
   border-radius: map-get($paramMixi, border-radius, 8px);
   padding: map-get($paramMixi, padding, 16px);
   margin-bottom: map-get($paramMixi, margin-bottom, 16px);
   background: map-get($paramMixi, background, #fff);
 
+  &__main {
+    // styles personnalisables ici
+    @extend %productCard__main;
+  }
+  &__link {
+    // styles personnalisables ici
+    @extend %productCard__link;
+  }
   &__image {
     // styles personnalisables ici
+    @extend %productCard__image;
   }
   &__info {
     // styles personnalisables ici
+    @extend %productCard__info;
   }
   &__title {
     // styles personnalisables ici
+    @extend %productCard__title;
   }
   &__desc {
     // styles personnalisables ici
+    @extend %productCard__desc;
   }
   &__price {
     // styles personnalisables ici
+    @extend %productCard__price;
   }
   &__customizable {
     // styles personnalisables ici
+    @extend %productCard__customizable;
   }
   &__add-btn {
     // styles personnalisables ici
+    @extend %productCard__add-btn;
   }
   &__admin-actions {
     // styles personnalisables ici
+    @extend %productCard__admin-actions;
   }
-  &__edit-btn,
-  &__delete-btn {
+  &__edit-btn, &__delete-btn {
     // styles personnalisables ici
+    @extend %productCard__btn;
   }
   &__edit-btn:hover {
     // styles personnalisables ici
+    @extend %productCard__edit-btn-hover;
   }
   &__delete-btn:hover {
     // styles personnalisables ici
+    @extend %productCard__delete-btn-hover;
+  }
+  &__public {
+    @extend %productCard__public;
   }
   &__quantity {
     // styles personnalisables ici
+    @extend %productCard__quantity;
   }
   &__quantity-btn {
     // styles personnalisables ici
+    @extend %productCard__quantity-btn;
   }
 
   // Modifier contrast
@@ -192,6 +274,7 @@
 /******VARAIBLES******/
 //POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
 $productCard: (
+  body-color: #222,
   border-color: #eee,
   border-radius: 8px,
   padding: 16px,

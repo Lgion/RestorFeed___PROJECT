@@ -2,17 +2,21 @@ import { ROLES, getCurrentRole, setCurrentRole } from "../lib/roles";
 import { useState, useEffect } from "react";
 
 export default function RoleSwitcher() {
-  const [role, setRole] = useState("public");
+  const [role, setRole] = useState(() => getCurrentRole());
 
   useEffect(() => {
-    setRole(getCurrentRole());
+    // Synchronise le rôle local avec localStorage (restOrFeed.role)
+    const syncRole = () => setRole(getCurrentRole());
+    window.addEventListener('storage', syncRole);
+    return () => window.removeEventListener('storage', syncRole);
   }, []);
 
   const handleChange = (e) => {
-    setRole(e.target.value);
-    setCurrentRole(e.target.value);
-    window.location.reload(); // reload pour appliquer le rôle partout
+    setCurrentRole(e.target.value); // met à jour localStorage.restOrFeed.role
+    setRole(e.target.value);        // met à jour l'état local pour le select
+    window.location.reload();       // reload pour appliquer le rôle partout
   };
+
 
   return (
     <div style={{marginBottom: 24}}>

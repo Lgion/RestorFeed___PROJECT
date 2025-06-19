@@ -1,0 +1,90 @@
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%menuLayout {
+  max-width: 600px;
+  margin: 0 auto;
+  // padding: 10em 24px 24em;
+  &__title {
+    // Style pour le titre du menu
+  }
+  &__menu {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 24px;
+    gap: 24px;
+    position: absolute;
+  }
+  &__addBtn {
+    position: fixed;
+    bottom: 1em;
+    right: 0;
+    z-index: 2000;
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 32px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 18px #0002;
+    cursor: pointer;
+    transition: background 0.18s;
+    &:hover {
+      background: #e74c3c;
+    }
+  }
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin menuLayout(
+  $paramMixi_: $menuLayout,
+  $exempleParamFromBEMComponentVariable: map-get($menuLayout, exempleParamFromBEMComponentVariable)
+  // BEMMixinParam
+) {
+  $paramMixi: menuLayout(map-merge($menuLayout, $paramMixi_));
+  @extend %menuLayout;
+  max-width: map-get($paramMixi, max-width, 600px);
+  margin: map-get($paramMixi, margin, 0 auto);
+  // padding: map-get($paramMixi, padding, 10em 24px 24em);
+  &__title {
+    @extend %menuLayout__title;
+  }
+  &__menu {
+    @extend %menuLayout__menu;
+  }
+  &__addBtn {
+    @extend %menuLayout__addBtn;
+  }
+}
+
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function menuLayout($defaultValues) {
+  @return map-merge(
+    $defaultValues,
+    (
+      // background-contrast: darken(map-get($defaultValues, background), 12%),
+    )
+  );
+}
+
+/******VARAIBLES******/
+//POUR DÉFINIR DES VALEURS PAR DÉFAUT VIA UNE FONCTION
+$menuLayout: (
+  max-width: 600px,
+  margin: 0 auto,
+  // padding: 10em 24px 24em,
+  exempleParamFromBEMComponentVariable: null
+);
+
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.menuLayout {
+  @include menuLayout();
+}

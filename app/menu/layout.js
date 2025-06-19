@@ -2,57 +2,17 @@
 
 // import { products } from "../../data/products"; // plus utilisé
 import { useEffect, useState } from 'react';
+import { initializeAppData } from "../../utils/localStorageApp";
+import { getAppData, getAppDataKey, setAppDataKey } from "../../utils/localStorageApp";
 import ProductCard from "../../components/ProductCard";
+import ActionHeader from "../../components/ActionHeader";
 import Notification from "../../components/Notification";
 import Confetti from "../../components/Confetti";
 
 
 import { usePathname, useRouter } from 'next/navigation';
 
-function Modal({ open, onClose, children }) {
-  if (!open) return null;
-  return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100vw',
-      height: '100vh',
-      background: 'rgba(0,0,0,0.4)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000
-    }}>
-      <div style={{
-        background: '#fff',
-        borderRadius: 12,
-        boxShadow: '0 4px 32px rgba(0,0,0,0.25)',
-        padding: 32,
-        minWidth: 340,
-        minHeight: 200,
-        position: 'absolute',
-        top: "8em",
-        bottom: "3em",
-        maxWidth: '95vw',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-      }}>
-        <button onClick={onClose} style={{
-          position: 'absolute',
-          top: 12,
-          right: 12,
-          background: 'transparent',
-          border: 'none',
-          fontSize: 24,
-          cursor: 'pointer',
-          color: '#888',
-        }} aria-label="Fermer">×</button>
-        {children}
-      </div>
-    </div>
-  );
-}
+import Modal from "../../components/Modal";
 
 
 // Mapping catégorie -> emoji
@@ -68,73 +28,136 @@ const CATEGORY_ICONS = {
 
 
 export default function MenuLayout({ children }) {
+  const [quantities, setQuantities] = useState({});
   const [products, setProducts] = useState([]);
   const [orderSent, setOrderSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // Import dynamique pour ne charger products.js que côté client
   useEffect(() => {
     window.dispatchEvent(new Event('cart-updated'));
 
     if (typeof window !== 'undefined') {
-      let stored = localStorage.getItem('products');
+      let stored = getAppDataKey('products');
       if (!stored) {
         import('../../data/products').then(mod => {
-          localStorage.setItem('products', JSON.stringify(mod.products));
+          setAppDataKey('products', mod.products);
           setProducts(mod.products);
         });
       } else {
-        try {
-          setProducts(JSON.parse(stored));
-        } catch {
-          setProducts([]);
-        }
+        setProducts(stored);
       }
     }
   }, []);
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      let tableNumber = localStorage.getItem('tableNumber');
+      let tableNumber = getAppDataKey('tableNumber');
       if (!tableNumber) {
         tableNumber = String(Math.floor(10 + Math.random() * 90)); // 2 chiffres
-        localStorage.setItem('tableNumber', tableNumber);
+        setAppDataKey('tableNumber', tableNumber);
       }
     }
   }, []);
-  const handleValidate = () => {
-    // Simule l'envoi de la commande
-    localStorage.setItem("orders", JSON.stringify([
-      ...(JSON.parse(localStorage.getItem("orders") || "[]")),
-      {
-        items: cart,
-        date: new Date().toISOString(),
+  const handleValidate = async () => {
+    if (cart.length === 0) {
+      setNotif("Votre panier est vide.");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const userPseudo = getAppDataKey("userPseudo");
+      const tableNumber = getAppDataKey("tableNumber");
+      // Construction du payload pour Prisma
+      const payload = {
+        client: userPseudo,
+        table: tableNumber,
         status: "En cours",
-        client: (localStorage.getItem("userPseudo")),
-        table: localStorage.getItem("tableNumber")
+        items: cart.map(item => ({
+          productId: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        }))
+      };
+      console.log("[handleValidate] Payload:", payload);
+      // Création côté Prisma
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        setNotif("Erreur lors de la validation de la commande.");
+        console.error("[handleValidate] POST /api/orders failed", res.status);
+        return;
       }
-    ]));
-    localStorage.removeItem("cart");
-    setCart([]);
-    if (typeof window !== 'undefined') window.dispatchEvent(new Event('cart-updated'));
-    setOrderSent(true);
+      const createdOrder = await res.json();
+      console.log("[handleValidate] Order created:", createdOrder);
+      // Recharge la liste depuis Prisma
+      const ordersRes = await fetch("/api/orders");
+      if (!ordersRes.ok) {
+        setNotif("Erreur lors de la récupération des commandes.");
+        console.error("[handleValidate] GET /api/orders failed", ordersRes.status);
+        return;
+      }
+      const prismaOrders = await ordersRes.json();
+      setAppDataKey("orders", prismaOrders);
+      setAppDataKey("cart", []);
+      setCart([]);
+      setQuantities({});
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('cart-updated'));
+        window.dispatchEvent(new Event('orders-updated'));
+      }
+      setOrderSent(true);
+      setNotif("Commande validée avec succès !");
+    } catch (err) {
+      setNotif("Erreur inattendue lors de la validation de la commande.");
+      console.error("[handleValidate] Unexpected error:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const [cart, setCart] = useState(() => {
     if (typeof window !== "undefined") {
-      return JSON.parse(localStorage.getItem("cart") || "[]");
+      return getAppDataKey("cart") || [];
     }
     return [];
   });
+
+  // Synchronisation automatique du panier sur 'cart-updated'
+  useEffect(() => {
+    function onCartUpdated() {
+      setCart(getAppDataKey("cart") || []);
+    }
+    window.addEventListener('cart-updated', onCartUpdated);
+    return () => window.removeEventListener('cart-updated', onCartUpdated);
+  }, []);
+
+  // Synchronise les quantités à chaque changement de cart
+  useEffect(() => {
+    const q = {};
+    cart.forEach(item => {
+      q[item.id] = item.quantity || 1;
+    });
+    setQuantities(q);
+  }, [cart]);
   const [notif, setNotif] = useState("");
   const [categoryFilter, setCategoryFilter] = useState('Tous');
 
   const handleSub = (product) => {
     setCart((prev) => {
       const idx = prev.findIndex(item => item.id === product.id);
-      console.log(idx);
-
       if (idx === -1) return prev;
-      const updated = [...prev.slice(0, idx), ...prev.slice(idx + 1)];
+      let updated;
+      if ((prev[idx].quantity || 1) > 1) {
+        updated = prev.map((item, i) =>
+          i === idx ? { ...item, quantity: item.quantity - 1 } : item
+        );
+      } else {
+        updated = [...prev.slice(0, idx), ...prev.slice(idx + 1)];
+      }
       if (typeof window !== "undefined") {
-        localStorage.setItem("cart", JSON.stringify(updated));
+        setAppDataKey("cart", updated);
         window.dispatchEvent(new Event('cart-updated'));
       }
       return updated;
@@ -144,9 +167,17 @@ export default function MenuLayout({ children }) {
 
   const handleAdd = (product) => {
     setCart((prev) => {
-      const updated = [...prev, product];
+      const idx = prev.findIndex(item => item.id === product.id);
+      let updated;
+      if (idx === -1) {
+        updated = [...prev, { ...product, quantity: 1 }];
+      } else {
+        updated = prev.map((item, i) =>
+          i === idx ? { ...item, quantity: (item.quantity || 1) + 1 } : item
+        );
+      }
       if (typeof window !== "undefined") {
-        localStorage.setItem("cart", JSON.stringify(updated));
+        setAppDataKey("cart", updated);
         window.dispatchEvent(new Event('cart-updated'));
       }
       return updated;
@@ -156,10 +187,20 @@ export default function MenuLayout({ children }) {
 
   const handleRemove = (idx) => {
     setCart((prev) => {
+      const removed = prev[idx];
       const updated = prev.filter((_, i) => i !== idx);
       if (typeof window !== "undefined") {
-        localStorage.setItem("cart", JSON.stringify(updated));
+        setAppDataKey("cart", updated);
         window.dispatchEvent(new Event('cart-updated'));
+      }
+      // Update quantities
+      if (removed) {
+        setQuantities(q => {
+          const nq = { ...q };
+          nq[removed.id] = Math.max((nq[removed.id] || 1) - 1, 0);
+          if (nq[removed.id] === 0) delete nq[removed.id];
+          return nq;
+        });
       }
       return updated;
     });
@@ -173,12 +214,12 @@ export default function MenuLayout({ children }) {
   { products.sort((a, b) => a.category.localeCompare(b.category)) }
 
 
-  // Détection admin/superadmin
+  // Détection admin
   const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const role = localStorage.getItem('role');
-      setIsAdmin(role === 'admin' || role === 'superadmin');
+      const role = getAppDataKey('role');
+      setIsAdmin(role === 'admin');
     }
   }, []);
 
@@ -187,7 +228,7 @@ export default function MenuLayout({ children }) {
     if (!window.confirm('Supprimer ce produit ?')) return;
     const newProducts = products.filter(p => p.id !== id);
     setProducts(newProducts);
-    localStorage.setItem('products', JSON.stringify(newProducts));
+    setAppDataKey('products', newProducts);
   };
   const handleEditProduct = (prod) => {
     setEditProduct(prod);
@@ -202,6 +243,7 @@ export default function MenuLayout({ children }) {
 
   return (
     <>
+      <ActionHeader handleValidate={handleValidate} isLoading={isLoading} />
       <main className="menuLayout">
         <Notification message={notif} onClose={() => setNotif("")} />
 
@@ -229,8 +271,8 @@ export default function MenuLayout({ children }) {
         </section>
 
         <ul className="products">
-          {(categoryFilter === 'Tous' ? products : products.filter(p => p.category === categoryFilter)).map((prod) => {
-            const quantity = cart.filter(item => item.id === prod.id).length;
+           {(categoryFilter === 'Tous' ? products : products.filter(p => p.category === categoryFilter)).map((prod) => {
+            const quantity = quantities[prod.id] || 0;
             return (
               <ProductCard
                 key={prod.id}
@@ -249,83 +291,43 @@ export default function MenuLayout({ children }) {
               {/* Formulaire d'ajout/édition produit ici */}
               <div style={{ minWidth: 300 }}>
                 <h2>{editProduct ? 'Éditer' : 'Ajouter'} un produit</h2>
-                <form className="product-form" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <form className="productForm">
                   <label>
                     Nom du produit
-                    <input name="name" type="text" defaultValue={editProduct?.name || ''} required />
+                    <input className="productForm__input" name="name" type="text" defaultValue={editProduct?.name || ''} required />
                   </label>
                   <label>
                     Description
-                    <textarea name="description" defaultValue={editProduct?.description || ''} />
+                    <textarea className="productForm__input productForm__input--textarea" name="description" defaultValue={editProduct?.description || ''} />
                   </label>
                   <label>
                     Prix (€)
-                    <input name="price" type="number" step="0.01" min="0" defaultValue={editProduct?.price || ''} required />
+                    <input className="productForm__input" name="price" type="number" step="0.01" min="0" defaultValue={editProduct?.price || ''} required />
                   </label>
                   <label>
                     Catégorie
-                    <input name="category" type="text" defaultValue={editProduct?.category || ''} required />
+                    <input className="productForm__input" name="category" type="text" defaultValue={editProduct?.category || ''} required />
                   </label>
                   <label>
                     URL de l'image
-                    <input name="image" type="text" defaultValue={editProduct?.image || ''} />
+                    <input className="productForm__input" name="image" type="text" defaultValue={editProduct?.image || ''} />
                   </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <input name="customizable" type="checkbox" defaultChecked={!!editProduct?.customizable} /> Customisable
+                  <label className="productForm__checkboxWrapper">
+                    <input className="productForm__checkbox" name="customizable" type="checkbox" defaultChecked={!!editProduct?.customizable} /> Customisable
                   </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <input name="status" type="checkbox" defaultChecked={editProduct?.status !== false} /> Actif (affiché)
+                  <label className="productForm__checkboxWrapper">
+                    <input className="productForm__checkbox" name="status" type="checkbox" defaultChecked={editProduct?.status !== false} /> Actif (affiché)
                   </label>
-                  <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-                    <button type="submit" style={{ background: '#27ae60', color: '#fff', border: 'none', borderRadius: 4, padding: '10px 22px', fontWeight: 'bold', fontSize: '1em', cursor: 'pointer' }}>Enregistrer</button>
-                    <button type="button" onClick={() => setShowEditModal(false)} style={{ background: '#e74c3c', color: '#fff', border: 'none', borderRadius: 4, padding: '10px 22px', fontWeight: 'bold', fontSize: '1em', cursor: 'pointer' }}>Annuler</button>
+                  <div className="productForm__actions">
+                    <button className="productForm__submit" type="submit">Enregistrer</button>
+                    <button className="productForm__cancel" type="button" onClick={() => setShowEditModal(false)}>Annuler</button>
                   </div>
                 </form>
-                <button onClick={() => setShowEditModal(false)}>Annuler</button>
               </div>
             </Modal>
           )}
         </ul>
-        <div className="cart">
-          <h3>Panier</h3>
-          {/* Panier groupé par produit (id) */}
-          {(() => {
-            const grouped = cart.reduce((acc, item) => {
-              const key = item.id;
-              if (!acc[key]) {
-                acc[key] = { ...item, quantity: item.quantity || 1 };
-              } else {
-                acc[key].quantity += item.quantity || 1;
-              }
-              return acc;
-            }, {});
-            const groupedArr = Object.values(grouped);
-            return groupedArr.length === 0 ? (
-              <div>Votre panier est vide.</div>
-            ) : (
-              <>
-                <ul style={{ padding: 0, listStyle: 'none' }}>
-                  {groupedArr.map((item) => (
-                    <li key={item.id} style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
-                      <span style={{ flex: 2 }}>{item.name}</span>
-                      <span style={{ flex: 1, textAlign: 'right' }}>{item.quantity} × {item.price.toFixed(2)} €</span>
-                      <span style={{ flex: 1, textAlign: 'right', fontWeight: 'bold' }}>{(item.price * item.quantity).toFixed(2)} €</span>
-                      <button onClick={() => handleRemove(cart.findIndex(i => i.id === item.id))} style={{ background: '#e74c3c', color: '#fff', border: 'none', borderRadius: 4, padding: '6px 12px', marginLeft: 8, cursor: 'pointer' }}>Supprimer</button>
-                    </li>
-                  ))}
-                </ul>
-                <div style={{ marginTop: 12, fontWeight: 'bold' }}>
-                  Total : {groupedArr.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)} €
-                </div>
-                <button onClick={handleValidate} style={{ marginTop: 24, background: '#27ae60', color: '#fff', border: 'none', borderRadius: 4, padding: '12px 24px', fontWeight: 'bold', fontSize: '1.1em', cursor: 'pointer' }}>
-                  {/* Valider la commande ({groupedArr.reduce((sum, item) => sum + item.quantity, 0)}) */}
-                  Valider la commande
-                </button>
-              </>
-            );
-          })()}
 
-        </div>
       </main>
       <Modal open={isModal} onClose={() => router.push('/menu')}>
         {children}

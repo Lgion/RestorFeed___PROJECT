@@ -1,0 +1,103 @@
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+%categoryFilter {
+  margin: 16px 0;
+  list-style: none;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  position: fixed;
+  top: 10em;
+  left: 2em;
+
+  &__icon {
+    margin-right: 8px;
+    font-size: 1.2em;
+    vertical-align: middle;
+    display: inline-block;
+  }
+  &__btn {
+    background: #fff;
+    color: #c0392b;
+    border: 1px solid #e74c3c;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    &--active {
+      background: #e74c3c;
+      color: #fff;
+    }
+  }
+  &--vertical {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    margin: 0 24px 0 0;
+    margin: 0;
+    .categoryFilter__btn {
+      margin-bottom: 8px;
+      width: 100px;
+      text-align: left;
+    }
+  }
+}
+
+/************************************************************/
+/**************************MIXIN**************************/
+/************************************************************/
+@mixin categoryFilter(
+  $paramMixi_: $categoryFilter,
+  $exempleParamFromBEMComponentVariable: map-get($categoryFilter, exempleParamFromBEMComponentVariable)
+  // BEMMixinParam
+) {
+  $paramMixi: categoryFilter(map-merge($categoryFilter, $paramMixi_));
+  @extend %categoryFilter;
+  margin: map-get($paramMixi, margin, 16px 0);
+  list-style: map-get($paramMixi, list-style, none);
+  display: map-get($paramMixi, display, flex);
+  gap: map-get($paramMixi, gap, 8px);
+  flex-wrap: map-get($paramMixi, flex-wrap, wrap);
+  position: map-get($paramMixi, position, fixed);
+  top: map-get($paramMixi, top, 10em);
+  left: map-get($paramMixi, left, 2em);
+
+  &__icon { @extend %categoryFilter__icon; }
+  &__btn { @extend %categoryFilter__btn; }
+  &__btn--active { @extend %categoryFilter__btn--active; }
+  &--vertical { @extend %categoryFilter--vertical; }
+}
+
+/************************************************************/
+/**************************FUNCTION**************************/
+/************************************************************/
+@function categoryFilter($defaultValues) {
+  @return map-merge(
+    $defaultValues,
+    (
+      // background-contrast: darken(map-get($defaultValues, background), 12%),
+    )
+  );
+}
+
+/******VARAIBLES******/
+$categoryFilter: (
+  margin: 16px 0,
+  list-style: none,
+  display: flex,
+  gap: 8px,
+  flex-wrap: wrap,
+  position: fixed,
+  top: 10em,
+  left: 2em,
+  exempleParamFromBEMComponentVariable: null
+);
+
+/************************************************************/
+/**************************BLOC BEM (extension)**************************/
+/************************************************************/
+.categoryFilter {
+  @include categoryFilter();
+}
