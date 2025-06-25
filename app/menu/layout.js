@@ -2,8 +2,9 @@
 
 // import { products } from "../../data/products"; // plus utilisé
 import { useEffect, useState } from 'react';
-import { initializeAppData } from "../../utils/localStorageApp";
-import { getAppData, getAppDataKey, setAppDataKey } from "../../utils/localStorageApp";
+import { useSearchParams } from "next/navigation";
+// import { initializeAppData } from "../../utils/localStorageApp";
+import { getAppDataKey, setAppDataKey } from "../../utils/localStorageApp";
 import ProductCard from "../../components/ProductCard";
 import ActionHeader from "../../components/ActionHeader";
 import Notification from "../../components/Notification";
@@ -27,11 +28,15 @@ const CATEGORY_ICONS = {
 };
 
 
+
 export default function MenuLayout({ children }) {
+  const searchParams = useSearchParams();
   const [quantities, setQuantities] = useState({});
   const [products, setProducts] = useState([]);
   const [orderSent, setOrderSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [filterVisible, setFilterVisible] = useState(false);
+  
   // Import dynamique pour ne charger products.js que côté client
   useEffect(() => {
     window.dispatchEvent(new Event('cart-updated'));
@@ -48,15 +53,11 @@ export default function MenuLayout({ children }) {
       }
     }
   }, []);
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      let tableNumber = getAppDataKey('tableNumber');
-      if (!tableNumber) {
-        tableNumber = String(Math.floor(10 + Math.random() * 90)); // 2 chiffres
-        setAppDataKey('tableNumber', tableNumber);
-      }
-    }
-  }, []);
+
+  const toggleFilter = () => {
+    setFilterVisible(!filterVisible);
+  };
+
   const handleValidate = async () => {
     if (cart.length === 0) {
       setNotif("Votre panier est vide.");
@@ -243,14 +244,18 @@ export default function MenuLayout({ children }) {
 
   return (
     <>
-      <ActionHeader handleValidate={handleValidate} isLoading={isLoading} />
+      <ActionHeader 
+        handleValidate={handleValidate} 
+        isLoading={isLoading} 
+        onFilterToggle={toggleFilter} 
+        filterVisible={filterVisible}
+        cart={cart}
+      />
       <main className="menuLayout">
         <Notification message={notif} onClose={() => setNotif("")} />
 
-        <h1 className="menuLayout__title">Menu Digital - Sushi</h1>
-
         <section className="menuLayout__menu">
-            <ul className="categoryFilter categoryFilter--vertical">
+            <ul className={`categoryFilter categoryFilter--vertical${filterVisible ? ' categoryFilter--mobile-visible' : ''}`}>
               {/* Mapping catégorie -> emoji */}
               {['Tous', ...Array.from(new Set(products.map(p => p.category)))].map(cat => (
                 <li

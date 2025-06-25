@@ -4,12 +4,37 @@
 %categoryFilter {
   margin: 16px 0;
   list-style: none;
-  display: flex;
+  display: none; // Hidden by default on mobile
   gap: 8px;
   flex-wrap: wrap;
   position: fixed;
-  top: 10em;
-  left: 2em;
+  top: 64px;
+  left: 16px;
+  right: 16px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 2998;
+
+  // Mobile visible state
+  &--mobile-visible {
+    display: flex;
+    animation: slideDown 0.3s ease-out;
+  }
+
+  // Desktop styles
+  @media (min-width: 1024px) {
+    display: flex !important;
+    position: static;
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    margin: 16px 0;
+    animation: none;
+  }
 
   &__icon {
     margin-right: 8px;
@@ -17,6 +42,7 @@
     vertical-align: middle;
     display: inline-block;
   }
+  
   &__btn {
     background: #fff;
     color: #c0392b;
@@ -26,22 +52,72 @@
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s;
+    font-size: 14px;
+    
+    @media (max-width: 480px) {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+    
+    @media (min-width: 1024px) {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+    
     &--active {
       background: #e74c3c;
       color: #fff;
     }
+    
+    &:hover {
+      background: #e74c3c;
+      color: #fff;
+      transform: translateY(-1px);
+    }
   }
+  
   &--vertical {
     flex-direction: column;
     align-items: flex-start;
     gap: 0;
     margin: 0 24px 0 0;
     margin: 0;
+    
+    @media (min-width: 1024px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      margin: 0 24px 0 0;
+    }
+    
     .categoryFilter__btn {
       margin-bottom: 8px;
       width: 100px;
       text-align: left;
+      
+      @media (max-width: 1023px) {
+        width: auto;
+        min-width: 80px;
+        text-align: center;
+      }
+      
+      @media (min-width: 1024px) {
+        width: 100px;
+        text-align: left;
+      }
     }
+  }
+}
+
+// Animation pour le toggle mobile
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -57,16 +133,24 @@
   @extend %categoryFilter;
   margin: map-get($paramMixi, margin, 16px 0);
   list-style: map-get($paramMixi, list-style, none);
-  display: map-get($paramMixi, display, flex);
+  display: map-get($paramMixi, display, none);
   gap: map-get($paramMixi, gap, 8px);
   flex-wrap: map-get($paramMixi, flex-wrap, wrap);
   position: map-get($paramMixi, position, fixed);
-  top: map-get($paramMixi, top, 10em);
-  left: map-get($paramMixi, left, 2em);
+  top: map-get($paramMixi, top, 64px);
+  left: map-get($paramMixi, left, 16px);
+  right: map-get($paramMixi, right, 16px);
+  background: map-get($paramMixi, background, #fff);
+  border: map-get($paramMixi, border, 1px solid #e0e0e0);
+  border-radius: map-get($paramMixi, border-radius, 8px);
+  padding: map-get($paramMixi, padding, 16px);
+  box-shadow: map-get($paramMixi, box-shadow, 0 4px 12px rgba(0,0,0,0.1));
+  z-index: map-get($paramMixi, z-index, 2998);
 
   &__icon { @extend %categoryFilter__icon; }
   &__btn { @extend %categoryFilter__btn; }
   &__btn--active { @extend %categoryFilter__btn--active; }
+  &--mobile-visible  { @extend %categoryFilter--mobile-visible ; }
   &--vertical { @extend %categoryFilter--vertical; }
 }
 
@@ -86,12 +170,19 @@
 $categoryFilter: (
   margin: 16px 0,
   list-style: none,
-  display: flex,
+  display: none,
   gap: 8px,
   flex-wrap: wrap,
   position: fixed,
-  top: 10em,
-  left: 2em,
+  top: 64px,
+  left: 16px,
+  right: 16px,
+  background: #fff,
+  border: 1px solid #e0e0e0,
+  border-radius: 8px,
+  padding: 16px,
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1),
+  z-index: 2998,
   exempleParamFromBEMComponentVariable: null
 );
 

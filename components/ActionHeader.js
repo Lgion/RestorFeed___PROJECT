@@ -8,10 +8,13 @@ import { UserButton,
   SignedOut,
 } from '@clerk/nextjs'
 import { Tooltip } from "react-tooltip";
-import { ClipboardList, LayoutDashboard, Users, ShieldCheck, Truck } from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { ClipboardList, LayoutDashboard, Users, ShieldCheck, Truck, Menu, ShoppingCart, Filter } from "lucide-react";
+import { getAppDataKey, setAppDataKey } from "../utils/localStorageApp";
 import RoleGuard from "./RoleGuard";
 import RoleSwitcher from "./RoleSwitcher";
-import Link from "next/link";
+import CartHover from "./CartHover";
 
 const actions = [
   {
@@ -46,13 +49,44 @@ const actions = [
   },
 ];
 
-import CartHover from "./CartHover";
-
-export default function ActionHeader({ handleValidate, isLoading }) {
+export default function ActionHeader({ handleValidate, isLoading, cart = [], onFilterToggle, filterVisible = false }) {
   const [hovered, setHovered] = useState(null);
   const [shrink, setShrink] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [tableNumber, setTableNumber] = useState('');
+  
+  // États pour les toggles mobile
+  const [actionsVisible, setActionsVisible] = useState(false);
+  const [cartVisible, setCartVisible] = useState(false);
+  
+  const searchParams = useSearchParams();
   const lastScroll = useRef(0);
+
+  useEffect(() => {
+    let tableNumber = getAppDataKey('tableNumber');
+    if (typeof window !== 'undefined') {
+      if (!tableNumber) {
+        tableNumber = searchParams.get("tableNumber") || String(Math.floor(1 + Math.random() * 10)); // 2 chiffres
+        setAppDataKey('tableNumber', tableNumber);
+      }
+      try {
+        setTableNumber(tableNumber ?? '');
+      } catch {
+        setTableNumber('');
+      }
+    }
+  }, []);
+
+  const handleTableChange = (e) => {
+    const value = e.target.value;
+    setTableNumber(value);
+    try {
+      const restOrFeed = JSON.parse(localStorage.getItem('restOrFeed')) || {};
+      localStorage.setItem('restOrFeed', JSON.stringify({ ...restOrFeed, tableNumber: value }));
+    } catch {
+      localStorage.setItem('restOrFeed', JSON.stringify({ tableNumber: value }));
+    }
+  };
 
   useEffect(() => {
     let ticking = false;
@@ -60,22 +94,17 @@ export default function ActionHeader({ handleValidate, isLoading }) {
       const y = window.scrollY;
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          // console.log('[ActionHeader] scrollY:', y, 'lastScroll:', lastScroll.current, 'shrink:', shrink, 'hidden:', hidden);
           setShrink(prev => {
             const newShrink = y > 40;
-            // if (prev !== newShrink) console.log('[ActionHeader] setShrink:', newShrink);
             return newShrink;
           });
-          // Le header ne disparaît que si on scrolle vers le bas ET qu’on est sous 80px
           if (y > 80) {
             setHidden(prev => {
-              // if (prev !== false) console.log('[ActionHeader] setHidden: false (y > 80)');
               return false;
             });
           } else {
             const shouldHide = y > 40 && y > lastScroll.current;
             setHidden(prev => {
-              // if (prev !== shouldHide) console.log('[ActionHeader] setHidden:', shouldHide, '(y <= 80)');
               return shouldHide;
             });
           }
@@ -91,7 +120,41 @@ export default function ActionHeader({ handleValidate, isLoading }) {
 
   return (
     <header className={`actionHeader${shrink ? ' actionHeader--shrink' : ''}${hidden ? ' actionHeader--hide' : ''}`}>
-      <div className="actionHeader__actions">
+      {/* Mobile toggle buttons */}
+      <div className="actionHeader__mobile-toggles">
+        <button 
+          className={`actionHeader__toggle-btn${actionsVisible ? ' actionHeader__toggle-btn--active' : ''}`}
+          onClick={() => setActionsVisible(!actionsVisible)}
+          aria-label="Toggle actions menu"
+        >
+          <Menu size={20} />
+        </button>
+        
+        <button 
+          className={`actionHeader__toggle-btn${filterVisible ? ' actionHeader__toggle-btn--active' : ''}`}
+          onClick={onFilterToggle}
+          aria-label="Toggle category filter"
+        >
+          <Filter size={20} />
+        </button>
+        
+        <h1 className="menuLayout__title">Menu Digital - Sushi</h1>
+
+        <button 
+          className={`actionHeader__toggle-btn${cartVisible ? ' actionHeader__toggle-btn--active' : ''}`}
+          onClick={() => setCartVisible(!cartVisible)}
+          aria-label="Toggle cart"
+        >
+          <ShoppingCart size={20} />
+          {cart.length > 0 && (
+            <span className="actionHeader__toggle-btn-badge">
+              {cart.reduce((sum, item) => sum + item.quantity, 0)}
+            </span>
+          )}
+        </button>
+      </div>
+
+      <div className={`actionHeader__actions${actionsVisible ? ' actionHeader__actions--mobile-visible' : ''}`}>
       {actions.map(({ minRole, icon: Icon, href, label }, idx) => (
         <RoleGuard key={label} minRole={minRole}>
           <Link href={href} legacyBehavior>
@@ -101,6 +164,7 @@ export default function ActionHeader({ handleValidate, isLoading }) {
               onMouseLeave={() => setHovered(null)}
               onMouseDown={() => setHovered(idx)}
               onMouseUp={() => setHovered(null)}
+              onClick={() => setActionsVisible(false)} // Fermer le menu mobile après clic
             >
               <Icon size={28} color="#c0392b" />
               {hovered === idx && (
@@ -112,9 +176,27 @@ export default function ActionHeader({ handleValidate, isLoading }) {
       ))}
       <RoleSwitcher />
       </div>
-      <div className="actionHeader__cart">
+      
+      <div className={`actionHeader__cart${cartVisible ? ' actionHeader__cart--mobile-visible' : ''}`}>
         <CartHover handleValidate={handleValidate} isLoading={isLoading} />
       </div>
+      
+      <RoleGuard minRole="employee">
+        <select
+          value={tableNumber}
+          onChange={handleTableChange}
+          className="actionHeader__table"
+        >
+          <option value="">Choisi un numéro de table</option>
+          {Array.from({ length: process.env.NEXT_PUBLIC_NOMBRE_TABLES}).map((_, i) => (
+            <option key={i + 1} value={i + 1}>{i + 1}</option>
+          ))}
+        </select>
+      </RoleGuard>
+      <RoleGuard minRole="public">
+        <b className="actionHeader__tableActive">#{tableNumber}</b>
+      </RoleGuard>
+      
       <div className="actionHeader__clerk">
         <SignedOut>
           <SignInButton className="actionHeader__clerk-btn actionHeader__clerk-btn--signin" />

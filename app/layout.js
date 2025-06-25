@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
     <ClerkProvider>
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
-          <ActionHeader />
+          {/* <ActionHeader /> */}
           <ClerkSync />
           {children}
         </body>

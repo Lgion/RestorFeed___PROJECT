@@ -84,23 +84,25 @@ export default function CartHover({ handleValidate, isLoading }) {
           <div className="cartHover__empty">Aucune commande enregistrée.</div>
         ) : (
           <ul className="cartHover__orders">
-            {orders.map((order, idx) => (
+            {console.log(orders)}
+            
+            {orders.filter(anyOrder=>anyOrder.table==JSON.parse(localStorage.restOrFeed).tableNumber).map((myOrder, idx) => (
               <li
-                key={order.id || idx}
+                key={myOrder.id || idx}
                 className="cartHover__order"
                 onClick={() => setOpenOrderIdx(openOrderIdx === idx ? null : idx)}
                 style={{cursor: 'pointer'}}
               >
                 <div className="cartHover__orderBtn" style={{width: '100%', textAlign: 'left'}}>
-                  <b>Commande #{order.id || idx+1}</b> — {order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Date inconnue'}
+                  <b>Commande #{myOrder.id || idx+1}</b> — {myOrder.createdAt ? new Date(myOrder.createdAt).toLocaleString() : 'Date inconnue'}
                   <span style={{marginLeft:8, color:'#888', fontWeight:'normal'}}>
-                    {order.status ? `(${order.status})` : ''}
-                    {order.table ? ` | Table ${order.table}` : ''}
+                    {myOrder.status ? `(${myOrder.status})` : ''}
+                    {myOrder.table ? ` | Table ${myOrder.table}` : ''}
                   </span>
                 </div>
-                {openOrderIdx === idx && (order.items || order.products) && (
+                {openOrderIdx === idx && (myOrder.items || myOrder.products) && (
                   <ul className="cartHover__orderList">
-                    {(order.items || order.products).map(prod => (
+                    {(myOrder.items || myOrder.products).map(prod => (
                       <li key={prod.id || prod.productId} className="cartHover__orderItem">
                         <span>{prod.name || prod.product?.name || ''}</span>
                         <span>x{prod.quantity || 1}</span>

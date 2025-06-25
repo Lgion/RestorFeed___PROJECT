@@ -14,7 +14,13 @@ export default function ClerkSync() {
         // Vérifie si user existe dans Prisma
         let prismaUser = null;
         let res = await fetch(`/api/users/clerk/${user.id}`);
-        const role = user.emailAddresses?.[0]?.emailAddress === process.env.NEXT_PUBLIC_ADMIN_EMAIL ? "admin" : "public";
+        const role = user.emailAddresses?.[0]?.emailAddress === process.env.NEXT_PUBLIC_ADMIN_EMAIL 
+          ? "admin" 
+          : user.emailAddresses?.[0]?.emailAddress === process.env.NEXT_PUBLIC_MANAGER_EMAIL
+            ? "manager"
+            : user.emailAddresses?.[0]?.emailAddress === process.env.NEXT_PUBLIC_EMPLOYEE_EMAIL
+              ? "employee"
+              : "public";
         console.log(role);
         console.log(process.env.NEXT_PUBLIC_ADMIN_EMAIL);
         console.log(user.emailAddresses?.[0]?.emailAddress);

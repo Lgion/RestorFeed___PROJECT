@@ -29,7 +29,7 @@ export default function CartPage() {
   const handleValidate = () => {
     // Simule l'envoi de la commande
     const orders = getAppDataKey("orders") || [];
-    const userPseudo = getAppDataKey("userPseudo");
+    const userPseudo = getAppDataKey("userPseudo") || getAppDataKey('user')?.email || getAppDataKey('role');
     const tableNumber = getAppDataKey("tableNumber");
     const newOrder = {
       items: cart,

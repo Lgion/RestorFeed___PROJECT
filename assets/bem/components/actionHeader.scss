@@ -7,19 +7,117 @@
   top: 0; left: 0; right: 0;
   z-index: 3000;
   display: flex;
-  gap: 24px;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   transition: padding 0.22s cubic-bezier(.65,.05,.36,1), box-shadow 0.22s, transform 0.25s cubic-bezier(.65,.05,.36,1), opacity 0.18s;
   will-change: padding, box-shadow, transform, opacity;
   
-  &__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    align-items: center;
-    flex: 1;
+  // Desktop styles 
+  @media (min-width: 1024px) {
+    flex-direction: row;
     justify-content: center;
+    gap: 24px;
+    padding: 18px 0 14px 0;
+  }
+  
+  // Mobile toggle buttons container
+  &__mobile-toggles {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    
+    @media (min-width: 1024px) {
+      display: none;
+    }
+  }
+  
+  // Toggle button base styles
+  &__toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 8px;
+    min-width: 40px;
+    min-height: 40px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    
+    &:hover {
+      background: #f5f5f5;
+      border-color: #e74c3c;
+    }
+    
+    &--active {
+      background: #e74c3c;
+      border-color: #e74c3c;
+      color: #fff;
+    }
+    
+    // Badge for cart count
+    &-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #e74c3c;
+      color: #fff;
+      border-radius: 50%;
+      min-width: 18px;
+      height: 18px;
+      font-size: 12px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    
+    @media (min-width: 1024px) {
+      display: none;
+    }
+  }
+  
+  &__actions {
+    display: none; // Hidden by default on mobile
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 2999;
+    
+    // Mobile visible state
+    &--mobile-visible {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      animation: slideDown 0.3s ease-out;
+    }
+    
+    @media (min-width: 1024px) {
+      display: flex !important;
+      position: static;
+      background: transparent;
+      border: none;
+      padding: 0;
+      box-shadow: none;
+      flex: 1;
+      gap: 24px;
+      align-items: center;
+      justify-content: center;
+      animation: none;
+    }
+    
     >a{
       >span{
         position: absolute;
@@ -29,84 +127,123 @@
         background: #222;
         color: #fff;
         padding: 6px 14px;
-        border-radius: 6;
+        border-radius: 6px;
         font-size: 14px;
         white-space: nowrap;
         z-index: 100;
         pointer-events: none;
         box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+        
+        @media (max-width: 1023px) {
+          display: none; // Masquer les tooltips sur mobile/tablet
+        }
       }
     }
     >div{
       background: white;
       padding: 1em;
       border-radius: 5px;
-      background: white;
-      padding: 1em;
-      border-radius: 0 0 5px 5px;
       position: absolute;
       bottom: -75px;
       box-shadow: 0 1px 10px .1px black;
       color: white;
+      
+      @media (max-width: 1023px) {
+        position: relative;
+        bottom: auto;
+        margin-top: 8px;
+      }
     }
   }
+  
   &__cart {
-    position: absolute;
-    right: 10px;
-    bottom: -40px;
+    display: none; // Hidden by default on mobile
+    
+    // Mobile visible state
+    &--mobile-visible {
+      display: block;
+      position: fixed;
+      top: 64px;
+      right: 16px;
+      z-index: 2999;
+      animation: slideInRight 0.3s ease-out;
+    }
+    
+    @media (min-width: 1024px) {
+      display: block !important;
+      position: absolute;
+      right: 10px;
+      bottom: -40px;
+      animation: none;
+    }
   }
 
   &__clerk {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     align-items: center;
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    z-index: 3100;
-    @media (max-width: 600px) {
-      flex-direction: column;
-      top: 60px;
-      right: 10px;
+    
+    @media (min-width: 1024px) {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      z-index: 3100;
+      gap: 12px;
     }
-  }
-  &__clerk-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: #fff;
-    color: #222;
-    border: 1px solid #e0e0e0;
-    border-radius: 7px;
-    padding: 7px 18px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.13s;
-    outline: none;
-    &:hover, &:focus {
-      background: #f5f5f5;
-      color: #0a6;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-      transform: translateY(-2px) scale(1.04);
-    }
-    &--signin {
-      color: #1565c0;
-      border-color: #1976d2;
-      &:hover, &:focus { color: #fff; background: #1976d2; }
-    }
-    &--signup {
-      color: #2e7d32;
-      border-color: #388e3c;
-      &:hover, &:focus { color: #fff; background: #388e3c; }
-    }
-    &--user {
-      padding: 0;
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      &:hover, &:focus { background: #f5f5f5; }
+    
+    &-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      color: #222;
+      border: 1px solid #e0e0e0;
+      border-radius: 7px;
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.13s;
+      outline: none;
+      
+      @media (max-width: 480px) {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+      }
+      
+      @media (min-width: 1024px) {
+        padding: 7px 18px;
+        font-size: 1rem;
+      }
+      
+      &:hover, &:focus {
+        background: #f5f5f5;
+        color: #0a6;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        transform: translateY(-2px) scale(1.04);
+        
+        @media (max-width: 1023px) {
+          transform: scale(1.02); // Réduire l'animation sur mobile
+        }
+      }
+      &--signin {
+        color: #1565c0;
+        border-color: #1976d2;
+        &:hover, &:focus { color: #fff; background: #1976d2; }
+      }
+      &--signup {
+        color: #2e7d32;
+        border-color: #388e3c;
+        &:hover, &:focus { color: #fff; background: #388e3c; }
+      }
+      &--user {
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        &:hover, &:focus { background: #f5f5f5; }
+      }
     }
   }
 
@@ -114,20 +251,83 @@
     background: white;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
-    padding: 10px;
+    padding: 8px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     position: relative;
     transition: all 0.14s;
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 36px;
+    min-height: 36px;
     box-shadow: none;
+    
+    @media (max-width: 480px) {
+      min-width: 32px;
+      min-height: 32px;
+      padding: 6px;
+      border-radius: 6px;
+    }
+    
+    @media (min-width: 1024px) {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 10px;
+    }
+    
     &--hovered {
       background: #f4f4f4;
       box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     }
+  }
+  
+  // États du header (shrink, hide)
+  &--shrink {
+    padding: 8px 16px;
+    
+    @media (min-width: 1024px) {
+      padding: 12px 0 8px 0;
+    }
+    
+    .actionHeader__action {
+      min-width: 32px;
+      min-height: 32px;
+      padding: 6px;
+      
+      @media (min-width: 1024px) {
+        min-width: 36px;
+        min-height: 36px;
+        padding: 8px;
+      }
+    }
+  }
+  
+  &--hide {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+// Animations pour les toggles mobiles
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -152,9 +352,24 @@
     >div{
       background: map-get($actionHeader, border-bottom-color_);
     }
+    &--mobile-visible  {
+      @extend %actionHeader__actions--mobile-visible ;
+    }
   }
   &__cart {
     @extend %actionHeader__cart;
+    &--mobile-visible  {
+      @extend %actionHeader__cart--mobile-visible ;
+    }
+  }
+  &__mobile-toggles {
+    @extend %actionHeader__mobile-toggles;
+  }
+  &__toggle-btn {
+    @extend %actionHeader__toggle-btn;
+  }
+  &__toggle-btn-badge {
+    @extend %actionHeader__toggle-btn-badge;
   }
   &__action {
     @extend %actionHeader__action;

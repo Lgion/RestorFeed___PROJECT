@@ -1,0 +1,158 @@
+// BEM styles pour la liste des commandes (orderList)
+// BEM composant orderList
+/************************************************************/
+/**************************PLACEHOLDER**************************/
+/************************************************************/
+.orderList {
+
+  &__title {
+    margin-bottom: 24px;
+    font-size: 1.7rem;
+    font-weight: bold;
+  }
+  &__empty {
+    color: #888;
+    padding: 24px;
+    text-align: center;
+  }
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  &__badge {
+    display: inline-block;
+    font-weight: bold;
+    padding: 2px 10px;
+    border-radius: 8px;
+    font-size: 0.97em;
+    margin-left: 8px;
+    margin-top: 2px;
+    &--status {
+      color: #fff;
+      &.orderCard__status--Livrée { background: #2ecc40; }
+      &.orderCard__status--Prête { background: #f1c40f; color: #222; }
+      &.orderCard__status--En\ cours { background: #3498db; }
+    }
+    &--client {
+      background: #f3f3f3;
+      color: #555;
+      border: 1px solid #ddd;
+    }
+  }
+  &__items {
+    margin: 8px 0 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  &__item {
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+  &__actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  &__close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #e74c3c;
+    font-size: 20px;
+    padding: 0;
+    z-index: 2;
+    &:hover,
+    &:focus {
+      background: #ffeaea;
+      color: #b71c1c;
+    }
+  }
+  &__actionBtn--archive {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    background: #95a5a6;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    width: 34px;
+    height: 34px;
+    svg {
+      display: block;
+      margin: 0 auto;
+    }
+  }
+  &__actionBtn {
+    border: none;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-weight: bold;
+    color: #fff;
+    background: #888;
+    cursor: pointer;
+    &--Livrée { background: #2ecc40; }
+    &--Prête { background: #f1c40f; }
+    &--En\ cours { background: #3498db; }
+    &--cancel { background: #e74c3c; }
+    &--archive { background: #95a5a6; }
+    &--detail { background: #fff; color: #333; border: 1px solid #888; }
+    &:disabled {
+      background: #ccc;
+      color: #fff;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.orderModal {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  &__content {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 32px #0003;
+    padding: 32px;
+    min-width: 320px;
+    position: relative;
+  }
+  &__close {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+  }
+  &__title {
+    margin-bottom: 12px;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  &__row {
+    margin-bottom: 6px;
+    font-size: 1em;
+  }
+  &__items {
+    margin-top: 12px;
+    padding: 0;
+    list-style: none;
+  }
+  &__item {
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+}
