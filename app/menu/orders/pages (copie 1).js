@@ -94,26 +94,12 @@ export default function OrdersPage() {
   // Filtrage des commandes
   const filteredOrders = orders.filter(order => {
     const today = isToday(order.createdAt || order.date);
-    
-    // Filtrage par archivage et date
-    let passesArchiveFilter;
     if (showArchived) {
-      passesArchiveFilter = order.isArchived || !today;
+      return order.isArchived || !today;
     } else {
-      passesArchiveFilter = !order.isArchived && today;
+      return !order.isArchived && today;
     }
-    
-    // Filtrage par numéro de table
-    const passesTableFilter = !tableFilter || tableFilter === "" || order.table == tableFilter;
-    
-    // Filtrage par statut
-    const passesStatusFilter = !statusFilter || order.status === statusFilter;
-    
-    return passesArchiveFilter && passesTableFilter && passesStatusFilter;
   });
-
-  // Obtenir la liste unique des tables disponibles
-  const availableTables = [...new Set(orders.map(order => order.table).filter(table => table != null))].sort((a, b) => a - b);
 
   return (
     <section className="orderList">
@@ -125,12 +111,7 @@ export default function OrdersPage() {
         <section className="orderList__filter">
           <label>
             <span>Table </span>
-            <select value={tableFilter || ""} onChange={e => setTableFilter(e.target.value || undefined)}>
-              <option value="">Toutes</option>
-              {availableTables.map(table => (
-                <option key={table} value={table}>Table {table}</option>
-              ))}
-            </select>
+            <input type="number" min="1" value={tableFilter} onChange={e => setTableFilter(parseInt(e.target.value) || undefined)} />
           </label>
           <label>
             <span>Status </span>
@@ -243,3 +224,4 @@ export default function OrdersPage() {
     </section>
   );
 }
+

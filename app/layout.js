@@ -1,4 +1,3 @@
-import ActionHeader from "../components/ActionHeader";
 
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs';

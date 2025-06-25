@@ -33,10 +33,13 @@ export default function MenuLayout({ children }) {
   const searchParams = useSearchParams();
   const [quantities, setQuantities] = useState({});
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [orderSent, setOrderSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
-  
+  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
+  const [newCategory, setNewCategory] = useState({ name: '', icon: '' });
+
   // Import dynamique pour ne charger products.js que côté client
   useEffect(() => {
     window.dispatchEvent(new Event('cart-updated'));
@@ -52,7 +55,60 @@ export default function MenuLayout({ children }) {
         setProducts(stored);
       }
     }
+    
+    // Récupérer les catégories depuis l'API
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories');
+      if (response.ok) {
+        const data = await response.json();
+        setCategories(data);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const handleAddCategory = async () => {
+    if (!newCategory.name.trim()) {
+      alert('Le nom de la catégorie est requis');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/categories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: newCategory.name.trim(),
+          icon: newCategory.icon.trim() || null
+        }),
+      });
+
+      if (response.ok) {
+        const addedCategory = await response.json();
+        setCategories(prev => [...prev, addedCategory]);
+        setNewCategory({ name: '', icon: '' });
+        setShowAddCategoryModal(false);
+        
+        // Sélectionner automatiquement la nouvelle catégorie dans le select
+        const categorySelect = document.querySelector('select[name="category"]');
+        if (categorySelect) {
+          categorySelect.value = addedCategory.name;
+        }
+      } else {
+        alert('Erreur lors de la création de la catégorie');
+      }
+    } catch (error) {
+      console.error('Error creating category:', error);
+      alert('Erreur lors de la création de la catégorie');
+    }
+  };
 
   const toggleFilter = () => {
     setFilterVisible(!filterVisible);
@@ -99,7 +155,10 @@ export default function MenuLayout({ children }) {
         console.error("[handleValidate] GET /api/orders failed", ordersRes.status);
         return;
       }
-      const prismaOrders = await ordersRes.json();
+      let prismaOrders = await ordersRes.json();
+      prismaOrders = prismaOrders.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+      
+
       setAppDataKey("orders", prismaOrders);
       setAppDataKey("cart", []);
       setCart([]);
@@ -311,7 +370,30 @@ export default function MenuLayout({ children }) {
                   </label>
                   <label>
                     Catégorie
-                    <input className="productForm__input" name="category" type="text" defaultValue={editProduct?.category || ''} required />
+                    <select className="productForm__input" name="category" required defaultValue={editProduct?.category || ''}>
+                      <option value="">Sélectionner une catégorie</option>
+                      {categories.map(category => (
+                        <option key={category.id} value={category.name}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                    <button 
+                      type="button" 
+                      onClick={() => setShowAddCategoryModal(true)}
+                      style={{
+                        marginTop: 8,
+                        padding: '6px 12px',
+                        background: '#f0f0f0',
+                        border: '1px solid #ddd',
+                        borderRadius: 4,
+                        cursor: 'pointer',
+                        fontSize: 12,
+                        color: '#666'
+                      }}
+                    >
+                      + Créer une nouvelle catégorie
+                    </button>
                   </label>
                   <label>
                     URL de l'image
@@ -337,6 +419,84 @@ export default function MenuLayout({ children }) {
       <Modal open={isModal} onClose={() => router.push('/menu')}>
         {children}
       </Modal>
+      
+      {/* Modal pour créer une nouvelle catégorie */}
+      {showAddCategoryModal && (
+        <Modal open={showAddCategoryModal} onClose={() => setShowAddCategoryModal(false)}>
+          <div style={{ minWidth: 300, padding: 20 }}>
+            <h2>Créer une nouvelle catégorie</h2>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: 'block', marginBottom: 8 }}>
+                Nom de la catégorie *
+                <input 
+                  type="text"
+                  value={newCategory.name}
+                  onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Ex: Entrées, Plats, Desserts..."
+                  style={{
+                    width: '100%',
+                    padding: 8,
+                    border: '1px solid #ddd',
+                    borderRadius: 4,
+                    marginTop: 4
+                  }}
+                />
+              </label>
+            </div>
+            <div style={{ marginBottom: 20 }}>
+              <label style={{ display: 'block', marginBottom: 8 }}>
+                Icône (optionnel)
+                <input 
+                  type="text"
+                  value={newCategory.icon}
+                  onChange={(e) => setNewCategory(prev => ({ ...prev, icon: e.target.value }))}
+                  placeholder="Ex: 🍜, 🍰, 🥗..."
+                  style={{
+                    width: '100%',
+                    padding: 8,
+                    border: '1px solid #ddd',
+                    borderRadius: 4,
+                    marginTop: 4
+                  }}
+                />
+              </label>
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button 
+                type="button"
+                onClick={() => setShowAddCategoryModal(false)}
+                style={{
+                  flex: 1,
+                  padding: '10px 16px',
+                  background: '#f0f0f0',
+                  border: '1px solid #ddd',
+                  borderRadius: 4,
+                  cursor: 'pointer'
+                }}
+              >
+                Annuler
+              </button>
+              <button 
+                type="button"
+                onClick={handleAddCategory}
+                disabled={!newCategory.name.trim()}
+                style={{
+                  flex: 1,
+                  padding: '10px 16px',
+                  background: newCategory.name.trim() ? '#007bff' : '#ccc',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 4,
+                  cursor: newCategory.name.trim() ? 'pointer' : 'not-allowed'
+                }}
+              >
+                Créer
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+      
       <Confetti trigger={orderSent} />
     </>
   );

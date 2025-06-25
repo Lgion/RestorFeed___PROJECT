@@ -58,7 +58,7 @@ export default function CartHover({ handleValidate, isLoading }) {
       <div className="cartHover__popup">
         <h4 className="cartHover__title">Panier en cours</h4>
         {cartArr.length === 0 ? (
-          <div className="cartHover__empty">Votre panier est vide.</div>
+          <div className="cartHover__empty">Votre commande est vide.</div>
         ) : (
           <ul className="cartHover__list">
             {cartArr.map(item => (
@@ -94,10 +94,17 @@ export default function CartHover({ handleValidate, isLoading }) {
                 style={{cursor: 'pointer'}}
               >
                 <div className="cartHover__orderBtn" style={{width: '100%', textAlign: 'left'}}>
-                  <b>Commande #{myOrder.id || idx+1}</b> — {myOrder.createdAt ? new Date(myOrder.createdAt).toLocaleString() : 'Date inconnue'}
+                  <b>Commande #{idx+1}</b> — {myOrder.createdAt ? <span title={"Il y a "+(Math.round((new Date().getTime() - new Date(myOrder.createdAt || myOrder.date).getTime()) / 60000))+" minutes"}>{new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(myOrder.createdAt))}</span> : 'Date inconnue'}
                   <span style={{marginLeft:8, color:'#888', fontWeight:'normal'}}>
                     {myOrder.status ? `(${myOrder.status})` : ''}
                     {myOrder.table ? ` | Table ${myOrder.table}` : ''}
+                  </span>
+                  <span style={{marginLeft: 8, color: '#2c5530', fontWeight: 'bold'}}>
+                    TOTAL: {((myOrder.items || myOrder.products || []).reduce((total, item) => {
+                      const price = item.price || item.product?.price || 0;
+                      const quantity = item.quantity || 1;
+                      return total + (price * quantity);
+                    }, 0)).toFixed(2)} €
                   </span>
                 </div>
                 {openOrderIdx === idx && (myOrder.items || myOrder.products) && (
@@ -115,6 +122,22 @@ export default function CartHover({ handleValidate, isLoading }) {
             ))}
           </ul>
         )}
+        <hr style={{margin: "1rem 0px"}}/>
+        <div className="cartHover__total">
+          <p className="mb-0 font-weight-bold">Total: {(orders
+            .filter(anyOrder => anyOrder.table == JSON.parse(localStorage.restOrFeed).tableNumber)
+            .reduce((total, order) => {
+              const orderTotal = (order.items || order.products || []).reduce((sum, item) => {
+                const price = item.price || item.product?.price || 0;
+                const quantity = item.quantity || 1;
+                return sum + (price * quantity);
+              }, 0);
+              return total + orderTotal;
+            }, 0) || 0).toFixed(2)} €</p>
+          <Link href="/cart" className="btn btn-primary mt-2">
+            Passer &agrave; la caisse
+          </Link>
+        </div>
       </div>
     </div>
   );

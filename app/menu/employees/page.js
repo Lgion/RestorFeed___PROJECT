@@ -1,45 +1,49 @@
 "use client";
-import { useState } from "react";
-
-const MOCK_EMPLOYEES = [
-  {
-    id: 1,
-    name: "Ethan Carter",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    contact: "555–123–4567",
-    assignedTables: [1, 2, 3],
-    location: "Dining Area",
-    availability: "Available",
-    schedule: "Mon–Fri, 10 AM - 6 PM",
-    role: "Serveur"
-  },
-  {
-    id: 2,
-    name: "Alice Dupont",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-    contact: "555–987–6543",
-    assignedTables: [4, 5],
-    location: "Terrasse",
-    availability: "Absent",
-    schedule: "Tue–Sat, 12 PM - 8 PM",
-    role: "Serveuse"
-  },
-  {
-    id: 3,
-    name: "Jean Martin",
-    avatar: "https://randomuser.me/api/portraits/men/55.jpg",
-    contact: "555–111–2222",
-    assignedTables: [6],
-    location: "Bar",
-    availability: "Available",
-    schedule: "Mon–Fri, 18 PM - 23 PM",
-    role: "Barman"
-  }
-];
+import { useState, useEffect } from "react";
 
 export default function EmployeesPage() {
-  const [employees, setEmployees] = useState(MOCK_EMPLOYEES);
+  const [employees, setEmployees] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const fetchEmployees = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/employees');
+      if (!response.ok) {
+        throw new Error('Failed to fetch employees');
+      }
+      const data = await response.json();
+      setEmployees(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{maxWidth:600,margin:"0 auto",padding:24}}>
+        <h1 style={{marginBottom:24}}>Gestion des employés</h1>
+        <div style={{textAlign:'center',padding:40}}>Chargement des employés...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{maxWidth:600,margin:"0 auto",padding:24}}>
+        <h1 style={{marginBottom:24}}>Gestion des employés</h1>
+        <div style={{textAlign:'center',padding:40,color:'red'}}>Erreur: {error}</div>
+      </div>
+    );
+  }
 
   return (
     <div style={{maxWidth:600,margin:"0 auto",padding:24}}>
@@ -61,7 +65,7 @@ export default function EmployeesPage() {
               <td style={{padding:8}}><img src={emp.avatar} alt={emp.name} style={{width:36,height:36,borderRadius:'50%'}}/></td>
               <td style={{padding:8}}>{emp.name}</td>
               <td style={{padding:8}}>{emp.contact}</td>
-              <td style={{padding:8}}>{emp.assignedTables.join(', ')}</td>
+              <td style={{padding:8}}>{emp.assignedTables?.join(', ') || 'Aucune'}</td>
               <td style={{padding:8}}>{emp.role}</td>
               <td style={{padding:8}}>
                 <button onClick={()=>setSelected(emp)} style={{background:'#f4f4f4',border:'none',borderRadius:5,padding:'6px 12px',cursor:'pointer',fontWeight:500}}>Détail</button>
@@ -83,7 +87,7 @@ export default function EmployeesPage() {
               </div>
             </div>
             <div><b>Contact :</b> {selected.contact}</div>
-            <div><b>Tables assignées :</b> {selected.assignedTables.join(', ')}</div>
+            <div><b>Tables assignées :</b> {selected.assignedTables?.join(', ') || 'Aucune'}</div>
             <div><b>Lieu :</b> {selected.location}</div>
             <div><b>Disponibilité :</b> {selected.availability}</div>
             <div><b>Planning :</b> {selected.schedule}</div>

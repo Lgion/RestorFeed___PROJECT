@@ -38,7 +38,7 @@ export default function AdminPage() {
       return;
     }
     if (typeof window !== "undefined") {
-      setAppDataKey("role", "superadmin");
+      setAppDataKey("role", "admin");
     }
     router.push("/menu");
   };

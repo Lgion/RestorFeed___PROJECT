@@ -138,8 +138,6 @@ export default function ActionHeader({ handleValidate, isLoading, cart = [], onF
           <Filter size={20} />
         </button>
         
-        <h1 className="menuLayout__title">Menu Digital - Sushi</h1>
-
         <button 
           className={`actionHeader__toggle-btn${cartVisible ? ' actionHeader__toggle-btn--active' : ''}`}
           onClick={() => setCartVisible(!cartVisible)}
@@ -153,6 +151,8 @@ export default function ActionHeader({ handleValidate, isLoading, cart = [], onF
           )}
         </button>
       </div>
+
+      <h1 className="menuLayout__title">Menu Digital - Sushi</h1>
 
       <div className={`actionHeader__actions${actionsVisible ? ' actionHeader__actions--mobile-visible' : ''}`}>
       {actions.map(({ minRole, icon: Icon, href, label }, idx) => (
@@ -181,21 +181,23 @@ export default function ActionHeader({ handleValidate, isLoading, cart = [], onF
         <CartHover handleValidate={handleValidate} isLoading={isLoading} />
       </div>
       
-      <RoleGuard minRole="employee">
-        <select
-          value={tableNumber}
-          onChange={handleTableChange}
-          className="actionHeader__table"
-        >
-          <option value="">Choisi un numéro de table</option>
-          {Array.from({ length: process.env.NEXT_PUBLIC_NOMBRE_TABLES}).map((_, i) => (
-            <option key={i + 1} value={i + 1}>{i + 1}</option>
-          ))}
-        </select>
-      </RoleGuard>
-      <RoleGuard minRole="public">
-        <b className="actionHeader__tableActive">#{tableNumber}</b>
-      </RoleGuard>
+      <div>
+        <RoleGuard minRole="employee">
+          <select
+            value={tableNumber}
+            onChange={handleTableChange}
+            className="actionHeader__table"
+          >
+            <option value="">Choisir la table du client</option>
+            {Array.from({ length: process.env.NEXT_PUBLIC_NOMBRE_TABLES}).map((_, i) => (
+              <option key={i + 1} value={i + 1}>{i + 1}</option>
+            ))}
+          </select>
+        </RoleGuard>
+        <RoleGuard minRole="public">
+          <b className="actionHeader__tableActive">#{tableNumber}</b>
+        </RoleGuard>
+      </div>
       
       <div className="actionHeader__clerk">
         <SignedOut>

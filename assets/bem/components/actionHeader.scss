@@ -275,10 +275,19 @@
       padding: 10px;
     }
     
+
     &--hovered {
       background: #f4f4f4;
       box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     }
+  }
+  
+  &__table{
+    width: 30px;
+    &Active{
+
+    }
+    &Wrapper{}
   }
   
   // États du header (shrink, hide)
@@ -380,6 +389,15 @@
     //   background: #f4f4f4;
     //   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     // }
+  }
+  &__table {
+    @extend %actionHeader__table;
+    &Active{
+      @extend %actionHeader__tableActive;
+    }
+    &Wrapper{
+      @extend %actionHeader__tableWrapper;
+    }
   }
 
   // Modifier contrast

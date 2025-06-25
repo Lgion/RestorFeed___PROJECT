@@ -61,3 +61,26 @@ model User {
   role      String   @default("user")
   createdAt DateTime @default(now())
 }
+
+model Employee {
+  id                    Int       @id @default(autoincrement())
+  name                  String
+  avatar                String?
+  contact               String?
+  email                 String?
+  dateOfBirth           DateTime?
+  address               String?
+  socialSecurityNumber  String?
+  hireDate              DateTime?
+  fireDate              DateTime?
+  contractType          String?   // "essai", "stage", "CDD", "CDI", etc.
+  salary                Float?
+  status                String    @default("Active") // "Active", "Inactive", "Fired", etc.
+  notes                 String?
+  assignedTables        String?   // JSON array stored as string
+  location              String?
+  availability          String    @default("Available")
+  schedule              String?
+  role                  String
+  createdAt             DateTime  @default(now())
+}
