@@ -47,6 +47,7 @@ function getHourlySales(orders) {
 export default function DashboardPage() {
   const [orders, setOrders] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [users, setUsers] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [tab, setTab] = useState("Employees");
   
@@ -65,7 +66,7 @@ export default function DashboardPage() {
     name: '',
     avatar: '',
     contact: '',
-    email: '',
+    userId: '',
     dateOfBirth: '',
     address: '',
     socialSecurityNumber: '',
@@ -83,7 +84,7 @@ export default function DashboardPage() {
     name: '',
     avatar: '',
     contact: '',
-    email: '',
+    userId: '',
     dateOfBirth: '',
     address: '',
     socialSecurityNumber: '',
@@ -103,6 +104,7 @@ export default function DashboardPage() {
   useEffect(() => {
     setOrders(getOrders());
     fetchEmployees();
+    fetchUsers();
   }, []);
 
   const fetchEmployees = async () => {
@@ -117,6 +119,16 @@ export default function DashboardPage() {
       }
     } catch (error) {
       console.error('Error fetching employees:', error);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('/api/users');
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
     }
   };
 
@@ -147,7 +159,7 @@ export default function DashboardPage() {
           name: '',
           avatar: '',
           contact: '',
-          email: '',
+          userId: '',
           dateOfBirth: '',
           address: '',
           socialSecurityNumber: '',
@@ -183,7 +195,7 @@ export default function DashboardPage() {
         name: selectedEmployee.name,
         avatar: selectedEmployee.avatar || '',
         contact: selectedEmployee.contact || '',
-        email: selectedEmployee.email || '',
+        userId: selectedEmployee.userId || '',
         dateOfBirth: formatDateForInput(selectedEmployee.dateOfBirth),
         address: selectedEmployee.address || '',
         socialSecurityNumber: selectedEmployee.socialSecurityNumber || '',
@@ -389,6 +401,9 @@ export default function DashboardPage() {
                 <div>
                   <div className="dashboard__employee-name">{selectedEmployee.name}</div>
                   <div className="dashboard__employee-contact">Contact: {selectedEmployee.contact}</div>
+                  {selectedEmployee.user && (
+                    <div className="dashboard__employee-email">Email: {selectedEmployee.user.email}</div>
+                  )}
                 </div>
               </div>
               <div className="dashboard__employee-row">
@@ -498,14 +513,19 @@ export default function DashboardPage() {
                 </div>
                 
                 <div style={{marginBottom:12}}>
-                  <label style={{display:'block',marginBottom:4,fontWeight:500}}>Email</label>
-                  <input 
-                    type="email" 
-                    value={newEmployee.email}
-                    onChange={(e) => setNewEmployee(prev => ({...prev, email: e.target.value}))}
+                  <label style={{display:'block',marginBottom:4,fontWeight:500}}>Linked User</label>
+                  <select 
+                    value={newEmployee.userId}
+                    onChange={(e) => setNewEmployee(prev => ({...prev, userId: e.target.value}))}
                     className="dashboard__modal-input"
-                    placeholder="Email"
-                  />
+                  >
+                    <option value="">Select a user (optional)</option>
+                    {users.map(user => (
+                      <option key={user.id} value={user.id}>
+                        {user.email} ({user.username || 'No username'}) - {user.role}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 
                 <div style={{marginBottom:12}}>
@@ -671,25 +691,30 @@ export default function DashboardPage() {
                 </div>
                 
                 <div style={{marginBottom:12}}>
-                  <label style={{display:'block',marginBottom:4,fontWeight:500}}>Contact</label>
+                  <label style={{display:'block',marginBottom:4,fontWeight:500}}>Phone</label>
                   <input 
                     type="text" 
                     value={editEmployee.contact}
                     onChange={(e) => setEditEmployee(prev => ({...prev, contact: e.target.value}))}
                     className="dashboard__modal-input"
-                    placeholder="Phone number or email"
+                    placeholder="Phone number"
                   />
                 </div>
                 
                 <div style={{marginBottom:12}}>
-                  <label style={{display:'block',marginBottom:4,fontWeight:500}}>Email</label>
-                  <input 
-                    type="email" 
-                    value={editEmployee.email}
-                    onChange={(e) => setEditEmployee(prev => ({...prev, email: e.target.value}))}
+                  <label style={{display:'block',marginBottom:4,fontWeight:500}}>Linked User</label>
+                  <select 
+                    value={editEmployee.userId}
+                    onChange={(e) => setEditEmployee(prev => ({...prev, userId: e.target.value}))}
                     className="dashboard__modal-input"
-                    placeholder="Email"
-                  />
+                  >
+                    <option value="">Select a user (optional)</option>
+                    {users.map(user => (
+                      <option key={user.id} value={user.id}>
+                        {user.email} ({user.username || 'No username'}) - {user.role}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 
                 <div style={{marginBottom:12}}>

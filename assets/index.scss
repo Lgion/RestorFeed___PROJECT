@@ -1,5 +1,8 @@
 @import "./bem/index.scss";
 
+// Chat global styles
+@import '../components/GlobalChat.scss';
+
 body{padding-top:10em;}
 // === BEAM CSS STRUCTURE ===
 // ProductCard
@@ -21,4 +24,3 @@ body{padding-top:10em;}
 
 
 // Boutons de filtre catégorie
-

@@ -1,7 +1,7 @@
-
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs';
 import ClerkSync from '../components/ClerkSync';
+import ChatWrapper from '../components/ChatWrapper';
 import "./globals.css";
 import "../assets/index.scss"
 
@@ -29,6 +29,7 @@ export default function RootLayout({ children }) {
           {/* <ActionHeader /> */}
           <ClerkSync />
           {children}
+          <ChatWrapper />
         </body>
       </html>
     </ClerkProvider>

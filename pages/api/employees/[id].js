@@ -13,7 +13,10 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const employee = await prisma.employee.findUnique({
-        where: { id: employeeId }
+        where: { id: employeeId },
+        include: {
+          user: true
+        }
       });
       
       if (!employee) {
@@ -37,7 +40,7 @@ export default async function handler(req, res) {
         name, 
         avatar, 
         contact, 
-        email,
+        userId,
         dateOfBirth,
         address,
         socialSecurityNumber,
@@ -60,7 +63,7 @@ export default async function handler(req, res) {
           name,
           avatar,
           contact,
-          email,
+          userId: userId ? parseInt(userId) : null,
           dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
           address,
           socialSecurityNumber,
@@ -75,6 +78,9 @@ export default async function handler(req, res) {
           availability: availability || 'Available',
           schedule,
           role
+        },
+        include: {
+          user: true
         }
       });
       

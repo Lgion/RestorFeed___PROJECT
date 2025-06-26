@@ -53,13 +53,18 @@ model OrderItem {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  clerkId   String   @unique
-  email     String   @unique
+  id        Int        @id @default(autoincrement())
+  clerkId   String     @unique
+  email     String     @unique
   username  String?
   password  String?
-  role      String   @default("user")
-  createdAt DateTime @default(now())
+  role      String     @default("user")
+  createdAt DateTime   @default(now())
+  
+  // Relations
+  employee              Employee?  // Relation one-to-one optionnelle
+  conversationParticipants ConversationParticipant[]
+  messages              Message[]
 }
 
 model Employee {
@@ -67,7 +72,8 @@ model Employee {
   name                  String
   avatar                String?
   contact               String?
-  email                 String?
+  userId                Int?      @unique // Relation vers User
+  user                  User?     @relation(fields: [userId], references: [id])
   dateOfBirth           DateTime?
   address               String?
   socialSecurityNumber  String?
@@ -83,4 +89,46 @@ model Employee {
   schedule              String?
   role                  String
   createdAt             DateTime  @default(now())
+}
+
+// === CHAT SYSTEM MODELS ===
+model Conversation {
+  id            Int                        @id @default(autoincrement())
+  name          String?                    // Nom pour les conversations privées/groupes
+  type          String                     @default("general") // "general", "support", "private", "group"
+  isActive      Boolean                    @default(true)
+  createdAt     DateTime                   @default(now())
+  updatedAt     DateTime                   @updatedAt
+  
+  // Relations
+  participants  ConversationParticipant[]
+  messages      Message[]
+}
+
+model ConversationParticipant {
+  id             Int          @id @default(autoincrement())
+  conversationId Int
+  userId         Int
+  joinedAt       DateTime     @default(now())
+  lastReadAt     DateTime?    // Dernière fois que l'utilisateur a lu les messages
+  
+  // Relations
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([conversationId, userId]) // Un user ne peut être qu'une fois dans une conversation
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  content        String
+  conversationId Int
+  authorId       Int
+  isRead         Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  
+  // Relations
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  author         User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }

@@ -5,7 +5,15 @@ const prisma = new PrismaClient();
 export default async function handler(req, res) {
   if (req.method === 'GET') {
     // Get all users (do NOT return passwords in prod)
-    const users = await prisma.user.findMany({ select: { id: true, username: true, role: true, createdAt: true } });
+    const users = await prisma.user.findMany({ 
+      select: { 
+        id: true, 
+        email: true,
+        username: true, 
+        role: true, 
+        createdAt: true 
+      } 
+    });
     res.status(200).json(users);
   } else if (req.method === 'POST') {
     // Correction : body check et mapping Clerk
