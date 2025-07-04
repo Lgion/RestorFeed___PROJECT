@@ -17,6 +17,8 @@ import { getAppDataKey, setAppDataKey } from "../utils/localStorageApp";
 import RoleGuard from "./RoleGuard";
 import RoleSwitcher from "./RoleSwitcher";
 import CartHover from "./CartHover";
+import HelpButton from "./HelpButton";
+import HelpNotification from "./HelpNotification";
 
 const actions = [
   {
@@ -207,6 +209,16 @@ export default function ActionHeader({ handleValidate, isLoading, cart = [], onF
         </RoleGuard>}
         <RoleGuard minRole="public">
           <b className="actionHeader__tableActive">#{tableNumber}</b>
+        </RoleGuard>
+      </div>
+      
+      {/* Système d'aide */}
+      <div className="actionHeader__help">
+        <RoleGuard minRole="public" maxRole="public">
+          <HelpButton tableId={tableNumber} />
+        </RoleGuard>
+        <RoleGuard minRole="employee">
+          <HelpNotification />
         </RoleGuard>
       </div>
       

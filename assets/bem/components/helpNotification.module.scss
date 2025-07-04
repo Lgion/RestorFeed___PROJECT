@@ -1,0 +1,212 @@
+.notificationContainer {
+  position: relative;
+  margin-left: 1rem;
+}
+
+.notificationButton {
+  position: relative;
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  &.hasNew {
+    color: #e74c3c;
+    animation: pulse 1.5s infinite;
+  }
+}
+
+.badge {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  min-width: 1rem;
+  height: 1rem;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.25rem;
+  border: 2px solid white;
+}
+
+.notificationPanel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 380px;
+  max-height: 600px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  
+  @media (max-width: 480px) {
+    width: 320px;
+    right: -1rem;
+  }
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f9fa;
+  
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+  }
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+.notificationList {
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.notificationItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem;
+  border-bottom: 1px solid #f5f5f5;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: #f9f9f9;
+  }
+}
+
+.notificationContent {
+  flex: 1;
+  margin-right: 0.5rem;
+}
+
+.notificationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.priorityBadge {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+.notificationTime {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.notificationMessage {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: #333;
+}
+
+.notificationDetails {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.actionButton, .resolveButton {
+  background: none;
+  border: 1px solid #ddd;
+  color: #666;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background-color: #f8f9fa;
+    border-color: #ccc;
+  }
+}
+
+.actionButton {
+  &:hover {
+    color: #3498db;
+    border-color: #3498db;
+    background-color: rgba(52, 152, 219, 0.1);
+  }
+}
+
+.resolveButton {
+  &:hover {
+    color: #27ae60;
+    border-color: #27ae60;
+    background-color: rgba(39, 174, 96, 0.1);
+  }
+}
+
+.emptyState {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #999;
+  font-size: 0.9rem;
+}
+
+// Animation pour le badge de notification
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { selectAvailableServer } from '../../../lib/serverAssignment';
 
 const prisma = new PrismaClient();
 
@@ -16,7 +17,16 @@ export default async function handler(req, res) {
           },
           isArchived: false,
         },
-        include: { items: { include: { product: true } } },
+        include: { 
+          items: { include: { product: true } },
+          server: { // Inclure les informations du serveur
+            select: {
+              id: true,
+              name: true,
+              avatar: true
+            }
+          }
+        },
         orderBy: { createdAt: 'desc' },
       });
       console.log("\n\n\n\n\n");
@@ -46,13 +56,21 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'POST') {
     try {
-      // Create new order
+      // Create new order with server assignment
       const { items, client, table, status } = req.body;
+      
+      // Sélectionner le serveur disponible
+      const server = await selectAvailableServer();
+      if (!server) {
+        return res.status(400).json({ error: 'Aucun serveur disponible pour prendre cette commande' });
+      }
+
       const order = await prisma.order.create({
         data: {
           client,
           table,
           status,
+          serverId: server.id,
           items: {
             create: items.map(item => ({
               productId: item.productId,
@@ -61,8 +79,26 @@ export default async function handler(req, res) {
             }))
           }
         },
-        include: { items: true }
+        include: { 
+          items: { include: { product: true } },
+          server: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true
+            }
+          }
+        }
       });
+
+      // Mettre à jour la disponibilité du serveur
+      await prisma.employee.update({
+        where: { id: server.id },
+        data: {
+          availability: 'Busy'
+        }
+      });
+
       res.status(201).json(order);
     } catch (error) {
       console.error('Error in POST /api/orders:', error);

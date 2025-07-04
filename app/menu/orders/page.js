@@ -18,9 +18,9 @@ export default function OrdersPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const [tableFilter, setTableFilter] = useState(getAppDataKey('tableNumber'));
   const [tableFilter, setTableFilter] = useState(0);
   const [statusFilter, setStatusFilter] = useState(false);
+  const [serverFilter, setServerFilter] = useState(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -123,32 +123,47 @@ export default function OrdersPage() {
       {orders.length === 0 ? (
         <div className="orderList__empty">Aucune commande pour l'instant.</div>
       ) : (<>
-        <section className="orderList__filter">
-          <label>
-            <span>Table </span>
-            <select value={tableFilter || ""} onChange={e => setTableFilter(e.target.value || undefined)}>
-              <option value="" selected>Toutes</option>
-              {availableTables.map(table => (
-                <option key={table} value={table}>Table {table}</option>
+        <label className="orderList__filter">
+          Table:
+          <select value={tableFilter} onChange={(e) => setTableFilter(e.target.value)}>
+            <option value="">Toutes les tables</option>
+            {availableTables.map((table, i) => (
+              <option key={i} value={table}>Table {table}</option>
+            ))}
+          </select>
+        </label>
+        <label className="orderList__filter">
+          Serveur:
+          {console.log(orders)}
+          <select value={serverFilter} onChange={(e) => setServerFilter(e.target.value)}>
+            <option value="">Tous les serveurs</option>
+            {orders
+              .filter(order => order.server)
+              .map(order => order.server.name)
+              .filter((name, index, self) => self.indexOf(name) === index)
+              .sort()
+              .map((name, i) => (
+                <option key={i} value={name}>{name}</option>
               ))}
-            </select>
-          </label>
-          <label>
-            <span>Status </span>
-            <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
-              <option value="">Tous</option>
-              <option value="En cours">En cours</option>
-              <option value="Prête">Prête</option>
-              <option value="Livrée">Livrée</option>
-            </select>
-          </label> 
-        </section>
+          </select>
+        </label>
+        <label>
+          <span>Status </span>
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+            <option value="">Tous</option>
+            <option value="En cours">En cours</option>
+            <option value="Prête">Prête</option>
+            <option value="Livrée">Livrée</option>
+          </select>
+        </label> 
 
         <ul className="orderList__list">
-          {filteredOrders.map((order, i) => (
-            <li key={order.id} className="orderCard">
-              <article>
-                <header className="orderCard__header">
+          {filteredOrders
+            .filter(order => !serverFilter || (order.server?.name === serverFilter))
+            .map((order, i) => (
+              <li key={order.id} className="orderCard">
+                <article>
+                  <header className="orderCard__header">
                   <span className="orderCard__number"><b>#{i + 1}</b></span>
                   <div style={{display:"flex",flexFlow:"column"}}>
                     <time className="orderCard__time" title={new Intl.DateTimeFormat('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(order.createdAt || order.date))}>
@@ -164,6 +179,13 @@ export default function OrdersPage() {
                   }>
                     {order.client ? `CLIENT: ${order.client}` : order.table ? `TABLE: ${order.table}` : "ANONYME"}
                   </span>
+                  {order.server && (
+                    <span className={
+                      `orderCard__badge orderCard__badge--server`
+                    }>
+                      SERVEUR: {order.server.name}
+                    </span>
+                  )}
                   <span className={
                     `orderCard__badge orderCard__badge--status orderCard__status--${order.status
                       .replace(/é/g, 'e').replace(/è/g, 'e').replace(/à/g, 'a').replace(/ê/g, 'e').replace(/î/g, 'i') // fallback accents

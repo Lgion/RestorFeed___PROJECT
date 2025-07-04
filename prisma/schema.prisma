@@ -40,6 +40,8 @@ model Order {
   status    String      @default("En cours")
   isArchived Boolean   @default(false)
   createdAt DateTime    @default(now())
+  server    Employee?   @relation(fields: [serverId], references: [id])
+  serverId  Int?
 }
 
 model OrderItem {
@@ -65,6 +67,8 @@ model User {
   employee              Employee?  // Relation one-to-one optionnelle
   conversationParticipants ConversationParticipant[]
   messages              Message[]
+  // helpRequests          HelpRequest[] // Demandes d'aide créées par cet utilisateur
+  resolvedHelpRequests  HelpRequest[] @relation("HelpRequestResolver") // Demandes d'aide résolues par cet utilisateur
 }
 
 model Employee {
@@ -89,6 +93,7 @@ model Employee {
   schedule              String?
   role                  String
   createdAt             DateTime  @default(now())
+  orders                Order[]   // Relation avec les commandes assignées
 }
 
 // === CHAT SYSTEM MODELS ===
@@ -131,4 +136,21 @@ model Message {
   // Relations
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   author         User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model HelpRequest {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  tableId   String?  // Identifiant de la table (optionnel)
+  message   String   @default("Aide demandée")
+  status    String   @default("PENDING") // "PENDING", "IN_PROGRESS", "RESOLVED", "DISMISSED"
+  priority  String   @default("NORMAL") // "LOW", "NORMAL", "HIGH", "URGENT"
+  resolvedBy Int?    // ID de l'utilisateur qui a résolu la demande
+  resolvedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  // user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resolver  User?    @relation("HelpRequestResolver", fields: [resolvedBy], references: [id])
 }

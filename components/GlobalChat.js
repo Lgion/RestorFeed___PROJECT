@@ -16,11 +16,13 @@ export default function GlobalChat({ currentUser }) {
   useEffect(() => {
     if (currentUser) {
       fetchConversations();
-      // Polling pour les nouveaux messages toutes les 5 secondes
-      const interval = setInterval(fetchConversations, 5000);
-      return () => clearInterval(interval);
+      // Polling seulement quand le chat est ouvert et pas en mode dev silencieux
+      if (isOpen && process.env.NEXT_PUBLIC_NODE_ENV !== 'development') {
+        const interval = setInterval(fetchConversations, 30000); // 10 secondes quand ouvert
+        return () => clearInterval(interval);
+      }
     }
-  }, [currentUser]);
+  }, [currentUser, isOpen]);
 
   // Scroll vers le bas quand de nouveaux messages arrivent
   useEffect(() => {

@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  webpack: (config, { isServer }) => {
+    // Ajouter l'alias '@' pour les imports
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.join(__dirname),
+    };
+    return config;
+  },
   sassOptions: {
     silenceDeprecations: ['legacy-js-api', 'color-functions', 'import'],
     quietDeps: true,

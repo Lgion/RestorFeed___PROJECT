@@ -181,6 +181,16 @@
     }
   }
 
+  &__help {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    @media (max-width: 1023px) {
+      order: -1;
+    }
+  }
+  
   &__clerk {
     display: flex;
     gap: 8px;
