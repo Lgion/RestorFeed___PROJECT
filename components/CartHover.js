@@ -1,12 +1,59 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import timestampStyles from '../assets/bem/components/orderTimestamp.module.scss';
 import HurryUpButton from './HurryUpButton';
 
 export default function CartHover({ handleValidate, isLoading }) {
   const [orders, setOrders] = useState([]);
   const [cart, setCart] = useState([]);
   const [openOrderIdx, setOpenOrderIdx] = useState(null);
+
+  // Fonction pour obtenir le code couleur basé sur l'âge de la commande
+  const getOrderAgeColor = (createdAt) => {
+    if (!createdAt) return { color: '#888', label: 'Inconnue', urgency: 'unknown' };
+    
+    const now = new Date().getTime();
+    const orderTime = new Date(createdAt).getTime();
+    const ageInMinutes = Math.round((now - orderTime) / 60000);
+    
+    if (ageInMinutes <= 2) {
+      return { 
+        color: '#22c55e', // Vert - Très récent
+        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+        label: 'Très récent',
+        urgency: 'low'
+      };
+    } else if (ageInMinutes <= 5) {
+      return { 
+        color: '#eab308', // Jaune - Récent
+        backgroundColor: 'rgba(234, 179, 8, 0.1)',
+        label: 'Récent',
+        urgency: 'low'
+      };
+    } else if (ageInMinutes <= 10) {
+      return { 
+        color: '#3b82f6', // Bleu - Commence à dater
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        label: 'Commence à dater',
+        urgency: 'medium'
+      };
+    } else if (ageInMinutes <= 20) {
+      return { 
+        color: '#f97316', // Orange - Prend du temps
+        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+        label: 'Prend du temps',
+        urgency: 'high'
+      };
+    } else {
+      return { 
+        color: '#ef4444', // Rouge - Très ancien
+        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        label: 'Très ancien',
+        urgency: 'critical'
+      };
+    }
+  };
 
   const ref = useRef();
 
@@ -134,12 +181,45 @@ export default function CartHover({ handleValidate, isLoading }) {
               .map((myOrder, idx) => (
               <li
                 key={myOrder.id || idx}
-                className="cartHover__order"
+                className={`cartHover__order ${timestampStyles.orderContainer} ${(() => {
+                  if (!myOrder.createdAt) return '';
+                  const ageInfo = getOrderAgeColor(myOrder.createdAt);
+                  return timestampStyles[ageInfo.urgency] || '';
+                })()}`}
                 onClick={() => setOpenOrderIdx(openOrderIdx === idx ? null : idx)}
                 style={{cursor: 'pointer'}}
               >
                 <div className="cartHover__orderBtn" style={{width: '100%', textAlign: 'left'}}>
-                  <b>Commande #{idx+1}</b> — {myOrder.createdAt ? <span title={"Il y a "+(Math.round((new Date().getTime() - new Date(myOrder.createdAt || myOrder.date).getTime()) / 60000))+" minutes"}>{new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(myOrder.createdAt))}</span> : 'Date inconnue'}
+                  <b>Commande #{idx+1}</b> — {myOrder.createdAt ? (() => {
+                    const ageInfo = getOrderAgeColor(myOrder.createdAt);
+                    const ageInMinutes = Math.round((new Date().getTime() - new Date(myOrder.createdAt).getTime()) / 60000);
+                    
+                    return (
+                      <span 
+                        className={`${timestampStyles.orderTimestamp} ${timestampStyles[ageInfo.urgency]}`}
+                        style={{
+                          padding: '2px 6px',
+                          borderRadius: '4px',
+                          fontWeight: '600',
+                          fontSize: '12px',
+                          border: `1px solid ${ageInfo.color}`,
+                          display: 'inline-block',
+                          marginLeft: '4px'
+                        }}
+                        title={`${ageInfo.label} - Il y a ${ageInMinutes} minute${ageInMinutes > 1 ? 's' : ''}`}
+                        data-urgency={ageInfo.urgency}
+                      >
+                        {new Intl.DateTimeFormat('fr-FR', { 
+                          hour: '2-digit', 
+                          minute: '2-digit', 
+                          second: '2-digit' 
+                        }).format(new Date(myOrder.createdAt))}
+                        <span style={{ marginLeft: '4px', fontSize: '10px' }}>
+                          ({ageInMinutes}min)
+                        </span>
+                      </span>
+                    );
+                  })() : <span style={{color: '#888'}}>Date inconnue</span>}
                   <span style={{marginLeft:8, color:'#888', fontWeight:'normal'}}>
                     {myOrder.status ? `(${myOrder.status})` : ''}
                     {myOrder.table ? ` | Table ${myOrder.table}` : ''}
