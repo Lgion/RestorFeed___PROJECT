@@ -84,9 +84,9 @@
   @return map.merge(
     $defaultValues,
     (
-      background-contrast: color.adjust(map.get($defaultValues, background), $lightness: -12%),
-      body-color-contrast: color.adjust(map.get($defaultValues, body-color), $lightness: 36%),
-      // border-color-contrast: color.adjust(map.get($defaultValues, border-color), $lightness: -24%),
+      background-contrast: color.adjust(map.get($defaultValues, $lightness: -background), 12%),
+      body-color-contrast: color.adjust(map.get($defaultValues, $lightness: body-color), 36%),
+      // border-color-contrast: color.adjust(map.get($defaultValues, $lightness: -border-color), 24%),
       shadow-contrast: 0 8px 32px rgba(0,0,0,0.18)
     )
   );

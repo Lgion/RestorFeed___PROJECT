@@ -1,6 +1,3 @@
-@use "sass:map";
-@use "sass:color";
-
 // Généré à partir de la structure BEM de .cart-hover dans index.scss, avec modifier contrast
 /************************************************************/
 /**************************PLACEHOLDER**************************/
@@ -273,10 +270,10 @@
 /************************************************************/
 @mixin cartHover(
   $paramMixi_: $cartHover,
-  $exempleParamFromBEMComponentVariable: map.get($cartHover, exempleParamFromBEMComponentVariable)
+  $exempleParamFromBEMComponentVariable: map-get($cartHover, exempleParamFromBEMComponentVariable)
   // BEMMixinParam
 ){
-  $paramMixi: cartHover(map.merge($cartHover, $paramMixi_));
+  $paramMixi: cartHover(map-merge($cartHover, $paramMixi_));
   @extend %cartHover;
   position: relative;
   display: inline-block;
@@ -317,20 +314,20 @@
 
   // Modifier contrast
   &--contrast {
-    background: map.get($paramMixi, background-contrast);
-    box-shadow: map.get($paramMixi, shadow-contrast);
-    border-color: map.get($paramMixi, border-color-contrast);
-    color: map.get($paramMixi, color-contrast);
+    background: map-get($paramMixi, background-contrast);
+    box-shadow: map-get($paramMixi, shadow-contrast);
+    border-color: map-get($paramMixi, border-color-contrast);
+    color: map-get($paramMixi, color-contrast);
     &__btn, &__validate {
-      background: map.get($paramMixi, btn-background-contrast, #c0392b);
-      color: map.get($paramMixi, btn-color-contrast, #fff);
+      background: map-get($paramMixi, btn-background-contrast, #c0392b);
+      color: map-get($paramMixi, btn-color-contrast, #fff);
     }
     &__popup {
-      background: map.get($paramMixi, popup-background-contrast, #f3f3f3);
-      border-color: map.get($paramMixi, popup-border-contrast, #c0392b);
+      background: map-get($paramMixi, popup-background-contrast, #f3f3f3);
+      border-color: map-get($paramMixi, popup-border-contrast, #c0392b);
     }
     &__title {
-      color: map.get($paramMixi, title-color-contrast, #e74c3c);
+      color: map-get($paramMixi, title-color-contrast, #e74c3c);
     }
   }
 }
@@ -339,19 +336,19 @@
 /**************************FUNCTION**************************/
 /************************************************************/
 @function cartHover($defaultValues){
-  @return map.merge(
+  @return map-merge(
     $defaultValues,
     (
-      background-contrast: color.adjust(map.get($defaultValues, popup-background), $lightness: -10%),
-      color-contrast: color.adjust(map.get($defaultValues, title-color), $lightness: 30%),
-      border-color-contrast: color.adjust(map.get($defaultValues, popup-border), $lightness: -18%),
+      background-contrast: darken(map-get($defaultValues, popup-background), 10%),
+      color-contrast: lighten(map-get($defaultValues, title-color), 30%),
+      border-color-contrast: darken(map-get($defaultValues, popup-border), 18%),
       shadow-contrast: 0 8px 32px rgba(0,0,0,0.18),
-      btn-background-contrast: color.adjust(map.get($defaultValues, btn-background), $lightness: -15%),
+      btn-background-contrast: darken(map-get($defaultValues, btn-background), 15%),
       btn-color-contrast: #fff,
-      popup-background-contrast: color.adjust(map.get($defaultValues, popup-background), $lightness: -7%),
-      popup-border-contrast: color.adjust(map.get($defaultValues, popup-border), $lightness: -18%),
-      title-color-contrast: color.adjust(map.get($defaultValues, title-color), $lightness: -10%),
-      validate-background-contrast: color.adjust(map.get($defaultValues, validate-background), $lightness: -15%),
+      popup-background-contrast: darken(map-get($defaultValues, popup-background), 7%),
+      popup-border-contrast: darken(map-get($defaultValues, popup-border), 18%),
+      title-color-contrast: darken(map-get($defaultValues, title-color), 10%),
+      validate-background-contrast: darken(map-get($defaultValues, validate-background), 15%),
       validate-color-contrast: #fff
     )
   );

@@ -19,15 +19,20 @@ export default async function handler(req, res) {
         include: { items: { include: { product: true } } },
         orderBy: { createdAt: 'desc' },
       });
+      console.log("\n\n\n\n\n");
+      console.log(orders);
+      console.log("kljikjjjjjjjjjjjjjjjjjj");
       
-      const todayOrders = orders.filter(order => order.createdAt >= today);
-      // les commandes qui ne sont pas d'aujourd'hui sont archivées
-      if(todayOrders.length)
+      
+      
+      
+      if(!orders.length)
         await prisma.order.updateMany({
           where: {
             createdAt: {
               lt: today,
             },
+            isArchived: false,
           },
           data: {
             isArchived: true,

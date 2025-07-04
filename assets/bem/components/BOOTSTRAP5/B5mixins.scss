@@ -1,3 +1,6 @@
+@use "sass:map";
+@use "sass:color";
+
 input:not(.safe){@extend .form-control;}
 input[type="checkbox"]:not(.safe),input[type="radio"]:not(.safe){@extend .form-check-input;padding:unset !important;height:1rem !important;}
 select:not(.safe){@extend .form-select;}
@@ -67,7 +70,7 @@ button:not(.safe){@extend .btn;}
     }
     >ul{
         /*
-            @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){position: static;}
+            @include mobile-only(map.get($b5_breakpoints,mobile) + "px"){position: static;}
         */
         @extend .dropdown-menu;
         position: absolute;

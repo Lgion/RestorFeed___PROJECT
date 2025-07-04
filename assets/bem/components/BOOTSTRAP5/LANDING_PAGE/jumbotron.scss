@@ -102,7 +102,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin LP-Jumbotron(
         $paramMixi: $LP-Jumbotron
-        , $exempleParamFromBEMComponentVariable: map-get($LP-Jumbotron, exempleParamFromBEMComponentVariable)
+        , $exempleParamFromBEMComponentVariable: map.get($LP-Jumbotron, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
     @extend %LP-Jumbotron;

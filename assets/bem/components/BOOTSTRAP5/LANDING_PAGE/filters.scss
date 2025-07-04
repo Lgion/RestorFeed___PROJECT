@@ -185,7 +185,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin LP-Filters(
         $paramMixi: $LP-Filters
-        , $exempleParamFromBEMComponentVariable: map-get($LP-Filters, exempleParamFromBEMComponentVariable)
+        , $exempleParamFromBEMComponentVariable: map.get($LP-Filters, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
 
@@ -220,7 +220,7 @@ box-shadow(color), background, border-color
     }
     // @extend %LP-Filters§§§title;    // ex: \"@extend %LP-Filters§§§title\";",	
     >h2:after{
-        content:map-get($args, etitle_after);
+        content:map.get($args, etitle_after);
     }
 }
 @include generate_LP-Filters("FilterOurWorks", (etitle_after: "Works"));

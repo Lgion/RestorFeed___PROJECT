@@ -1,26 +1,34 @@
-@use "sass:map";
-@use "sass:color";
-
 /************************************************************/
 /**************************PLACEHOLDER**************************/
 /************************************************************/
 %card {
   display: flex;
   flex-direction: column;
+  background: map-get($paramMixi, background);
+  border-radius: map-get($paramMixi, border-radius);
+  box-shadow: map-get($paramMixi, box-shadow);
   overflow: hidden;
-  border: 1px solid;
+  border: 1px solid map-get($paramMixi, border-color);
   
   &__header {
+    background: map-get($paramMixi, header-background);
+    padding: map-get($paramMixi, header-padding);
     font-weight: bold;
-    border-bottom: 1px solid;
+    font-size: map-get($paramMixi, header-font-size);
+    border-bottom: 1px solid map-get($paramMixi, border-color);
   }
 
   &__body {
+    padding: map-get($paramMixi, body-padding);
+    font-size: map-get($paramMixi, body-font-size);
+    color: map-get($paramMixi, body-color);
   }
 
   &__footer {
+    background: map-get($paramMixi, footer-background);
+    padding: map-get($paramMixi, footer-padding);
+    border-top: 1px solid map-get($paramMixi, border-color);
     text-align: right;
-    border-top: 1px solid;
   }
   //bgee
   //bgm
@@ -30,47 +38,22 @@
 /**************************MIXIN**************************/
 /************************************************************/
 @mixin card(
-  $paramMixi_: $card,
-  $exempleParamFromBEMComponentVariable: map.get($card, exempleParamFromBEMComponentVariable)
+  $paramMixi: $card,
+  $exempleParamFromBEMComponentVariable: map-get($card, exempleParamFromBEMComponentVariable)
   // BEMMixinParam
 ){
-  $paramMixi: card(map.merge($card, $paramMixi_)); // PERMET DE DÉFINIR LES PARAMÈTRES DES MODIFIER
-
   @extend %card;
-  background: map.get($paramMixi, background);
-  border-radius: map.get($paramMixi, border-radius);
-  box-shadow: map.get($paramMixi, box-shadow);
-  border-color: map.get($paramMixi, border-color);
 
   &__header {
     @extend %card__header;
-    background: map.get($paramMixi, header-background);
-    padding: map.get($paramMixi, header-padding);
-    font-size: map.get($paramMixi, header-font-size);
-    border-bottom-color: map.get($paramMixi, border-color);
   }
 
   &__body {
     @extend %card__body;
-    padding: map.get($paramMixi, body-padding);
-    font-size: map.get($paramMixi, body-font-size);
-    color: map.get($paramMixi, body-color);
-    text-shadow: 0 0 2px map.get($paramMixi, body-color-contrast);
   }
 
   &__footer {
     @extend %card__footer;
-    background: map.get($paramMixi, footer-background);
-    padding: map.get($paramMixi, footer-padding);
-    border-top-color: map.get($paramMixi, border-color);
-  }
-  &__header, &__footer {
-    border-color: map.get($paramMixi, border-color-contrast);
-  }
-  &--contrast {
-    background: map.get($paramMixi, background-contrast) !important;
-    box-shadow: map.get($paramMixi, shadow-contrast);
-    // border-color: map.get($paramMixi, border-color-contrast);
   }
   //bgee
   //bgm
@@ -80,16 +63,7 @@
 /**************************FUNCTION**************************/
 /************************************************************/
 @function card($defaultValues){
-  // Génère une version contrastée des couleurs
-  @return map.merge(
-    $defaultValues,
-    (
-      background-contrast: color.adjust(map.get($defaultValues, background), $lightness: -12%),
-      body-color-contrast: color.adjust(map.get($defaultValues, body-color), $lightness: 36%),
-      // border-color-contrast: color.adjust(map.get($defaultValues, border-color), $lightness: -24%),
-      shadow-contrast: 0 8px 32px rgba(0,0,0,0.18)
-    )
-  );
+  @return ($defaultValues);
 }
 
 /******VARAIBLES******/
@@ -140,5 +114,4 @@ $myCard: card((
 
 .card-custom {
   @include card($myCard);
-  custumisables: "  background: #fff,\nborder-radius: 16px,\nbox-shadow: 0 4px 16px rgba(0,0,0,0.08),\n  border-color: #e0e0e0,\nheader-background: #f7f7f7,\nheader-padding: 1rem 1.5rem,\nheader-font-size: 1.1rem,\nbody-padding: 1.5rem,\nbody-font-size: 1rem,\nbody-color: #222,\nfooter-background: #fafafa,\nfooter-padding: 1rem 1.5rem,\nexempleParamFromBEMComponentVariable: red"
 }

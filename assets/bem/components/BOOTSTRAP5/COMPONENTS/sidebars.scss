@@ -162,7 +162,7 @@ box-shadow(color), background, border-color
         @extend .mb-3;
         // @extend .text-white;
         @extend .text-decoration-none;
-        @include from-tablette(map-get($b5_breakpoints,mobile)+"px"){
+        @include from-tablette(map.get($b5_breakpoints,mobile)+"px"){
             margin-right: auto !important;
             margin-bottom: 0px !important;
         } // @extend .me-md-auto; @extend .mb-md-0;
@@ -235,7 +235,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin B5-Sidebars(
         $paramMixi: $B5-Sidebars
-        , $exempleParamFromBEMComponentVariable: map-get($B5-Sidebars, exempleParamFromBEMComponentVariable)
+        , $exempleParamFromBEMComponentVariable: map.get($B5-Sidebars, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
 
@@ -274,7 +274,7 @@ box-shadow(color), background, border-color
     }
 /*
     >h2:before{
-        content:map-get($args, label);
+        content:map.get($args, label);
     }
 */
 }

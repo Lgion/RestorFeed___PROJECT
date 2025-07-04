@@ -90,7 +90,7 @@ box-shadow(color), background, border-color
             background-color: rgba(0,0,0,1);
             >img,>svg{
                 @extend .col-md-5;
-                @include from-desktop(map-get($b5_breakpoints,tablette)+"px"){
+                @include from-desktop(map.get($b5_breakpoints,tablette)+"px"){
                     font-size: 3.5rem; // .bd-placeholder-img-lg
                     max-width: 100%;height: auto; // .img-fluid
                 }
@@ -103,10 +103,10 @@ box-shadow(color), background, border-color
                     color:#5a5a5a;
                     font-weight: 400;
                     line-height: 1;letter-spacing: -.05rem; // @extend .featurette-heading
-                    @include from-tablette(map-get($b5_breakpoints,mobile)+"px"){
+                    @include from-tablette(map.get($b5_breakpoints,mobile)+"px"){
                         font-size: 50px; // @extend .featurette-heading
                     }
-                    @include from-desktop(map-get($b5_breakpoints,tablette)+"px"){
+                    @include from-desktop(map.get($b5_breakpoints,tablette)+"px"){
                         margin-top: 7rem; // @extend .featurette-heading
                     }
                     >span{
@@ -236,7 +236,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin B5-Carousels(
         $paramMixi: $B5-Carousels
-        , $exempleParamFromBEMComponentVariable: map-get($B5-Carousels, exempleParamFromBEMComponentVariable)
+        , $exempleParamFromBEMComponentVariable: map.get($B5-Carousels, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
 
@@ -277,7 +277,7 @@ box-shadow(color), background, border-color
     }
 /*
     >h2:before{
-        content:map-get($args, label);
+        content:map.get($args, label);
     }
 */
 }

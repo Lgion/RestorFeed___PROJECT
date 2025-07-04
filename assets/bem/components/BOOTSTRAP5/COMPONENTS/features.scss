@@ -181,7 +181,7 @@ box-shadow(color), background, border-color
                 position: relative;
                 padding-left: calc(48px + 2rem);
                 margin-top: 1.5rem;
-                @include to-desktop(map-get($b5_breakpoints,desktop)){flex-basis: auto !important;}
+                @include to-desktop(map.get($b5_breakpoints,desktop)){flex-basis: auto !important;}
                 >i{
                     position: absolute;
                     left: 1rem;
@@ -222,7 +222,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin B5-Features(
         $paramMixi: $B5-Features
-        , $exempleParamFromBEMComponentVariable: map-get($B5-Features, exempleParamFromBEMComponentVariable)
+        , $exempleParamFromBEMComponentVariable: map.get($B5-Features, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
 
@@ -258,7 +258,7 @@ box-shadow(color), background, border-color
     }
 /*
     >h2:before{
-        content:map-get($args, label);
+        content:map.get($args, label);
     }
 */
 }

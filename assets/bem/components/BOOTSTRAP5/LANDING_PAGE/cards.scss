@@ -52,7 +52,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin LP-Cards(
         $paramMixi: $LP-Cards
-        , $exempleParamFromBEMComponentVariable: map-get($LP-Cards, exempleParamFromBEMComponentVariable)
+        , $exempleParamFromBEMComponentVariable: map.get($LP-Cards, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
     @extend %LP-Cards;

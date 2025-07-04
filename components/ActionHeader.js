@@ -6,6 +6,8 @@ import { UserButton,
   SignUpButton,
   SignedIn,
   SignedOut,
+  useUser,
+  useAuth
 } from '@clerk/nextjs'
 import { Tooltip } from "react-tooltip";
 import Link from "next/link";
@@ -61,6 +63,15 @@ export default function ActionHeader({ handleValidate, isLoading, cart = [], onF
   
   const searchParams = useSearchParams();
   const lastScroll = useRef(0);
+  const { isLoaded, isSignedIn } = useAuth();
+  const { user } = useUser();
+  
+  // Force le re-render lors des changements d'authentification
+  const [authState, setAuthState] = useState({ isLoaded, isSignedIn });
+  
+  useEffect(() => {
+    setAuthState({ isLoaded, isSignedIn });
+  }, [isLoaded, isSignedIn, user]);
 
   useEffect(() => {
     let tableNumber = getAppDataKey('tableNumber');
@@ -75,7 +86,7 @@ export default function ActionHeader({ handleValidate, isLoading, cart = [], onF
         setTableNumber('');
       }
     }
-  }, []);
+  }, [authState]); // Ajout de authState comme dépendance
 
   const handleTableChange = (e) => {
     const value = e.target.value;
@@ -182,7 +193,7 @@ export default function ActionHeader({ handleValidate, isLoading, cart = [], onF
       </div>
       
       <div>
-        <RoleGuard minRole="employee">
+        {user && <RoleGuard minRole="employee">
           <select
             value={tableNumber}
             onChange={handleTableChange}
@@ -193,7 +204,7 @@ export default function ActionHeader({ handleValidate, isLoading, cart = [], onF
               <option key={i + 1} value={i + 1}>{i + 1}</option>
             ))}
           </select>
-        </RoleGuard>
+        </RoleGuard>}
         <RoleGuard minRole="public">
           <b className="actionHeader__tableActive">#{tableNumber}</b>
         </RoleGuard>

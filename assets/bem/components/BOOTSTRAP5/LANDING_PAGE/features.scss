@@ -109,16 +109,16 @@ box-shadow(color), background, border-color
                 -webkit-transition: all 0.3s ease-in-out;
                 -o-transition: all 0.3s ease-in-out;
             }
-            // @each $prop, $list in map-get($__PurposesList01, colors) {
-            @for $i from 1 through length(map-get($__PurposesList01, colors)) {
+            // @each $prop, $list in map.get($__PurposesList01, colors) {
+            @for $i from 1 through length(map.get($__PurposesList01, colors)) {
                 &:nth-of-type(#{$i})>i{
                     background: lighten(
                         nth(
-                            map-get($__PurposesList01, colors), $i
+                            map.get($__PurposesList01, colors), $i
                         ), 20%
                     );
-                    color: nth(map-get($__PurposesList01, colors), $i) !important;
-                    &:before{content: nth(map-get($__PurposesList01, icones), $i);}
+                    color: nth(map.get($__PurposesList01, colors), $i) !important;
+                    &:before{content: nth(map.get($__PurposesList01, icones), $i);}
                 }
             }
             >h3{
@@ -307,7 +307,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin LP-Features(
         $paramMixi: $LP-Features
-        // , $exempleParamFromBEMComponentVariable: map-get($LP-Features, exempleParamFromBEMComponentVariable)
+        // , $exempleParamFromBEMComponentVariable: map.get($LP-Features, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
 
@@ -385,7 +385,7 @@ box-shadow(color), background, border-color
     .#{$name}{
         @include LP-Features();
         >h2:after{
-            content:map-get($args, etitle_after);
+            content:map.get($args, etitle_after);
         }
     }
 }

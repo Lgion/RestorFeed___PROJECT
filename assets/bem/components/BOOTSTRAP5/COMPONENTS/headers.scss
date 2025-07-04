@@ -48,7 +48,7 @@ box-shadow(color), background, border-color
     >*{
         padding:0 !important;
     }
-    @include from-tablette(map-get($b5_breakpoints,mobile)+"px"){
+    @include from-tablette(map.get($b5_breakpoints,mobile)+"px"){
         justify-content: center !important;
     }
     
@@ -104,12 +104,12 @@ box-shadow(color), background, border-color
     &§§§doubleHeader {
         box-shadow: 0 0.5em 1.5em rgba(0, 0, 0, .1), 0 0.125em 0.5em rgba(0, 0, 0, .15);
         background: $dark;
-        @include from-desktop(map-get($b5_breakpoints,tablette)+"px"){
+        @include from-desktop(map.get($b5_breakpoints,tablette)+"px"){
             justify-content: space-between !important;
         }
         
         >ul{
-            @include from-desktop(map-get($b5_breakpoints,tablette)+"px"){
+            @include from-desktop(map.get($b5_breakpoints,tablette)+"px"){
                 &:nth-child(2){margin-right: unset!important; // @extend .me-lg-auto;}
                 justify-content: space-between !important;
                 }
@@ -131,7 +131,7 @@ box-shadow(color), background, border-color
                 // gap: 1rem;
                 text-wrap: nowrap;
             }
-            @include to-desktop(map-get($b5_breakpoints,desktop)+"px"){
+            @include to-desktop(map.get($b5_breakpoints,desktop)+"px"){
                 flex-wrap: wrap;
                 justify-content: center;
                 align-items: center;
@@ -161,7 +161,7 @@ box-shadow(color), background, border-color
         text-decoration: none!important; // @extend  text-decoration-none;
         color:rgb(33,37,41); // @extend  text-dark;
         gap: 1rem;
-        @include from-tablette(map-get($b5_breakpoints,mobile)+"px"){
+        @include from-tablette(map.get($b5_breakpoints,mobile)+"px"){
             flex-wrap: wrap;
             justify-content: center;
             gap: unset;
@@ -185,11 +185,11 @@ box-shadow(color), background, border-color
         @extend .mb-2;
         flex-wrap: nowrap;
         justify-content: center;
-        @include mobile-only(map-get($b5_breakpoints,mobile)+"px"){
+        @include mobile-only(map.get($b5_breakpoints,mobile)+"px"){
         }
-        @include to-desktop(map-get($b5_breakpoints,desktop)+"px"){
+        @include to-desktop(map.get($b5_breakpoints,desktop)+"px"){
         }
-        @include from-desktop(map-get($b5_breakpoints,tablette)+"px"){
+        @include from-desktop(map.get($b5_breakpoints,tablette)+"px"){
             margin-right: auto!important; // @extend .me-lg-auto;
             margin-bottom: 0!important; // @extend .mb-md-0; 
         }
@@ -242,7 +242,7 @@ box-shadow(color), background, border-color
         >ul{@extend .col-lg-auto;}
         >form{@extend .col-lg-auto;
             padding: 0;
-            @include to-desktop(map-get($b5_breakpoints,desktop)+"px"){
+            @include to-desktop(map.get($b5_breakpoints,desktop)+"px"){
                 margin-bottom: 1rem!important; // @extend .mb-3;
             }
         }
@@ -263,7 +263,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin B5-Headers(
         $paramMixi: $B5-Headers
-        , $exempleParamFromBEMComponentVariable: map-get($B5-Headers, exempleParamFromBEMComponentVariable)
+        , $exempleParamFromBEMComponentVariable: map.get($B5-Headers, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
 
@@ -315,7 +315,7 @@ box-shadow(color), background, border-color
     }
 /*
     >h2:before{
-        content:map-get($args, label);
+        content:map.get($args, label);
     }
 */
 }

@@ -3,13 +3,17 @@
 // Ce composant synchronise Clerk et Prisma/localStorage après login/signup
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import { getAppData, setAppData } from "../utils/localStorageApp";
+import { getAppData, setAppData, initializeAppData } from "../utils/localStorageApp";
 
 export default function ClerkSync() {
   const { user, isSignedIn } = useUser();
 
   useEffect(() => {
-    async function syncUser() {
+    async function initializeAndSync() {
+      // Supprimer l'ancien localStorage et initialiser avec les nouvelles données
+      localStorage.removeItem('restOrFeed');
+      await initializeAppData();
+
       if (isSignedIn && user) {
         // Vérifie si user existe dans Prisma
         let prismaUser = null;
@@ -28,7 +32,6 @@ export default function ClerkSync() {
         if (res.ok) {
           prismaUser = await res.json();
         } else {
-          
           // Crée le user dans Prisma
           res = await fetch('/api/users', {
             method: 'POST',
@@ -44,8 +47,8 @@ export default function ClerkSync() {
             prismaUser = await res.json();
           }
         }
-        const ls = getAppData()
-        ls.role = role
+        const ls = getAppData();
+        ls.role = role;
         if (prismaUser) {
           ls.user = {
             id: prismaUser.id,
@@ -53,12 +56,14 @@ export default function ClerkSync() {
             email: prismaUser.email,
             username: prismaUser.username,
             role: prismaUser.role,
-          }
+          };
         }
         setAppData(ls);
       }
     }
-    syncUser();
+
+    // Exécuter la fonction asynchrone
+    initializeAndSync();
   }, [isSignedIn, user]);
 
   return null;

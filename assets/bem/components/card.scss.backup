@@ -1,6 +1,3 @@
-@use "sass:map";
-@use "sass:color";
-
 /************************************************************/
 /**************************PLACEHOLDER**************************/
 /************************************************************/
@@ -31,46 +28,46 @@
 /************************************************************/
 @mixin card(
   $paramMixi_: $card,
-  $exempleParamFromBEMComponentVariable: map.get($card, exempleParamFromBEMComponentVariable)
+  $exempleParamFromBEMComponentVariable: map-get($card, exempleParamFromBEMComponentVariable)
   // BEMMixinParam
 ){
-  $paramMixi: card(map.merge($card, $paramMixi_)); // PERMET DE DÉFINIR LES PARAMÈTRES DES MODIFIER
+  $paramMixi: card(map-merge($card, $paramMixi_)); // PERMET DE DÉFINIR LES PARAMÈTRES DES MODIFIER
 
   @extend %card;
-  background: map.get($paramMixi, background);
-  border-radius: map.get($paramMixi, border-radius);
-  box-shadow: map.get($paramMixi, box-shadow);
-  border-color: map.get($paramMixi, border-color);
+  background: map-get($paramMixi, background);
+  border-radius: map-get($paramMixi, border-radius);
+  box-shadow: map-get($paramMixi, box-shadow);
+  border-color: map-get($paramMixi, border-color);
 
   &__header {
     @extend %card__header;
-    background: map.get($paramMixi, header-background);
-    padding: map.get($paramMixi, header-padding);
-    font-size: map.get($paramMixi, header-font-size);
-    border-bottom-color: map.get($paramMixi, border-color);
+    background: map-get($paramMixi, header-background);
+    padding: map-get($paramMixi, header-padding);
+    font-size: map-get($paramMixi, header-font-size);
+    border-bottom-color: map-get($paramMixi, border-color);
   }
 
   &__body {
     @extend %card__body;
-    padding: map.get($paramMixi, body-padding);
-    font-size: map.get($paramMixi, body-font-size);
-    color: map.get($paramMixi, body-color);
-    text-shadow: 0 0 2px map.get($paramMixi, body-color-contrast);
+    padding: map-get($paramMixi, body-padding);
+    font-size: map-get($paramMixi, body-font-size);
+    color: map-get($paramMixi, body-color);
+    text-shadow: 0 0 2px map-get($paramMixi, body-color-contrast);
   }
 
   &__footer {
     @extend %card__footer;
-    background: map.get($paramMixi, footer-background);
-    padding: map.get($paramMixi, footer-padding);
-    border-top-color: map.get($paramMixi, border-color);
+    background: map-get($paramMixi, footer-background);
+    padding: map-get($paramMixi, footer-padding);
+    border-top-color: map-get($paramMixi, border-color);
   }
   &__header, &__footer {
-    border-color: map.get($paramMixi, border-color-contrast);
+    border-color: map-get($paramMixi, border-color-contrast);
   }
   &--contrast {
-    background: map.get($paramMixi, background-contrast) !important;
-    box-shadow: map.get($paramMixi, shadow-contrast);
-    // border-color: map.get($paramMixi, border-color-contrast);
+    background: map-get($paramMixi, background-contrast) !important;
+    box-shadow: map-get($paramMixi, shadow-contrast);
+    // border-color: map-get($paramMixi, border-color-contrast);
   }
   //bgee
   //bgm
@@ -81,12 +78,12 @@
 /************************************************************/
 @function card($defaultValues){
   // Génère une version contrastée des couleurs
-  @return map.merge(
+  @return map-merge(
     $defaultValues,
     (
-      background-contrast: color.adjust(map.get($defaultValues, background), $lightness: -12%),
-      body-color-contrast: color.adjust(map.get($defaultValues, body-color), $lightness: 36%),
-      // border-color-contrast: color.adjust(map.get($defaultValues, border-color), $lightness: -24%),
+      background-contrast: darken(map-get($defaultValues, background), 12%),
+      body-color-contrast: lighten(map-get($defaultValues, body-color), 36%),
+      // border-color-contrast: darken(map-get($defaultValues, border-color), 24%),
       shadow-contrast: 0 8px 32px rgba(0,0,0,0.18)
     )
   );

@@ -1,6 +1,3 @@
-@use "sass:map";
-@use "sass:color";
-
 /************************************************************/
 /**************************PLACEHOLDER**************************/
 /************************************************************/
@@ -65,7 +62,7 @@
   $exempleParamFromBEMComponentVariable: map.get($adminPage, exempleParamFromBEMComponentVariable)
   // BEMMixinParam
 ) {
-  $paramMixi: adminPage(map.merge($adminPage, $paramMixi_));
+  $paramMixi: adminPage(map-merge($adminPage, $paramMixi_));
   @extend %adminPage;
   min-height: map.get($paramMixi, min-height, 100vh);
   background: map.get($paramMixi, background, #fafbfc);
@@ -83,10 +80,10 @@
 /**************************FUNCTION**************************/
 /************************************************************/
 @function adminPage($defaultValues) {
-  @return map.merge(
+  @return map-merge(
     $defaultValues,
     (
-      // background-contrast: color.adjust(map.get($defaultValues, background), $lightness: -12%),
+      // background-contrast: darken(map.get($defaultValues, background), 12%),
     )
   );
 }

@@ -97,7 +97,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin B5-Cards(
         $paramMixi: $B5-Cards
-        , $exempleParamFromBEMComponentVariable: map-get($B5-Cards, exempleParamFromBEMComponentVariable)
+        , $exempleParamFromBEMComponentVariable: map.get($B5-Cards, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
 
@@ -134,7 +134,7 @@ box-shadow(color), background, border-color
     }
 /*
     >h2:before{
-        content:map-get($args, label);
+        content:map.get($args, label);
     }
 */
 }

@@ -61,9 +61,9 @@ box-shadow(color), background, border-color
     {
 
         &.active+*{
-            @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){display:block;}
+            @include mobile-only(map.get($b5_breakpoints,mobile) + "px"){display:block;}
         }
-        @include from-tablette(map-get($b5_breakpoints,mobile) + "px"){
+        @include from-tablette(map.get($b5_breakpoints,mobile) + "px"){
             display:none;
         }
         color: rgba(255,255,255,.55);
@@ -86,7 +86,7 @@ box-shadow(color), background, border-color
     &__nav
     // , >ul
     {
-        @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){display:none;}
+        @include mobile-only(map.get($b5_breakpoints,mobile) + "px"){display:none;}
         @extend .navbar-nav;
         display: flex;
         flex-basis: 100%;
@@ -104,7 +104,7 @@ box-shadow(color), background, border-color
                     }
                 }
                 >ul{
-                    @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){position: static;}
+                    @include mobile-only(map.get($b5_breakpoints,mobile) + "px"){position: static;}
                     @extend .dropdown-menu;
                     position: absolute;
                     top: auto;
@@ -127,7 +127,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin B5-FootersNavbar(
         $paramMixi: $B5-FootersNavbar
-        , $exempleParamFromBEMComponentVariable: map-get($B5-FootersNavbar, exempleParamFromBEMComponentVariable)
+        , $exempleParamFromBEMComponentVariable: map.get($B5-FootersNavbar, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
 
@@ -160,7 +160,7 @@ box-shadow(color), background, border-color
     }
 /*
     >h2:before{
-        content:map-get($args, label);
+        content:map.get($args, label);
     }
 */
 }

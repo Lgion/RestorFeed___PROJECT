@@ -1,3 +1,5 @@
+@use "sass:map";
+@use "sass:color";
 /**/
 
 
@@ -52,9 +54,9 @@ $txt-input-palette: (
 
     @each $state,$palette in $palette_states {
         &:#{$state} {
-            border: .1rem solid map-get($palette, border);
-            background-color: map-get($palette, bg);
-            color: map-get($palette, txt);
+            border: .1rem solid map.get($palette, border);
+            background-color: map.get($palette, bg);
+            color: map.get($palette, txt);
         }
     }
 }
@@ -84,71 +86,71 @@ $txt-input-palette: (
 /*********************************************************************************************************/
 /******************MEDIA-QUERIES**************************************************************************/
 
-@mixin mobile-only($max: map-get($breakpoints, mobile) + "px") {
+@mixin mobile-only($max: map.get($breakpoints, mobile) + "px") {
     @media screen and (max-width: $max) {
         @content;
     }
 }
 
-@mixin tablette-only($min: map-get($breakpoints, mobile) + 1 + "px", $max: map-get($breakpoints, tablette) + "px") {
+@mixin tablette-only($min: map.get($breakpoints, mobile) + 1 + "px", $max: map.get($breakpoints, tablette) + "px") {
     @media screen and (min-width: $min) and (max-width: $max) {
         @content;
     }
 }
 
-@mixin desktop-only($min: map-get($breakpoints, tablette) + 1 + "px", $max: map-get($breakpoints, desktop) + "px") {
+@mixin desktop-only($min: map.get($breakpoints, tablette) + 1 + "px", $max: map.get($breakpoints, desktop) + "px") {
     @media screen and (min-width: $min) {
         @content;
     }
 }
 
-// @mixin tv-only($min: map-get($breakpoints, desktop) + 1 + "px") {
+// @mixin tv-only($min: map.get($breakpoints, desktop) + 1 + "px") {
 //     @media screen and (min-width: $min) {
 //         @content;
 //     }
 // }
 
-@mixin mobile-and-tablette($max: map-get($breakpoints, tablette) + "px") {
+@mixin mobile-and-tablette($max: map.get($breakpoints, tablette) + "px") {
     @media screen and (max-width: $max) {
         @content;
     }
 }
 
-@mixin tablette-and-desktop($min: map-get($breakpoints, mobile) + 1 + "px", $max: map-get($breakpoint, desktop) + "px") {
+@mixin tablette-and-desktop($min: map.get($breakpoints, mobile) + 1 + "px", $max: map.get($breakpoint, desktop) + "px") {
     @media screen and (min-width: $min) {
         @content;
     }
 }
 
-// @mixin desktop-and-tv($min: map-get($breakpoints, tablette) + 1 + "px") {
+// @mixin desktop-and-tv($min: map.get($breakpoints, tablette) + 1 + "px") {
 //     @media screen and (min-width: $min) {
 //         @content;
 //     }
 // }
-@mixin from-bigScreen($min: map-get($breakpoints, desktop) + 1 + "px") {
+@mixin from-bigScreen($min: map.get($breakpoints, desktop) + 1 + "px") {
     @media screen and (min-width: $min) {
         @content;
     }
 }
 
-@mixin from-desktop($min: map-get($breakpoints, tablette) + 1 + "px") {
+@mixin from-desktop($min: map.get($breakpoints, tablette) + 1 + "px") {
     @media screen and (min-width: $min) {
         @content;
     }
 }
 
-@mixin from-tablette($min: map-get($breakpoints, mobile) + 1 + "px") {
+@mixin from-tablette($min: map.get($breakpoints, mobile) + 1 + "px") {
     @media screen and (min-width: $min) {
         @content;
     }
 }
 
-@mixin to-desktop($max: map-get($breakpoints, desktop) + "px") {
+@mixin to-desktop($max: map.get($breakpoints, desktop) + "px") {
     @media screen and (max-width: $max) {
         @content;
     }
 }
-@mixin to-tablette($max: map-get($breakpoints, tablette) + "px") {
+@mixin to-tablette($max: map.get($breakpoints, tablette) + "px") {
     @media screen and (max-width: $max) {
         @content;
     }

@@ -1,6 +1,3 @@
-@use "sass:map";
-@use "sass:color";
-
 /************************************************************/
 /**************************PLACEHOLDER**************************/
 /************************************************************/
@@ -27,23 +24,23 @@
 /************************************************************/
 @mixin notification(
   $paramMixi_: $notification,
-  $exempleParamFromBEMComponentVariable: map.get($notification, exempleParamFromBEMComponentVariable)
+  $exempleParamFromBEMComponentVariable: map-get($notification, exempleParamFromBEMComponentVariable)
   // BEMMixinParam
 ) {
-  $paramMixi: notification(map.merge($notification, $paramMixi_));
+  $paramMixi: notification(map-merge($notification, $paramMixi_));
   @extend %notification;
-  position: map.get($paramMixi, position, fixed);
-  top: map.get($paramMixi, top, 24px);
-  right: map.get($paramMixi, right, 24px);
-  background: map.get($paramMixi, background, linear-gradient(90deg, #27ae60 70%, #2ecc71 100%));
-  color: map.get($paramMixi, color, #fff);
-  padding: map.get($paramMixi, padding, 14px 28px);
-  border-radius: map.get($paramMixi, border-radius, 10px);
-  box-shadow: map.get($paramMixi, box-shadow, 0 2px 12px rgba(0,0,0,0.13));
-  font-weight: map.get($paramMixi, font-weight, bold);
-  z-index: map.get($paramMixi, z-index, 1000);
-  font-size: map.get($paramMixi, font-size, 1.06em);
-  letter-spacing: map.get($paramMixi, letter-spacing, 0.01em);
+  position: map-get($paramMixi, position, fixed);
+  top: map-get($paramMixi, top, 24px);
+  right: map-get($paramMixi, right, 24px);
+  background: map-get($paramMixi, background, linear-gradient(90deg, #27ae60 70%, #2ecc71 100%));
+  color: map-get($paramMixi, color, #fff);
+  padding: map-get($paramMixi, padding, 14px 28px);
+  border-radius: map-get($paramMixi, border-radius, 10px);
+  box-shadow: map-get($paramMixi, box-shadow, 0 2px 12px rgba(0,0,0,0.13));
+  font-weight: map-get($paramMixi, font-weight, bold);
+  z-index: map-get($paramMixi, z-index, 1000);
+  font-size: map-get($paramMixi, font-size, 1.06em);
+  letter-spacing: map-get($paramMixi, letter-spacing, 0.01em);
 
   &--error { @extend %notification--error; }
 }
@@ -52,10 +49,10 @@
 /**************************FUNCTION**************************/
 /************************************************************/
 @function notification($defaultValues) {
-  @return map.merge(
+  @return map-merge(
     $defaultValues,
     (
-      // background-contrast: color.adjust(map.get($defaultValues, background), $lightness: -12%),
+      // background-contrast: darken(map-get($defaultValues, background), 12%),
     )
   );
 }

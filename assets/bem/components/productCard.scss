@@ -1,3 +1,5 @@
+@use "sass:map";
+@use "sass:color";
 // Généré à partir de la structure BEM de .productCard dans index.scss, selon la snippet code.snippet
 /************************************************************/
 /**************************PLACEHOLDER**************************/
@@ -162,19 +164,19 @@
 /************************************************************/
 @mixin productCard(
   $paramMixi_: $productCard,
-  $exempleParamFromBEMComponentVariable: map-get($productCard, exempleParamFromBEMComponentVariable)
+  $exempleParamFromBEMComponentVariable: map.get($productCard, exempleParamFromBEMComponentVariable)
   // BEMMixinParam
 ){
-  $paramMixi: productCard(map-merge($productCard, $paramMixi_));
+  $paramMixi: productCard(map.merge($productCard, $paramMixi_));
   @extend %productCard;
   display: flex;
   align-items: center;
   gap: 16px;
-  border: 1px solid map-get($paramMixi, border-color);
-  border-radius: map-get($paramMixi, border-radius, 8px);
-  padding: map-get($paramMixi, padding, 16px);
-  margin-bottom: map-get($paramMixi, margin-bottom, 16px);
-  background: map-get($paramMixi, background, #fff);
+  border: 1px solid map.get($paramMixi, border-color);
+  border-radius: map.get($paramMixi, border-radius, 8px);
+  padding: map.get($paramMixi, padding, 16px);
+  margin-bottom: map.get($paramMixi, margin-bottom, 16px);
+  background: map.get($paramMixi, background, #fff);
 
   &__main {
     // styles personnalisables ici
@@ -242,16 +244,16 @@
 
   // Modifier contrast
   &--contrast {
-    background: map-get($paramMixi, background-contrast);
-    box-shadow: map-get($paramMixi, shadow-contrast);
-    border-color: map-get($paramMixi, border-color-contrast);
-    color: map-get($paramMixi, color-contrast);
+    background: map.get($paramMixi, background-contrast);
+    box-shadow: map.get($paramMixi, shadow-contrast);
+    border-color: map.get($paramMixi, border-color-contrast);
+    color: map.get($paramMixi, color-contrast);
     
     &__desc, &__price, &__customizable, &__add-btn, &__admin-actions, &__edit-btn, &__delete-btn, &__quantity {
-      color: map-get($paramMixi, color-contrast);
+      color: map.get($paramMixi, color-contrast);
     }
     &__image {
-      box-shadow: 0 0 0 2px map-get($paramMixi, border-color-contrast);
+      box-shadow: 0 0 0 2px map.get($paramMixi, border-color-contrast);
     }
   }
 }
@@ -260,12 +262,12 @@
 /**************************FUNCTION**************************/
 /************************************************************/
 @function productCard($defaultValues){
-  @return map-merge(
+  @return map.merge(
     $defaultValues,
     (
-      background-contrast: darken(map-get($defaultValues, background), 12%),
-      color-contrast: lighten(map-get($defaultValues, body-color), 36%),
-      border-color-contrast: darken(map-get($defaultValues, border-color), 18%),
+      background-contrast: color.adjust(map.get($defaultValues, background), $lightness: -12%),
+      color-contrast: color.adjust(map.get($defaultValues, body-color), $lightness: 36%),
+      border-color-contrast: color.adjust(map.get($defaultValues, border-color), $lightness: -18%),
       shadow-contrast: 0 6px 24px rgba(0,0,0,0.16)
     )
   );

@@ -1,6 +1,3 @@
-@use "sass:map";
-@use "sass:color";
-
 /************************************************************/
 /**************************PLACEHOLDER**************************/
 /************************************************************/
@@ -52,7 +49,7 @@
   $exempleParamFromBEMComponentVariable: map.get($menuLayout, exempleParamFromBEMComponentVariable)
   // BEMMixinParam
 ) {
-  $paramMixi: menuLayout(map.merge($menuLayout, $paramMixi_));
+  $paramMixi: menuLayout(map-merge($menuLayout, $paramMixi_));
   @extend %menuLayout;
   max-width: map.get($paramMixi, max-width, 600px);
   margin: map.get($paramMixi, margin, 0 auto);
@@ -72,10 +69,10 @@
 /**************************FUNCTION**************************/
 /************************************************************/
 @function menuLayout($defaultValues) {
-  @return map.merge(
+  @return map-merge(
     $defaultValues,
     (
-      // background-contrast: color.adjust(map.get($defaultValues, background), $lightness: -12%),
+      // background-contrast: darken(map.get($defaultValues, background), 12%),
     )
   );
 }

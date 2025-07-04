@@ -18,11 +18,99 @@ export const defaultAppData = {
   // Add other app-wide variables here
 };
 
-// Initialize app data if not present
-export function initializeAppData() {
+// Récupère les données utilisateur depuis Prisma
+async function fetchUserFromPrisma(clerkId) {
+  try {
+    const response = await fetch(`/api/users/clerk/${clerkId}`);
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch (error) {
+    console.error('Error fetching user from Prisma:', error);
+  }
+  return null;
+}
+
+// Récupère les commandes depuis l'API
+async function fetchOrders() {
+  try {
+    const response = await fetch('/api/orders');
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+  }
+  return [];
+}
+
+// Initialise ou met à jour les données de l'application
+export async function initializeAppData() {
   if (typeof window === "undefined") return;
-  if (!localStorage.getItem(APP_KEY)) {
-    localStorage.setItem(APP_KEY, JSON.stringify(defaultAppData));
+  
+  const existingData = localStorage.getItem(APP_KEY);
+  
+  // Si pas de données existantes, on essaie de les récupérer via Clerk
+  if (!existingData) {
+    try {
+      // Récupère les commandes
+      const orders = await fetchOrders();
+      // Crée un nouvel objet avec les commandes récupérées
+      const newData = {
+        ...defaultAppData,
+        orders: orders
+      };
+      
+      // Vérifie si l'utilisateur est connecté via Clerk
+      const clerkUser = window.Clerk?.user;
+      if (clerkUser?.id) {
+        // Récupère les données de Prisma
+        const userData = await fetchUserFromPrisma(clerkUser.id);
+        if (userData) {
+          newData.user = {
+            id: userData.id,
+            clerkId: userData.clerkId,
+            email: userData.email,
+            username: userData.username,
+            role: userData.role
+          };
+        }
+      }
+      
+      // Met à jour le localStorage avec les données
+      localStorage.setItem(APP_KEY, JSON.stringify(newData));
+      return;
+    } catch (error) {
+      console.error('Error initializing app data:', error);
+      localStorage.setItem(APP_KEY, JSON.stringify(defaultAppData));
+    }
+  } else {
+    // Mise à jour des données existantes si nécessaire
+    try {
+      const currentData = JSON.parse(existingData);
+      // Récupère les commandes
+      const orders = await fetchOrders();
+      const updatedData = {
+        ...currentData,
+        orders: orders
+      };
+      
+      if (currentData.user?.clerkId) {
+        const userData = await fetchUserFromPrisma(currentData.user.clerkId);
+        if (userData) {
+          updatedData.user = {
+            ...currentData.user,
+            email: userData.email || currentData.user.email,
+            username: userData.username || currentData.user.username,
+            role: userData.role || currentData.user.role
+          };
+        }
+      }
+      
+      localStorage.setItem(APP_KEY, JSON.stringify(updatedData));
+    } catch (error) {
+      console.error('Error updating app data:', error);
+    }
   }
 }
 

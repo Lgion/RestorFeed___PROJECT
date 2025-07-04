@@ -81,7 +81,7 @@ box-shadow(color), background, border-color
                 @extend .w-100;
             }
         }
-        @include from-desktop(map-get($b5_breakpoints,tablette)+"px"){
+        @include from-desktop(map.get($b5_breakpoints,tablette)+"px"){
             display: flex;
             text-align: left !important;
             align-items: center;
@@ -115,12 +115,12 @@ box-shadow(color), background, border-color
             >form{
                 flex-wrap: wrap;
                 justify-content: start !important;
-                @include to-tablette(map-get($b5_breakpoints,tablette)+"px"){
+                @include to-tablette(map.get($b5_breakpoints,tablette)+"px"){
                     button{width: 100%;margin-bottom:1.5rem !important;}
                 }
             }
         }
-        @include to-desktop(map-get($b5_breakpoints,desktop)+"px"){
+        @include to-desktop(map.get($b5_breakpoints,desktop)+"px"){
             >div{order:1;}
             >article{order:2;}
         }
@@ -143,12 +143,12 @@ box-shadow(color), background, border-color
                 >img{
                     width: unset;
                 }
-                @include to-desktop(map-get($b5_breakpoints,desktop)+"px"){
+                @include to-desktop(map.get($b5_breakpoints,desktop)+"px"){
                     flex-basis: 100%;
                     max-width: calc(100% - 15px);
                 }
             }
-            @include to-desktop(map-get($b5_breakpoints,desktop)+"px"){
+            @include to-desktop(map.get($b5_breakpoints,desktop)+"px"){
                 >div{order:2;}
                 >article{order:1;}
             }
@@ -209,7 +209,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin B5-Heroes(
         $paramMixi: $B5-Heroes
-        , $exempleParamFromBEMComponentVariable: map-get($B5-Heroes, exempleParamFromBEMComponentVariable)
+        , $exempleParamFromBEMComponentVariable: map.get($B5-Heroes, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
 
@@ -248,7 +248,7 @@ box-shadow(color), background, border-color
     }
 /*
     >h2:before{
-        content:map-get($args, label);
+        content:map.get($args, label);
     }
 */
 }

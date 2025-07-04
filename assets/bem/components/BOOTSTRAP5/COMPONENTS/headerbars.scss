@@ -57,9 +57,9 @@ box-shadow(color), background, border-color
 
         /*
             &.active+*{
-                @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){display:block;}
+                @include mobile-only(map.get($b5_breakpoints,mobile) + "px"){display:block;}
             }
-            @include from-tablette(map-get($b5_breakpoints,mobile) + "px"){
+            @include from-tablette(map.get($b5_breakpoints,mobile) + "px"){
                 display:none;
             }
         */
@@ -82,7 +82,7 @@ box-shadow(color), background, border-color
 
     &__nav {
         /*
-           @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){display:none;}
+           @include mobile-only(map.get($b5_breakpoints,mobile) + "px"){display:none;}
         */
         @extend .navbar-nav;
         margin-right: auto!important; //@extend .me-auto;
@@ -104,7 +104,7 @@ box-shadow(color), background, border-color
                 }
                 >ul{
                     /*
-                        @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){position: static;}
+                        @include mobile-only(map.get($b5_breakpoints,mobile) + "px"){position: static;}
                     */
                     @extend .dropdown-menu;
                     position: absolute;
@@ -160,61 +160,61 @@ box-shadow(color), background, border-color
     &.sm{@extend .navbar-expand-sm;}
     &__hamburgerBtn.sm{
         &.active+*{
-            @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){display:block;}
+            @include mobile-only(map.get($b5_breakpoints,mobile) + "px"){display:block;}
         }
-        @include from-tablette(map-get($b5_breakpoints,mobile) + "px"){
+        @include from-tablette(map.get($b5_breakpoints,mobile) + "px"){
             display:none;
         }
     }
     &__nav.sm{
-        @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){display:none;}
+        @include mobile-only(map.get($b5_breakpoints,mobile) + "px"){display:none;}
         >li.dropup>ul,>li.dropdown>ul{
-            @include mobile-only(map-get($b5_breakpoints,mobile) + "px"){position: static;}
+            @include mobile-only(map.get($b5_breakpoints,mobile) + "px"){position: static;}
         }
     }
     &.md{@extend .navbar-expand-md;}
     &__hamburgerBtn.md{
         &.active+*{
-            @include to-tablette(map-get($b5_breakpoints,tablette) + "px"){display:block;}
+            @include to-tablette(map.get($b5_breakpoints,tablette) + "px"){display:block;}
         }
-        @include from-desktop(map-get($b5_breakpoints,tablette) + "px"){
+        @include from-desktop(map.get($b5_breakpoints,tablette) + "px"){
             display:none;
         }
     }
     &__nav.md{
-        @include to-tablette(map-get($b5_breakpoints,tablette) + "px"){display:none;}
+        @include to-tablette(map.get($b5_breakpoints,tablette) + "px"){display:none;}
         >li.dropup>ul,>li.dropdown>ul{
-            @include to-tablette(map-get($b5_breakpoints,tablette) + "px"){position: static;}
+            @include to-tablette(map.get($b5_breakpoints,tablette) + "px"){position: static;}
         }
     }
     &.lg{@extend .navbar-expand-lg;}
     &__hamburgerBtn.lg{
         &.active+*{
-            @include to-desktop(map-get($b5_breakpoints,desktop) + "px"){display:block;}
+            @include to-desktop(map.get($b5_breakpoints,desktop) + "px"){display:block;}
         }
-        @include from-bigScreen(map-get($b5_breakpoints,desktop) + "px"){
+        @include from-bigScreen(map.get($b5_breakpoints,desktop) + "px"){
             display:none;
         }
     }
     &__nav.lg{
-        @include to-desktop(map-get($b5_breakpoints,desktop) + "px"){display:none;}
+        @include to-desktop(map.get($b5_breakpoints,desktop) + "px"){display:none;}
         >li.dropup>ul,>li.dropdown>ul{
-            @include to-desktop(map-get($b5_breakpoints,desktop) + "px"){position: static;}
+            @include to-desktop(map.get($b5_breakpoints,desktop) + "px"){position: static;}
         }
     }
     &.xl{@extend .navbar-expand-xl;}
     &__hamburgerBtn.xl{
         // &.active+*{
-        //     @include to-tv(map-get($b5_breakpoints,tv) + "px"){display:block;}
+        //     @include to-tv(map.get($b5_breakpoints,tv) + "px"){display:block;}
         // }
-        // @include from-tv(map-get($b5_breakpoints,???) + "px"){
+        // @include from-tv(map.get($b5_breakpoints,???) + "px"){
         //     display:none;
         // }
     }
     &__nav.xl{
-    //     @include mobile-only(map-get($b5_breakpoints,tv) + "px"){display:none;}
+    //     @include mobile-only(map.get($b5_breakpoints,tv) + "px"){display:none;}
     //     >li.dropup>ul,>li.dropdown>ul{
-    //         @include mobile-only(map-get($b5_breakpoints,tv) + "px"){position: static;}
+    //         @include mobile-only(map.get($b5_breakpoints,tv) + "px"){position: static;}
     //     }
     }
     
@@ -227,7 +227,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin B5-HeaderNavbar(
         $paramMixi: $B5-HeaderNavbar
-        , $exempleParamFromBEMComponentVariable: map-get($B5-HeaderNavbar, exempleParamFromBEMComponentVariable)
+        , $exempleParamFromBEMComponentVariable: map.get($B5-HeaderNavbar, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
 
@@ -260,7 +260,7 @@ box-shadow(color), background, border-color
     }
 /*
     >h2:before{
-        content:map-get($args, label);
+        content:map.get($args, label);
     }
 */
 }

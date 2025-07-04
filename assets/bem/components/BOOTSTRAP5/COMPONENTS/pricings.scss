@@ -187,7 +187,7 @@ box-shadow(color), background, border-color
 /************************************************************/
 @mixin B5-Pricings(
         $paramMixi: $B5-Pricings
-        , $exempleParamFromBEMComponentVariable: map-get($B5-Pricings, exempleParamFromBEMComponentVariable)
+        , $exempleParamFromBEMComponentVariable: map.get($B5-Pricings, exempleParamFromBEMComponentVariable)
         // BEMMixinParam
     ){
 
@@ -223,7 +223,7 @@ box-shadow(color), background, border-color
     }
 /*
     >h2:before{
-        content:map-get($args, label);
+        content:map.get($args, label);
     }
 */
 }

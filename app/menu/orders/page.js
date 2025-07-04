@@ -18,7 +18,8 @@ export default function OrdersPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [tableFilter, setTableFilter] = useState(getAppDataKey('tableNumber'));
+  // const [tableFilter, setTableFilter] = useState(getAppDataKey('tableNumber'));
+  const [tableFilter, setTableFilter] = useState(0);
   const [statusFilter, setStatusFilter] = useState(false);
 
   useEffect(() => {
@@ -126,7 +127,7 @@ export default function OrdersPage() {
           <label>
             <span>Table </span>
             <select value={tableFilter || ""} onChange={e => setTableFilter(e.target.value || undefined)}>
-              <option value="">Toutes</option>
+              <option value="" selected>Toutes</option>
               {availableTables.map(table => (
                 <option key={table} value={table}>Table {table}</option>
               ))}

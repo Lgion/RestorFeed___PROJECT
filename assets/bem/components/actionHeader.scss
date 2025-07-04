@@ -1,3 +1,6 @@
+@use "sass:map";
+@use "sass:color";
+
 // Généré à partir de la structure BEM de .action-header dans index.scss, avec modifier contrast
 /************************************************************/
 /**************************PLACEHOLDER**************************/
@@ -345,21 +348,21 @@
 /************************************************************/
 @mixin actionHeader(
   $paramMixi_: $actionHeader,
-  $exempleParamFromBEMComponentVariable: map-get($actionHeader, exempleParamFromBEMComponentVariable)
+  $exempleParamFromBEMComponentVariable: map.get($actionHeader, exempleParamFromBEMComponentVariable)
   // BEMMixinParam
 ){
-  $paramMixi: actionHeader(map-merge($actionHeader, $paramMixi_));
+  $paramMixi: actionHeader(map.merge($actionHeader, $paramMixi_));
   @extend %actionHeader;
-  padding: map-get($paramMixi, padding_);
-  background: map-get($paramMixi, background_, #fff);
-  box-shadow: map-get($paramMixi, box-shadow_, 0 2px 18px #0002);
-  min-height: map-get($paramMixi, min-height_, 64px);
-  border-bottom: solid map-get($paramMixi, border-bottom-color_);
+  padding: map.get($paramMixi, padding_);
+  background: map.get($paramMixi, background_, #fff);
+  box-shadow: map.get($paramMixi, box-shadow_, 0 2px 18px #0002);
+  min-height: map.get($paramMixi, min-height_, 64px);
+  border-bottom: solid map.get($paramMixi, border-bottom-color_);
 
   &__actions {
     @extend %actionHeader__actions;
     >div{
-      background: map-get($actionHeader, border-bottom-color_);
+      background: map.get($actionHeader, border-bottom-color_);
     }
     &--mobile-visible  {
       @extend %actionHeader__actions--mobile-visible ;
@@ -383,7 +386,7 @@
   &__action {
     @extend %actionHeader__action;
     &:focus {
-      outline: 2px solid map-get($actionHeader, border-bottom-color_);
+      outline: 2px solid map.get($actionHeader, border-bottom-color_);
     }
     // &__action--hovered {
     //   background: #f4f4f4;
@@ -402,12 +405,12 @@
 
   // Modifier contrast
   &--contrast {
-    background: map-get($paramMixi, background-contrast);
-    box-shadow: map-get($paramMixi, shadow-contrast);
-    border-bottom: solid map-get($paramMixi, border-bottom-contrast, #c0392b);
-    color: map-get($paramMixi, color-contrast);
+    background: map.get($paramMixi, background-contrast);
+    box-shadow: map.get($paramMixi, shadow-contrast);
+    border-bottom: solid map.get($paramMixi, border-bottom-contrast, #c0392b);
+    color: map.get($paramMixi, color-contrast);
     &__action {
-      border-color: map-get($paramMixi, border-color-contrast);
+      border-color: map.get($paramMixi, border-color-contrast);
     }
   }
 }
@@ -416,13 +419,13 @@
 /**************************FUNCTION**************************/
 /************************************************************/
 @function actionHeader($defaultValues){
-  @return map-merge(
+  @return map.merge(
     $defaultValues,
     (
-      background-contrast: darken(map-get($defaultValues, background_), 12%),
-      color-contrast: lighten(map-get($defaultValues, color_), 36%),
-      border-color-contrast: darken(map-get($defaultValues, border-color_), 18%),
-      border-bottom-contrast: darken(map-get($defaultValues, border-bottom-color_), 18%),
+      background-contrast: color.adjust(map.get($defaultValues, background_), $lightness: -12%),
+      color-contrast: color.adjust(map.get($defaultValues, color_), $lightness: 36%),
+      border-color-contrast: color.adjust(map.get($defaultValues, border-color_), $lightness: -18%),
+      border-bottom-contrast: color.adjust(map.get($defaultValues, border-bottom-color_), $lightness: -18%),
       shadow-contrast: 0 6px 24px rgba(0,0,0,0.16)
     )
   );

@@ -1,33 +1,36 @@
+@use "sass:map";
+@use "sass:color";
+
 /************************************************************/
 /**************************PLACEHOLDER**************************/
 /************************************************************/
 %card {
   display: flex;
   flex-direction: column;
-  background: map-get($paramMixi, background);
-  border-radius: map-get($paramMixi, border-radius);
-  box-shadow: map-get($paramMixi, box-shadow);
+  background: map.get($paramMixi, background);
+  border-radius: map.get($paramMixi, border-radius);
+  box-shadow: map.get($paramMixi, box-shadow);
   overflow: hidden;
-  border: 1px solid map-get($paramMixi, border-color);
+  border: 1px solid map.get($paramMixi, border-color);
   
   &__header {
-    background: map-get($paramMixi, header-background);
-    padding: map-get($paramMixi, header-padding);
+    background: map.get($paramMixi, header-background);
+    padding: map.get($paramMixi, header-padding);
     font-weight: bold;
-    font-size: map-get($paramMixi, header-font-size);
-    border-bottom: 1px solid map-get($paramMixi, border-color);
+    font-size: map.get($paramMixi, header-font-size);
+    border-bottom: 1px solid map.get($paramMixi, border-color);
   }
 
   &__body {
-    padding: map-get($paramMixi, body-padding);
-    font-size: map-get($paramMixi, body-font-size);
-    color: map-get($paramMixi, body-color);
+    padding: map.get($paramMixi, body-padding);
+    font-size: map.get($paramMixi, body-font-size);
+    color: map.get($paramMixi, body-color);
   }
 
   &__footer {
-    background: map-get($paramMixi, footer-background);
-    padding: map-get($paramMixi, footer-padding);
-    border-top: 1px solid map-get($paramMixi, border-color);
+    background: map.get($paramMixi, footer-background);
+    padding: map.get($paramMixi, footer-padding);
+    border-top: 1px solid map.get($paramMixi, border-color);
     text-align: right;
   }
   //bgee
@@ -39,7 +42,7 @@
 /************************************************************/
 @mixin card(
   $paramMixi: $card,
-  $exempleParamFromBEMComponentVariable: map-get($card, exempleParamFromBEMComponentVariable)
+  $exempleParamFromBEMComponentVariable: map.get($card, exempleParamFromBEMComponentVariable)
   // BEMMixinParam
 ){
   @extend %card;

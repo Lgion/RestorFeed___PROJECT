@@ -125,7 +125,7 @@
   @return map.merge(
     $defaultValues,
     (
-      // background-contrast: color.adjust(map.get($defaultValues, background), $lightness: -12%),
+      // background-contrast: darken(map.get($defaultValues, background), 12%),
     )
   );
 }

@@ -1,5 +1,5 @@
 /**/
-
+@use "sass:color";
 
 
 $black: black;
@@ -9,29 +9,29 @@ $darkmode: rgba(33,37,41,1);
 $dark: $darkmode;
 $bright: #eaeaea;
 
-$black1: lighten($black,10%);
-$black2: lighten($black,20%);
-$black3: lighten($black,30%);
-$black4: lighten($black,40%);
-$black5: lighten($black,50%);
+$black1: color.scale($black, $lightness: 10%);
+$black2: color.scale($black, $lightness: 20%);
+$black3: color.scale($black, $lightness: 30%);
+$black4: color.scale($black, $lightness: 40%);
+$black5: color.scale($black, $lightness: 50%);
 
-$white1: darken($white,10%);
-$white2: darken($white,20%);
-$white3: darken($white,30%);
-$white4: darken($white,40%);
-$white5: darken($white,50%);
+$white1: color.scale($white, $lightness: -10%);
+$white2: color.scale($white, $lightness: -20%);
+$white3: color.scale($white, $lightness: -30%);
+$white4: color.scale($white, $lightness: -40%);
+$white5: color.scale($white, $lightness: -50%);
 
-$dark1: lighten($dark,10%);
-$dark2: lighten($dark,20%);
-$dark3: lighten($dark,30%);
-$dark4: lighten($dark,40%);
-$dark5: lighten($dark,50%);
+$dark1: color.scale($dark, $lightness: 10%);
+$dark2: color.scale($dark, $lightness: 20%);
+$dark3: color.scale($dark, $lightness: 30%);
+$dark4: color.scale($dark, $lightness: 40%);
+$dark5: color.scale($dark, $lightness: 50%);
 
-$bright1: lighten($bright,10%);
-$bright2: lighten($bright,20%);
-$bright3: lighten($bright,30%);
-$bright4: lighten($bright,40%);
-$bright5: lighten($bright,50%);
+$bright1: color.scale($bright, $lightness: 10%);
+$bright2: color.scale($bright, $lightness: 20%);
+$bright3: color.scale($bright, $lightness: 30%);
+$bright4: color.scale($bright, $lightness: 40%);
+$bright5: color.scale($bright, $lightness: 50%);
 
 
 

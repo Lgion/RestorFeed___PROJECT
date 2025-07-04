@@ -20,28 +20,56 @@ export default function CartHover({ handleValidate, isLoading }) {
         }
         try {
           const appData = JSON.parse(raw);
-          setOrders(appData.orders || []);
-          setCart(appData.cart || []);
-        } catch {
+          // Les commandes peuvent être dans appData.orders ou directement dans appData si c'est un tableau
+          let ordersArray = appData.orders || [];
+          
+          // Si le format est ancien (tableau direct)
+          if (Array.isArray(appData) && !Array.isArray(appData.orders)) {
+            ordersArray = appData;
+          }
+          
+          // S'assurer que chaque commande a un tableau 'items' (pour la compatibilité)
+          ordersArray = ordersArray.map(order => ({
+            ...order,
+            items: order.items || order.products || []
+          }));
+          
+          const cartArray = appData.cart || [];
+          
+          setOrders(ordersArray);
+          setCart(cartArray);
+        } catch (error) {
+          console.error('Error parsing localStorage:', error);
           setOrders([]);
           setCart([]);
         }
       }
     }
+
     loadData();
-    const handle = () => loadData();
-    window.addEventListener("storage", handle);
-    window.addEventListener("orders-updated", handle);
-    window.addEventListener("cart-updated", handle);
+
+    // Ajouter un écouteur pour détecter les changements de localStorage
+    const handleStorageChange = (event) => {
+      if (event.key === 'restOrFeed') {
+        loadData();
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("orders-updated", handleStorageChange);
+    window.addEventListener("cart-updated", handleStorageChange);
     return () => {
-      window.removeEventListener("storage", handle);
-      window.removeEventListener("orders-updated", handle);
-      window.removeEventListener("cart-updated", handle);
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("orders-updated", handleStorageChange);
+      window.removeEventListener("cart-updated", handleStorageChange);
     };
   }, []);
 
   // Affichage du panier courant (cart)
-  const groupedCart = cart.reduce((acc, item) => {
+  const appData = JSON.parse(localStorage.getItem("restOrFeed") || '{}');
+  const currentOrders = appData.orders || [];
+  
+  // Utiliser les données directement du localStorage pour l'affichage
+  const groupedCart = (appData.cart || []).reduce((acc, item) => {
     const key = item.id;
     if (!acc[key]) {
       acc[key] = { ...item, quantity: item.quantity || 1 };
@@ -53,9 +81,14 @@ export default function CartHover({ handleValidate, isLoading }) {
   const cartArr = Object.values(groupedCart);
   const cartTotal = cartArr.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
 
+  // Utiliser les données directement du localStorage pour l'affichage
+  console.log('Orders from localStorage:', currentOrders);
+  console.log('Parsed localStorage:', appData);
+
   return (
     <div className="cartHover" ref={ref}>
-      <div className="cartHover__popup">
+        {console.log(currentOrders)}
+        <div className="cartHover__popup">
         <h4 className="cartHover__title">Panier en cours</h4>
         {cartArr.length === 0 ? (
           <div className="cartHover__empty">Votre commande est vide.</div>
@@ -80,13 +113,24 @@ export default function CartHover({ handleValidate, isLoading }) {
         </button>
         <hr style={{margin: '1rem 0'}} />
         <h4 className="cartHover__title">Commandes enregistrées</h4>
-        {orders.length === 0 ? (
+        {currentOrders.length === 0 ? (
           <div className="cartHover__empty">Aucune commande enregistrée.</div>
         ) : (
           <ul className="cartHover__orders">
-            {console.log(orders)}
             
-            {orders.filter(anyOrder=>anyOrder.table==JSON.parse(localStorage.restOrFeed).tableNumber).map((myOrder, idx) => (
+            {currentOrders
+              .filter(anyOrder => {
+                if (!anyOrder) return false;
+                const appData = JSON.parse(localStorage.restOrFeed || '{}');
+                const tableNumber = appData.tableNumber;
+                
+                console.log("tableNumber:", tableNumber);
+                console.log("order table:", anyOrder.table);
+                console.log("order items:", anyOrder.items || anyOrder.products);
+                
+                return String(anyOrder.table) === String(tableNumber);
+              })
+              .map((myOrder, idx) => (
               <li
                 key={myOrder.id || idx}
                 className="cartHover__order"
@@ -107,15 +151,22 @@ export default function CartHover({ handleValidate, isLoading }) {
                     }, 0)).toFixed(2)} €
                   </span>
                 </div>
-                {openOrderIdx === idx && (myOrder.items || myOrder.products) && (
+                {openOrderIdx === idx && (myOrder.items?.length > 0 || myOrder.products?.length > 0) && (
                   <ul className="cartHover__orderList">
-                    {(myOrder.items || myOrder.products).map(prod => (
-                      <li key={prod.id || prod.productId} className="cartHover__orderItem">
-                        <span>{prod.name || prod.product?.name || ''}</span>
-                        <span>x{prod.quantity || 1}</span>
-                        <span>{((prod.price || prod.product?.price || 0) * (prod.quantity || 1)).toFixed(2)} €</span>
-                      </li>
-                    ))}
+                    {(myOrder.items || []).map((prod, prodIdx) => {
+                      const productName = prod.name || prod.product?.name || 'Produit sans nom';
+                      const quantity = prod.quantity || 1;
+                      const price = prod.price || prod.product?.price || 0;
+                      const total = (price * quantity).toFixed(2);
+                      
+                      return (
+                        <li key={prod.id || prod.productId || `prod-${idx}-${prodIdx}`} className="cartHover__orderItem">
+                          <span>{productName}</span>
+                          <span>x{quantity}</span>
+                          <span>{total} €</span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </li>
