@@ -142,6 +142,8 @@ model HelpRequest {
   id        Int      @id @default(autoincrement())
   userId    Int?
   tableId   String?  // Identifiant de la table (optionnel)
+  orderId   String?  // ID de la commande concernée (pour les demandes Hurry Up)
+  type      String   @default("GENERAL") // "GENERAL", "HURRY_UP", "COMPLAINT", "ASSISTANCE"
   message   String   @default("Aide demandée")
   status    String   @default("PENDING") // "PENDING", "IN_PROGRESS", "RESOLVED", "DISMISSED"
   priority  String   @default("NORMAL") // "LOW", "NORMAL", "HIGH", "URGENT"

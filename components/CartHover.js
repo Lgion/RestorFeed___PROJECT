@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import HurryUpButton from './HurryUpButton';
 
 export default function CartHover({ handleValidate, isLoading }) {
   const [orders, setOrders] = useState([]);
@@ -151,6 +152,12 @@ export default function CartHover({ handleValidate, isLoading }) {
                     }, 0)).toFixed(2)} €
                   </span>
                 </div>
+                <HurryUpButton 
+                  orderId={myOrder.id || `order_${idx}`}
+                  orderNumber={myOrder.orderNumber || `#${idx + 1}`}
+                  tableId={myOrder.table || JSON.parse(localStorage.restOrFeed || '{}').tableNumber}
+                  className="compact"
+                />
                 {openOrderIdx === idx && (myOrder.items?.length > 0 || myOrder.products?.length > 0) && (
                   <ul className="cartHover__orderList">
                     {(myOrder.items || []).map((prod, prodIdx) => {

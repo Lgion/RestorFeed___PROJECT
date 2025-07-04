@@ -79,7 +79,7 @@ export default function ActionHeader({ handleValidate, isLoading, cart = [], onF
     let tableNumber = getAppDataKey('tableNumber');
     if (typeof window !== 'undefined') {
       if (!tableNumber) {
-        tableNumber = searchParams.get("tableNumber") || String(Math.floor(1 + Math.random() * 10)); // 2 chiffres
+        tableNumber = searchParams.get("tableNumber") || String(Math.floor(1 + Math.random() * process.env.NEXT_PUBLIC_NOMBRE_TABLES)); // 2 chiffres
         setAppDataKey('tableNumber', tableNumber);
       }
       try {

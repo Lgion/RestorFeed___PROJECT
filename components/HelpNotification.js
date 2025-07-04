@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { Bell, X, Play, CheckCircle } from 'lucide-react';
+import { Bell, X, User, Clock, CheckCircle, AlertTriangle, Zap, MessageSquare, HelpCircle, Play } from 'lucide-react';
 import styles from '../assets/bem/components/helpNotification.module.scss';
 
 export default function HelpNotification() {
@@ -166,6 +166,20 @@ export default function HelpNotification() {
     }
   };
   
+  const getTypeInfo = (type) => {
+    switch (type) {
+      case 'HURRY_UP':
+        return { icon: Zap, label: 'Accélération', color: '#ff6b35' };
+      case 'COMPLAINT':
+        return { icon: AlertTriangle, label: 'Réclamation', color: '#e74c3c' };
+      case 'ASSISTANCE':
+        return { icon: HelpCircle, label: 'Assistance', color: '#3498db' };
+      case 'GENERAL':
+      default:
+        return { icon: MessageSquare, label: 'Général', color: '#95a5a6' };
+    }
+  };
+  
   const formatTime = (dateString) => {
     return new Date(dateString).toLocaleTimeString('fr-FR', {
       hour: '2-digit',
@@ -211,6 +225,20 @@ export default function HelpNotification() {
                       >
                         {notification.priority}
                       </span>
+                      {notification.type && (() => {
+                        const typeInfo = getTypeInfo(notification.type);
+                        const TypeIcon = typeInfo.icon;
+                        return (
+                          <span 
+                            className={styles.typeBadge}
+                            style={{ color: typeInfo.color }}
+                            title={typeInfo.label}
+                          >
+                            <TypeIcon size={14} />
+                            {typeInfo.label}
+                          </span>
+                        );
+                      })()}
                       <span className={styles.notificationTime}>
                         {formatTime(notification.createdAt)}
                       </span>
@@ -220,6 +248,7 @@ export default function HelpNotification() {
                     </span>
                     <span className={styles.notificationDetails}>
                       {notification.tableId && `Table: ${notification.tableId} • `}
+                      {notification.orderId && `Commande: ${notification.orderId} • `}
                       Par: {notification.user?.username || notification.user?.email || notification.userId}
                     </span>
                   </div>

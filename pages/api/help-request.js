@@ -38,13 +38,15 @@ export default async function handler(req, res) {
     }
     // Pour les invités (test_), on laisse actualUserId à null
     
-    const { tableId, message = 'Aide demandée', priority = 'NORMAL' } = req.body;
+    const { tableId, orderId, type = 'GENERAL', message = 'Aide demandée', priority = 'NORMAL' } = req.body;
     
     const requestData = {
       userId: actualUserId, // null pour invités, user.id pour connectés
-      tableId: tableId.toString(), // Garder comme string selon le schéma
-      message,
-      priority,
+      tableId: tableId ? tableId.toString() : null, // Garder comme string selon le schéma
+      orderId: orderId ? orderId.toString() : null, // ID de la commande si fourni (toujours string)
+      type: type || 'GENERAL', // Type de demande (GENERAL, HURRY_UP, etc.)
+      message: message || 'Aide demandée',
+      priority: priority || 'NORMAL',
       status: 'PENDING',
     };
     
@@ -62,7 +64,10 @@ export default async function handler(req, res) {
 
     res.status(201).json(helpRequest);
   } catch (error) {
-    console.error('Error creating help request:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Error creating help request:', error?.message || error);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error?.message || 'Unknown error'
+    });
   }
 }

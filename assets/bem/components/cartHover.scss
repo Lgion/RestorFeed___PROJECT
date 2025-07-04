@@ -184,7 +184,14 @@
   }
   &__order {
     margin-bottom: 8px;
-    
+    border:solid;
+    border-radius: 5px;
+    padding: .5em;
+    transition: all .3s;
+    &:hover{
+      background: silver;
+      box-shadow: 0 0 10px 1px inset;
+    }
     &:last-child {
       margin-bottom: 0;
     }
