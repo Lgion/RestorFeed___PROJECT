@@ -1,5 +1,5 @@
 
 
-export default function MenuVoidPage({ children }) {
+export default function MenuVoidPage() {
   return null
 }

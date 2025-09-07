@@ -1,5 +1,5 @@
 
 
-export default function SuppliersVoidPage({ children }) {
+export default function SuppliersVoidPage() {
   return null
 }

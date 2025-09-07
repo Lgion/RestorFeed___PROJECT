@@ -1,7 +1,7 @@
 "use client"
 
 // import { products } from "../../data/products"; // plus utilisé
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from "next/navigation";
 // import { initializeAppData } from "../../utils/localStorageApp";
 import { getAppDataKey, setAppDataKey } from "../../utils/localStorageApp";
@@ -29,7 +29,8 @@ const CATEGORY_ICONS = {
 
 
 
-export default function MenuLayout({ children }) {
+// Component that uses useSearchParams
+function MenuLayoutContent({ children }) {
   const searchParams = useSearchParams();
   const [quantities, setQuantities] = useState({});
   const [products, setProducts] = useState([]);
@@ -499,5 +500,14 @@ export default function MenuLayout({ children }) {
       
       <Confetti trigger={orderSent} />
     </>
+  );
+}
+
+// Main layout component with Suspense boundary
+export default function MenuLayout({ children }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MenuLayoutContent>{children}</MenuLayoutContent>
+    </Suspense>
   );
 }
